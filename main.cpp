@@ -5,4 +5,5 @@ int main() {
     initscr();
     std::cout << "Bomberman" << std::endl;
     return 0;
+    //prova
 }
