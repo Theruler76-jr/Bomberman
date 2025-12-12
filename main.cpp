@@ -1,13 +1,13 @@
 #include <iostream>
 #include <ncurses/ncurses.h>
 
-#include "menu.cpp"
+#include "menu.h"
 
 int main() {
 
     initscr();
 
-    WINDOW *win = newwin(LINES/2, COLS/2, 0, 0);
+    WINDOW *win = newwin(10, 10, 0, 0);
 
     char state = 'M';
 
@@ -19,13 +19,13 @@ int main() {
                 state = menu_loop(win);
                 break;
 
-            case 'G':
-                state = game_loop(win);
-                break;
-
-            case 'H':
-                state = highscore_loop(win);
-                break;
+            // case 'G':
+            //     state = game_loop(win);
+            //     break;
+            //
+            // case 'H':
+            //     state = highscore_loop(win);
+            //     break;
 
             case 'Q':
                 endwin();
