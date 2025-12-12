@@ -5,11 +5,28 @@
 #include "game.h"
 #include "highscore.h"
 
+
 int main() {
+
 
     initscr();
 
-    WINDOW *win = newwin(10, 10, 0, 0);
+    noecho(); // non fa stampare alla console i tasti che preme l'utente
+    nodelay(stdscr, TRUE);
+    cbreak();
+    keypad(stdscr, TRUE);
+
+    int width, height;
+    getmaxyx(stdscr, height, width);
+
+    width = 40;
+    height = 20;
+
+    WINDOW *win = newwin(height, width, 0, 0);
+
+    refresh();
+
+    std::cout << "size: " << width << ", " << height << std::endl;
 
     char state = 'M';
     bool quit = false;
@@ -35,6 +52,7 @@ int main() {
                 break;
 
             default:
+                std::cout << "Invalid state " <<  state << std::endl;
                 exit(-1);
 
         }
