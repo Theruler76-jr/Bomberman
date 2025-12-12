@@ -10,5 +10,8 @@ set(CURSES_LIBRARY "C:/MinGW/lib/libpdcurses.a")
 
 find_package( Curses REQUIRED )
 include_directories( ${CURSES_INCLUDE_DIR} )
-add_executable( Bomberman main.cpp)
+add_executable( Bomberman main.cpp
+        Player.cpp
+        Player.h
+        menu.cpp)
 target_link_libraries( Bomberman ${CURSES_LIBRARIES} )
