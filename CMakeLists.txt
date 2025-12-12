@@ -15,5 +15,9 @@ add_executable( Bomberman
         Player.cpp
         Player.h
         menu.cpp
-        menu.h)
+        menu.h
+        game.cpp
+        game.h
+        highscore.cpp
+        highscore.h)
 target_link_libraries( Bomberman ${CURSES_LIBRARIES} )

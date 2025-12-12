@@ -1,9 +1,9 @@
-#include "menu.h"
+#include "game.h"
 
 #include <ncurses/ncurses.h>
 
 
-char menu_loop(WINDOW *win) {
+char game_loop(WINDOW *win) {
 
     return 'Q';
 

@@ -2,6 +2,8 @@
 #include <ncurses/ncurses.h>
 
 #include "menu.h"
+#include "game.h"
+#include "highscore.h"
 
 int main() {
 
@@ -10,8 +12,9 @@ int main() {
     WINDOW *win = newwin(10, 10, 0, 0);
 
     char state = 'M';
+    bool quit = false;
 
-    while (true) {
+    while (!quit) {
 
         switch (state) {
 
@@ -19,24 +22,27 @@ int main() {
                 state = menu_loop(win);
                 break;
 
-            // case 'G':
-            //     state = game_loop(win);
-            //     break;
-            //
-            // case 'H':
-            //     state = highscore_loop(win);
-            //     break;
+            case 'G':
+                state = game_loop(win);
+                break;
+
+            case 'H':
+                state = highscore_loop(win);
+                break;
 
             case 'Q':
-                endwin();
-                return 0;
+                quit = true;
+                break;
 
             default:
-                endwin();
-                exit(1);
+                exit(-1);
 
         }
 
     }
+
+    endwin();
+
+    return 0;
 
 }
