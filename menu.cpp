@@ -1,7 +1,7 @@
 #include "menu.h"
 
-#include <stdlib.h>
 #include <ncurses/ncurses.h>
+#include <stdlib.h>
 
 
 char menu_loop(WINDOW *win) {
@@ -18,7 +18,13 @@ char menu_loop(WINDOW *win) {
             return 'Q';
         }
 
+        // Logica
 
+
+
+
+
+        // disegno
 
         box(win, 0, 0);
 
@@ -27,8 +33,7 @@ char menu_loop(WINDOW *win) {
         wrefresh(win);
         refresh();
         _sleep(100);
-    }
 
-    return 'Q';
+    }
 
 }

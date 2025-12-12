@@ -8,7 +8,6 @@
 
 int main() {
 
-
     initscr();
 
     noecho(); // non fa stampare alla console i tasti che preme l'utente
@@ -26,7 +25,7 @@ int main() {
 
     refresh();
 
-    std::cout << "size: " << width << ", " << height << std::endl;
+    //std::cout << "size: " << width << ", " << height << std::endl;
 
     char state = 'M';
     bool quit = false;
@@ -60,7 +59,6 @@ int main() {
     }
 
     endwin();
-
     return 0;
 
 }

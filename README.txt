@@ -1,17 +1,19 @@
 Divisione compiti:
 
-Map
+Samu:
+    Map
+    Item
+    Enemy
 
-Item
-Bomb
+Lanzo:
+    game loop
+    time
+    Player
+    Bomb
 
-Player
-Enemy
-
-menu loop
-highscore loop
-game loop
-
-
-struttura
-
+Crespi:
+    main
+    menu loop
+    highscore loop
+    formattare e controllare tutto
+    + altro
