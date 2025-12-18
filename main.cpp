@@ -1,5 +1,9 @@
 #include <iostream>
-#include <ncurses/ncurses.h>
+#ifdef _WIN32
+    #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
+#else
+    #include <ncurses.h>         // Percorso standard per Linux
+#endif
 
 #include "menu.h"
 #include "game.h"

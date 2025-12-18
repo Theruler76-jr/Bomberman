@@ -1,6 +1,10 @@
 #include "game.h"
 
-#include <ncurses/ncurses.h>
+#ifdef _WIN32
+    #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
+#else
+    #include <ncurses.h>         // Percorso standard per Linux
+#endif
 
 const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
 
