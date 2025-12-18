@@ -6,7 +6,7 @@ protected:
     int coordinata_y;
     int numero_vite;
 public:
-    Player (int c_x = 1, int c_y = 1, int n_v = 3);
+    Player (int c_x = 1, int c_y = 1, int n_v = 3); //da decidere il numero di vite con cui partire
     int get_coordinata_x ();
     int get_coordinata_y ();
     bool cambia_numero_vite (int x); // Ritorna 1 se non é morto, 0 se ha finito le vite. Per decrementare bisogna passare un int negativo
