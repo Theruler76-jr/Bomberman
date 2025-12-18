@@ -1,4 +1,5 @@
 #include "game.h"
+#include "Map.h"
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
