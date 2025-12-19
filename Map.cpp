@@ -1,5 +1,6 @@
 #include "Map.h"
 #include <iostream>
+#include <cmath>
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
 #else
@@ -16,12 +17,14 @@ Map :: Map () {
                 map[i][j]='I';
             }
             else if (i==1 || j==1 || i==(row-2) || j==(col-2)) {
-                map[i][j]='c';
+                map[i][j]='v';
             }
-
             else {
-                map[i][j]='c';
+                map[i][j]='v';
             }
+            map[10][0]='v';
+            map[10][39]='v';
+            map[10][38]='v';
         }
     }
 }
@@ -49,12 +52,12 @@ void Map::stamp(WINDOW *win) {
 }
 
 void Map::livello(int lv) {
-    int n_muri=65*lv;
+    int n_muri=120*(int)sqrt(lv);
     srand(time(0));
     while (n_muri>0){
         int x=rand()%38+1;
         int y=rand()%18+1;
-        if ((x!=1 || y!=1) && (x!=2 || y!=1) && (x!=3 || y!=1) && (x!=1 || y!=2) && map[y][x]=='c') {
+        if ((x!=1 || y!=1) && (x!=2 || y!=1) && (x!=3 || y!=1) && (x!=1 || y!=2) && map[y][x]=='v') {
             map[y][x]='m';
             n_muri--;
         }
