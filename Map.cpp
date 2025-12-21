@@ -6,6 +6,7 @@
 #else
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
+#define COLOR_GRAY 8
 
 Map :: Map () {
     for (int i=0; i<row; i++) {
@@ -23,15 +24,29 @@ Map :: Map () {
                 map[i][j]='v';
             }
             map[10][0]='v';
-            map[10][39]='v';
-            map[10][38]='v';
+            map[10][40]='v';
+        }
+    }
+}
+
+void Map::livello(int lv) {
+    int n_muri=120*(int)sqrt(lv);
+    srand(time(0));
+    while (n_muri>0){
+        int x=rand()%39+1;
+        int y=rand()%19+1;
+        if ((x!=1 || y!=1) && (x!=2 || y!=1) && (x!=3 || y!=1) && (x!=1 || y!=2) && map[y][x]=='v') {
+            map[y][x]='m';
+            n_muri--;
         }
     }
 }
 
 void Map::stamp(WINDOW *win) {
-    init_pair(1,COLOR_BLACK,COLOR_WHITE);
-    init_pair(2,COLOR_BLACK,8);
+    start_color();
+    init_color(COLOR_GRAY,574,574,574);
+    init_pair(1,COLOR_WHITE,COLOR_WHITE);
+    init_pair(2,COLOR_GRAY,COLOR_GRAY);
     box(win,0,0);
     for (int i=0; i<row; i++) {
         for (int j=0; j<col; j++) {
@@ -51,30 +66,18 @@ void Map::stamp(WINDOW *win) {
     wrefresh(win);
 }
 
-void Map::livello(int lv) {
-    int n_muri=120*(int)sqrt(lv);
-    srand(0);
-    while (n_muri>0){
-        int x=rand()%38+1;
-        int y=rand()%18+1;
-        if ((x!=1 || y!=1) && (x!=2 || y!=1) && (x!=3 || y!=1) && (x!=1 || y!=2) && map[y][x]=='v') {
-            map[y][x]='m';
-            n_muri--;
-        }
-    }
-}
 
+//test per stampare i livelli
 /*
 int main() {
     initscr();
-    start_color();
     cbreak();
     noecho();
     curs_set(0);
 
     Map x;
-    x.livello(5);
-    WINDOW *win=newwin(20,40,0,0);
+    x.livello(1);
+    WINDOW *win=newwin(21,41,0,0);
     x.stamp(win);
 
     getch();
