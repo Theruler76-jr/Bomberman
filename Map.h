@@ -10,8 +10,8 @@
 //                                   e gli spazi vuoti come c
 class Map {
 protected:
-    int row=20, col=40;
-    char map[20][40];
+    int row=21, col=41;
+    char map[21][41];
 public:
     //construttore, initializza i muri indistruttibili
     Map();
