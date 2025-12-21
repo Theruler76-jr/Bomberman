@@ -103,7 +103,6 @@ char game_loop(WINDOW *win) {
 
         wrefresh(win);
         refresh();
-        _sleep(100);
     }
 
 }

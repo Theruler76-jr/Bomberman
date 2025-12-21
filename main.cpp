@@ -22,8 +22,8 @@ int main() {
     int width, height;
     getmaxyx(stdscr, height, width);
 
-    width = 40;
-    height = 20;
+    width = 120;
+    height = 25;
 
     WINDOW *win = newwin(height, width, 0, 0);
 
@@ -63,6 +63,8 @@ int main() {
     }
 
     endwin();
+    system("cls");
+
     return 0;
 
 }

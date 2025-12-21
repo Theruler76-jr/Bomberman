@@ -53,7 +53,7 @@ void Map::stamp(WINDOW *win) {
 
 void Map::livello(int lv) {
     int n_muri=120*(int)sqrt(lv);
-    srand(time(0));
+    srand(0);
     while (n_muri>0){
         int x=rand()%38+1;
         int y=rand()%18+1;
@@ -64,7 +64,7 @@ void Map::livello(int lv) {
     }
 }
 
-
+/*
 int main() {
     initscr();
     start_color();
@@ -80,3 +80,4 @@ int main() {
     getch();
     endwin();
 }
+*/
