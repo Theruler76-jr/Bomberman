@@ -5,24 +5,27 @@
 #else
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
-#include <stdlib.h>
 
+#include <stdlib.h>
+#include <cstring>
 
 char menu_loop(WINDOW *win) {
 
     keypad(win, TRUE);
+
+    int width, height;
+    getmaxyx(win, height, width);
 
     int input;
     const char *menu[3] {"New Game", "Leaderboard", "Quit"};
     int selection = 0;
 
     start_color();
-    init_pair(1, COLOR_RED, COLOR_WHITE);
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
 
     while (true) {
 
-        input = wgetch(win);
-
+        input = getch();
 
         switch (input) {
             case 'q':
@@ -53,34 +56,27 @@ char menu_loop(WINDOW *win) {
                 break;
         }
 
-        // Logica
-
-
-
-
-
-        // disegno
 
         box(win, 0, 0);
 
-        mvwprintw(win, LINES - 1, 0, "MENU");
+        mvwprintw(win, 0, width/2 - 2, "MENU");
 
         for (int i = 0; i < 3; i++) {
 
             if (selection == i) {
                 wattron(win, COLOR_PAIR(1));
-                wattron(win, A_BLINK);
+                wattron(win, A_BOLD);
             }
 
-            mvwprintw(win, 10 + i, 5, "%s", menu[i]);
+
+            mvwprintw(win, 16 + i, 40 - strlen(menu[i]) / 2, "%s", menu[i]);
 
             wattroff(win, COLOR_PAIR(1));
-            wattroff(win, A_BLINK);
+            wattroff(win, A_BOLD);
 
         }
 
-        wprintw(win, "%d", selection);
-
+        mvwprintw(win, 0, 0, "%d, %d", width, height);
 
         wrefresh(win);
         //refresh();
