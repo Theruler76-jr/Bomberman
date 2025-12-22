@@ -7,27 +7,33 @@
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
 
+/* NOTA
+ * per il commento del funzionamento di tutte le varie funzioni guardare nell'header file, in questo file sono presenti
+ * solo commenti che servono durante lo sviluppo/per ricordarmi aggiustamenti da fare in seguito.
+*/
+
+
 const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
 
 struct Level {
-    Map map();
-
+    Map map;
     int time = 60 * 5;
 
     Level *previous = nullptr;
     Level *next = nullptr;
 };
 
-//Funzione ausiliaria di push_level
 Level* find_last (Level* current) {
     if (current -> next == nullptr)
         return current;
     else
         return find_last (current -> next);
 }
-//Funzione ausiliaria di Levels_initializer
-Level* push_level (Level* head_level) {  //aggiungi i parametri che servono al livello per essere creato
+
+Level* push_level (Level* head_level, int level_number) {  //aggiungi i parametri che servono al livello per essere creato
     Level *to_add = new Level;
+    to_add -> map = Map();
+    to_add -> map.livello(level_number);
     //aggiungi tutte le inizializzazioni degli altri campi
     to_add -> next = nullptr;
     if (head_level == nullptr) {
@@ -42,17 +48,15 @@ Level* push_level (Level* head_level) {  //aggiungi i parametri che servono al l
     }
 }
 
-//Con questa funzione creo la lista bidirezionale di tutti i livelli
 Level* levels_initializer (Level *head_level) {
     for (int i = 0; i < numero_livelli; i++) {
-        head_level = push_level(head_level); //aggiungere tutti i parametri attuali
+        head_level = push_level(head_level, i + 1); //aggiungere tutti i parametri attuali
     }
     return head_level;
 }
 
 
 
-//con questa funzione si elimina il livello passato per parametro e ritorna il livello successivo
 Level* remove_level (Level* current_level) {
     if (current_level -> next == nullptr && current_level -> previous == nullptr) //Significa che era l'ultimo livello quindi l partita é terminata
         return nullptr;
@@ -60,7 +64,7 @@ Level* remove_level (Level* current_level) {
     to_delete -> next -> previous = to_delete -> previous;
     to_delete -> previous -> next = to_delete -> next;
     if (current_level -> next == nullptr) //In questo modo se é stato completato l'ultimo livello ma ne restano altri incompleti viene riportato al livello incompleto piú vicino
-        current_level = current_level -> previous;                                      //se invece si volesse far ripartire dal primo basta fare una funzione ricorsiva ausiliaria
+        current_level = current_level -> previous;       //se invece si volesse far ripartire dal primo basta fare una funzione ricorsiva ausiliaria
     else
         current_level = current_level -> next;
     delete to_delete;
@@ -74,8 +78,10 @@ char game_loop(WINDOW *win) {
 
     char input;
     Level *current_level = nullptr;
-    current_level = levels_initializer(current_level);
-
+    current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
+    current_level -> map.stamp(win);
+    refresh();
+    wrefresh(win);
 
 
     int score = 0;
@@ -88,7 +94,6 @@ char game_loop(WINDOW *win) {
             case 'q':
                 return 'Q';
         }
-
         // Logica
 
 
