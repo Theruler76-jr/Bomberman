@@ -49,18 +49,18 @@ void Map::livello(int lv) {
 void Map::stamp(WINDOW *win, int x_start, int y_start) {
     start_color();
     init_color(COLOR_GRAY,574,574,574);
-    init_pair(1,COLOR_BLACK,COLOR_WHITE);
-    init_pair(2,COLOR_BLACK,COLOR_GRAY);
+    init_pair(1,COLOR_WHITE,COLOR_WHITE);
+    init_pair(2,COLOR_GRAY,COLOR_GRAY);
     for (int i=0; i<row; i++) {
         for (int j=0; j<col; j++) {
             if (map[i][j]=='I') {
                 wattron(win,COLOR_PAIR(1));
-                mvwaddch(win,i+y_start,j+x_start,' ');
+                mvwaddch(win,i+y_start,j+x_start,'.');
                 wattroff(win,COLOR_PAIR(1));
             }
             if (map[i][j]=='m') {
                 wattron(win,COLOR_PAIR(2));
-                mvwaddch(win,i+y_start,j+x_start,' ');
+                mvwaddch(win,i+y_start,j+x_start,'.');
                 wattroff(win,COLOR_PAIR(2));
             }
         }
