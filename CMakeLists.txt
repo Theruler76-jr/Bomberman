@@ -30,5 +30,7 @@ add_executable( Bomberman
         Bomb.h
         Map.h
         Map.cpp
+        enemy.h
+        enemy.cpp
 )
 target_link_libraries( Bomberman ${CURSES_LIBRARIES} )

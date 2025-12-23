@@ -1,6 +1,8 @@
 #include "Map.h"
+
 #include <iostream>
 #include <cmath>
+
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
 #else
@@ -44,22 +46,21 @@ void Map::livello(int lv) {
     }
 }
 
-void Map::stamp(WINDOW *win) {
+void Map::stamp(WINDOW *win, int x_start, int y_start) {
     start_color();
     init_color(COLOR_GRAY,574,574,574);
     init_pair(1,COLOR_WHITE,COLOR_WHITE);
     init_pair(2,COLOR_GRAY,COLOR_GRAY);
-    box(win,0,0);
     for (int i=0; i<row; i++) {
         for (int j=0; j<col; j++) {
             if (map[i][j]=='I') {
                 wattron(win,COLOR_PAIR(1));
-                mvwaddch(win,i,j,' ');
+                mvwaddch(win,i+y_start,j+x_start,' ');
                 wattroff(win,COLOR_PAIR(1));
             }
             if (map[i][j]=='m') {
                 wattron(win,COLOR_PAIR(2));
-                mvwaddch(win,i,j,' ');
+                mvwaddch(win,i+y_start,j+x_start,' ');
                 wattroff(win,COLOR_PAIR(2));
             }
         }
@@ -68,9 +69,12 @@ void Map::stamp(WINDOW *win) {
     wrefresh(win);
 }
 
+char Map :: pos (int x, int y) {
+    return(map[y][x]);
+}
 
 //test per stampare i livelli
-/*
+
 int main() {
     initscr();
     cbreak();
@@ -79,10 +83,9 @@ int main() {
 
     Map x;
     x.livello(1);
-    WINDOW *win=newwin(21,41,0,0);
-    x.stamp(win);
+    WINDOW *win=newwin(40,80,0,0);
+    x.stamp(win,10,10);
 
     getch();
     endwin();
 }
-*/

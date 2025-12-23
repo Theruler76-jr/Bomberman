@@ -20,10 +20,8 @@ public:
     void livello (int lv);
 
     //stampa a schermo la mappa completa
-    void stamp (WINDOW *win);
+    void stamp (WINDOW *win, int x_start, int y_start);
 
     //restituisce cosa è presente nella mappa in una determinata posizione
-    char position (int x, int y) {
-        return(map[y][x]);
-    }
+    char pos (int x, int y);
 };
