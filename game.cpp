@@ -117,9 +117,7 @@ char game_loop(WINDOW *win) {
     //in fase di testing per saperlo, alla fine andra' rimosso e sistemato
     move (23,100);
     printw("Press q to exit");
-
     while (!end_game) {
-        //current_level -> map.stamp(win);
         write_score(score);
         write_lives(Giocatore);
         write_level(current_level -> level_number);
