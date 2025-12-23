@@ -12,13 +12,13 @@
 #include <ctime>
 
 //superclasse NEMICO
-enemy :: enemy(int vel, char asp, Map *_mappa) {
-    velocità=vel;
+enemy :: enemy(char asp, Map *_mappa) {
+    velocità=20000;
     mappa=_mappa;
     do {
         x=rand()%39+1;
         y=rand()%19+1;
-    }while (mappa->pos(x,y)=='v');
+    }while (mappa->pos(x,y)!='v');
     tick=0;
     aspetto=asp;
 }
@@ -31,13 +31,10 @@ int enemy::get_y() {
     return(y);
 }
 
-void enemy::stamp(WINDOW *win) {
-    mvwaddch(win,x,y,aspetto);
-}
 
 
 //NEMICO BASE (si muove nella stessa direzione finchè non trova un ostacolo)
-base_enemy::base_enemy(int vel, char asp, Map *_mappa) : enemy (vel,asp,_mappa){
+base_enemy::base_enemy(char asp, Map *_mappa) : enemy (asp,_mappa){
     dir=-1;
 }
 
@@ -65,9 +62,12 @@ void base_enemy::move() {
 
 
 //NEMICO FORTE (si muove sopra i muri e insegue il player)
+advanced_enemy::advanced_enemy(char asp, Map *_mappa) :enemy (asp,_mappa){
+}
+
 void advanced_enemy::move(Player pl) {
     if (tick>=velocità) {
-        if (pl.get_coordinata_x()==x || abs(pl.get_coordinata_y()-y)<abs(pl.get_coordinata_x()-x)) {
+        if (pl.get_coordinata_x()==x) {
             if (pl.get_coordinata_y()>y) {
                 y+=1;
             }
@@ -75,7 +75,23 @@ void advanced_enemy::move(Player pl) {
                 y-=1;
             }
         }
-        else if (pl.get_coordinata_y()==y || abs(pl.get_coordinata_x()-x)<abs(pl.get_coordinata_y()-y)) {
+        else if (pl.get_coordinata_y()==y) {
+            if (pl.get_coordinata_x()>x) {
+                x+=1;
+            }
+            else {
+                x-=1;
+            }
+        }
+        else if (abs(pl.get_coordinata_y()-y)<abs(pl.get_coordinata_x()-x)) {
+            if (pl.get_coordinata_y()>y) {
+                y+=1;
+            }
+            else {
+                y-=1;
+            }
+        }
+        else if (abs(pl.get_coordinata_x()-x)<abs(pl.get_coordinata_y()-y)) {
             if (pl.get_coordinata_x()>x) {
                 x+=1;
             }

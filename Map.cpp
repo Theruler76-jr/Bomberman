@@ -49,8 +49,8 @@ void Map::livello(int lv) {
 void Map::stamp(WINDOW *win, int x_start, int y_start) {
     start_color();
     init_color(COLOR_GRAY,574,574,574);
-    init_pair(1,COLOR_WHITE,COLOR_WHITE);
-    init_pair(2,COLOR_GRAY,COLOR_GRAY);
+    init_pair(1,COLOR_BLACK,COLOR_WHITE);
+    init_pair(2,COLOR_BLACK,COLOR_GRAY);
     for (int i=0; i<row; i++) {
         for (int j=0; j<col; j++) {
             if (map[i][j]=='I') {
@@ -65,8 +65,6 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
             }
         }
     }
-    refresh();
-    wrefresh(win);
 }
 
 char Map :: pos (int x, int y) {
@@ -75,6 +73,7 @@ char Map :: pos (int x, int y) {
 
 //test per stampare i livelli
 
+/*
 int main() {
     initscr();
     cbreak();
@@ -88,4 +87,4 @@ int main() {
 
     getch();
     endwin();
-}
+}*/
