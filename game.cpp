@@ -1,5 +1,6 @@
 #include "game.h"
 #include "Map.h"
+#include "Player.h"
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -18,6 +19,7 @@ const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole r
 struct Level {
     Map map;
     int time = 60 * 5;
+    int level_number;
 
     Level *previous = nullptr;
     Level *next = nullptr;
@@ -30,11 +32,11 @@ Level* find_last (Level* current) {
         return find_last (current -> next);
 }
 
-Level* push_level (Level* head_level, int level_number) {  //aggiungi i parametri che servono al livello per essere creato
+Level* push_level (Level* head_level, int level_number) {
     Level *to_add = new Level;
     to_add -> map = Map();
     to_add -> map.livello(level_number);
-    //aggiungi tutte le inizializzazioni degli altri campi
+    to_add ->level_number = level_number;
     to_add -> next = nullptr;
     if (head_level == nullptr) {
         head_level = to_add;
@@ -71,45 +73,65 @@ Level* remove_level (Level* current_level) {
     return current_level;
 }
 
-
-
-
-char game_loop(WINDOW *win) {
-
-    char input;
-    Level *current_level = nullptr;
-    current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
-    current_level -> map.stamp(win);
-    refresh();
-    wrefresh(win);
-
-
-    int score = 0;
-
-    while (true) {
-
-        input = getch();
-
-        switch (input) {
-            case 'q':
-                return 'Q';
-        }
-        // Logica
-
-
-
-
-
-        // disegno
-
-        box(win, 0, 0);
-
-
-
-        wrefresh(win);
-        refresh();
-    }
-
+void write_score (int score) {
+    move(2,100);
+    printw("Score: %d", score);
 }
 
+void write_lives (Player giocatore) {
+    move(4, 100);
+    printw("Lives left: %d", giocatore.get_numero_vite());
+}
 
+void write_level (int number) {
+    move(2, 10);
+    printw("Level: %d", number);
+}
+
+Level* next_level (Level *current_level) {
+    if (current_level -> next != nullptr)
+        return current_level -> next;
+    else
+        return current_level;
+}
+
+Level* previous_level (Level *current_level) {
+    if (current_level -> previous != nullptr)
+        return current_level -> previous;
+    else
+        return current_level;
+}
+
+char game_loop(WINDOW *win) {
+    Player Giocatore = Player ();
+    initscr();
+    nodelay(stdscr, FALSE); //serve per far andare getch() se no non funzia :/
+    bool  end_game = false;
+    char input;
+    int score = 0;
+    Level *current_level = nullptr;
+    current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
+    werase (win); //cancello il menu'
+    box(win,0,0);
+    wrefresh(win);
+    //in fase di testing per saperlo, alla fine andra' rimosso e sistemato
+    move (23,100);
+    printw("Press q to exit");
+
+    while (!end_game) {
+        //current_level -> map.stamp(win);
+        write_score(score);
+        write_lives(Giocatore);
+        write_level(current_level -> level_number);
+        score++;
+        wrefresh(win);
+        input = getch();
+        if (input == 'q')
+            end_game = true;
+        else if (input == 'd')
+            current_level = next_level(current_level);
+        else if (input == 'a')
+            current_level = previous_level(current_level);
+    }
+    return 'Q';
+}
