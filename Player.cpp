@@ -1,15 +1,15 @@
 #include "Player.h"
 
 
- Player :: Player (int c_x, int c_y, int n_v) {
-    coordinata_x = c_x;
-    coordinata_y = c_y;
-    numero_vite = n_v;
+ Player :: Player (int c_x, int c_y, int n_v, int n_b) {
+     coordinata_x = c_x;
+     coordinata_y = c_y;
+     numero_vite = n_v;
 }
 
 
 int Player :: get_coordinata_x () {
-    return coordinata_x;
+     return coordinata_x;
 }
 
 int Player :: get_coordinata_y () {
@@ -31,3 +31,6 @@ void Player :: move_y (int x) {
     coordinata_y += x;
 }
 
+int Player :: get_numero_vite () {
+     return numero_vite;
+ }
