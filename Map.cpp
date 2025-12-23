@@ -34,8 +34,7 @@ Map :: Map () {
 }
 
 void Map::livello(int lv) {
-    int n_muri=120*(int)sqrt(lv);
-    srand(time(0));
+    int n_muri=(int)(120.0*sqrt(lv));
     while (n_muri>0){
         int x=rand()%39+1;
         int y=rand()%19+1;
@@ -79,12 +78,14 @@ int main() {
     cbreak();
     noecho();
     curs_set(0);
-
+    srand(time(0));
     Map x;
-    x.livello(1);
+    int lv=5;
+    x.livello(lv);
     WINDOW *win=newwin(40,80,0,0);
-    x.stamp(win,10,10);
-
+    refresh();
+    x.stamp(win,0,0);
+    wrefresh(win);
     getch();
     endwin();
 }*/
