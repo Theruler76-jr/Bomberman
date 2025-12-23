@@ -121,6 +121,7 @@ char game_loop(WINDOW *win) {
         write_score(score);
         write_lives(Giocatore);
         write_level(current_level -> level_number);
+        current_level -> map.stamp(win,20,3);
         score++;
         wrefresh(win);
         input = getch();

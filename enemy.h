@@ -5,7 +5,7 @@
 class enemy {
 protected:
     int x,y;
-    int tick, velocità;
+    int tick, velocita;
     char aspetto;
     Map *mappa;
 public:

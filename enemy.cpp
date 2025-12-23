@@ -13,7 +13,7 @@
 
 //superclasse NEMICO
 enemy :: enemy(char asp, Map *_mappa) {
-    velocità=20000;
+    velocita=20000;
     mappa=_mappa;
     do {
         x=rand()%39+1;
@@ -39,7 +39,7 @@ base_enemy::base_enemy(char asp, Map *_mappa) : enemy (asp,_mappa){
 }
 
 void base_enemy::move() {
-    if (tick>=velocità) {
+    if (tick>=velocita) {
         while ((dir==0 && (x==1 || mappa->pos(x-1,y)!='v')) || (dir==1 && (y==1 || mappa->pos(x,y-1)!='v')) || (dir==2 && (x==39 || mappa->pos(x+1,y)!='v')) || (dir==3 && (y==19 || mappa->pos(x,y+1)!='v')) || dir==-1) {
             dir=rand()%4;
         }
@@ -66,7 +66,7 @@ advanced_enemy::advanced_enemy(char asp, Map *_mappa) :enemy (asp,_mappa){
 }
 
 void advanced_enemy::move(Player pl) {
-    if (tick>=velocità) {
+    if (tick>=velocita) {
         if (pl.get_coordinata_x()==x) {
             if (pl.get_coordinata_y()>y) {
                 y+=1;
