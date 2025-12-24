@@ -20,6 +20,7 @@ struct Level {
     Map map;
     int time = 60 * 5;
     int level_number;
+    int enemy;
 
     Level *previous = nullptr;
     Level *next = nullptr;
@@ -37,6 +38,7 @@ Level* push_level (Level* head_level, int level_number) {
     to_add -> map = Map();
     to_add -> map.livello(level_number);
     to_add ->level_number = level_number;
+    to_add -> enemy = level_number * 3;
     to_add -> next = nullptr;
     if (head_level == nullptr) {
         head_level = to_add;
@@ -84,7 +86,7 @@ void write_lives (Player giocatore) {
 }
 
 void write_level (int number) {
-    move(2, 10);
+    move(2, 50);
     printw("Level: %d", number);
 }
 
@@ -102,9 +104,18 @@ Level* previous_level (Level *current_level) {
         return current_level;
 }
 
+
+void write_enemy (Level *level) {
+    move(2,10);
+    if (level->enemy >= 10)
+        printw("Enemy left: %d",level -> enemy);
+    else
+        printw("Enemy left: 0%d",level -> enemy);
+}
+
+
 char game_loop(WINDOW *win) {
     Player Giocatore = Player ();
-    initscr();
     nodelay(stdscr, FALSE); //serve per far andare getch() se no non funzia :/
     bool  end_game = false;
     char input;
@@ -118,6 +129,7 @@ char game_loop(WINDOW *win) {
     move (23,100);
     printw("Press q to exit");
     while (!end_game) {
+        write_enemy(current_level);
         write_score(score);
         write_lives(Giocatore);
         write_level(current_level -> level_number);

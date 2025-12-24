@@ -54,12 +54,12 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
         for (int j=0; j<col; j++) {
             if (map[i][j]=='I') {
                 wattron(win,COLOR_PAIR(1));
-                mvwaddch(win,i+y_start,j+x_start,'.');
+                mvwaddch(win,i+y_start,j+x_start,'+');
                 wattroff(win,COLOR_PAIR(1));
             }
             if (map[i][j]=='m') {
                 wattron(win,COLOR_PAIR(2));
-                mvwaddch(win,i+y_start,j+x_start,'.');
+                mvwaddch(win,i+y_start,j+x_start,'0');
                 wattroff(win,COLOR_PAIR(2));
             }
         }
