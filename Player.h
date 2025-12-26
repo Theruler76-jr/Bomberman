@@ -14,5 +14,6 @@ public:
     void move_x (int x);
     void move_y (int x);
     int get_numero_vite ();
+    void cambia_numero_bombe (int x);
 };
 

@@ -1,5 +1,9 @@
 Samu:
+COMANDO LINUX PROGETTO
+g++ main.cpp Player.cpp menu.cpp game.cpp highscore.cpp utility.cpp Bomb.cpp Map.cpp enemy.cpp -o Bomberman -lncurses
 
+COMANDO WINDOWS PROGETTO
+g++ -I/mingw64/include/ncurses -o Bomberman main.cpp Player.cpp menu.cpp game.cpp highscore.cpp utility.cpp Bomb.cpp Map.cpp enemy.cpp -lncurses -L/mingw64/bin -static
 
 
 

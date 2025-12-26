@@ -34,3 +34,7 @@ void Player :: move_y (int x) {
 int Player :: get_numero_vite () {
      return numero_vite;
  }
+
+void Player::cambia_numero_bombe(int x) {
+    numero_bombe += x;
+}

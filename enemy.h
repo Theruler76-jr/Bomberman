@@ -12,6 +12,8 @@ public:
     enemy(char asp, Map *_mappa);
     int get_x();
     int get_y();
+    void stamp(WINDOW *win, int start_x, int start_y);
+    void remove_old(WINDOW *win, int start_x, int start_y);
 };
 
 class base_enemy : public enemy {
