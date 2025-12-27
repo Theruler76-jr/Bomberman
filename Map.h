@@ -7,7 +7,7 @@
 
 //Classe mappa, è una matrice 20*40, i muri indistruttibili sono segnati come I,
 //                                   gli altri come m
-//                                   e gli spazi vuoti come c
+//                                   e gli spazi vuoti come v
 class Map {
 protected:
     int row=21, col=41;
@@ -24,4 +24,7 @@ public:
 
     //restituisce cosa è presente nella mappa in una determinata posizione
     char pos (int x, int y);
+
+    //cambia una casella
+    void cambia(int x, int y, char nuovo);
 };

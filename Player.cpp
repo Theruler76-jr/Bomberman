@@ -5,6 +5,7 @@
      coordinata_x = c_x;
      coordinata_y = c_y;
      numero_vite = n_v;
+     numero_bombe = 1;
 }
 
 

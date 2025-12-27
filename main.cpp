@@ -14,6 +14,7 @@ int main() {
 
     initscr();
 
+    curs_set(0);
     noecho(); // non fa stampare alla console i tasti che preme l'utente
     nodelay(stdscr, TRUE);
     cbreak(); // permette l'uso di Ctrl + C per interrompere il programma

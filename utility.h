@@ -10,22 +10,25 @@ protected:
     Map *mappa;
     Player *pl;
     Bomb *b;
-    bool preso;
 public:
     Item(Map *_mappa, Player *_pl, Bomb *_b);
-    void prendi();
 };
 
 class raggio_bomba :Item {
 public:
     raggio_bomba(Map *_mappa, Player *_pl, Bomb *_b);
+    void applica_effetto();
 };
 
 class nuova_vita :Item {
 public:
     nuova_vita(Map *_mappa, Player *_pl, Bomb *_b);
+    void applica_effetto();
+
 };
 
 class num_bombe :Item {
+public:
     num_bombe(Map *_mappa, Player *_pl, Bomb *_b);
+    void applica_effetto();
 };

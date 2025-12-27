@@ -50,17 +50,23 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
     init_color(COLOR_GRAY,574,574,574);
     init_pair(1,COLOR_WHITE,COLOR_WHITE);
     init_pair(2,COLOR_GRAY,COLOR_GRAY);
+    init_pair(3,COLOR_BLACK,COLOR_BLACK);
     for (int i=0; i<row; i++) {
         for (int j=0; j<col; j++) {
-            if (map[i][j]=='I') {
+            if (map[i][j]=='I') { //muro indistruttibile (bianco)
                 wattron(win,COLOR_PAIR(1));
                 mvwaddch(win,i+y_start,j+x_start,'+');
                 wattroff(win,COLOR_PAIR(1));
             }
-            if (map[i][j]=='m') {
+            else if (map[i][j]=='m') { //muro distruttibile (grigio)
                 wattron(win,COLOR_PAIR(2));
                 mvwaddch(win,i+y_start,j+x_start,'0');
                 wattroff(win,COLOR_PAIR(2));
+            }
+            else { //vuoto (nero)
+                wattron(win,COLOR_PAIR(3));
+                mvwaddch(win,i+y_start,j+x_start,'-');
+                wattroff(win,COLOR_PAIR(3));
             }
         }
     }
@@ -68,6 +74,10 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
 
 char Map :: pos (int x, int y) {
     return(map[y][x]);
+}
+
+void Map::cambia(int x, int y, char nuovo) {
+    map[y][x]=nuovo;
 }
 
 //test per stampare i livelli
