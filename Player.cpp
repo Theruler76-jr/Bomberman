@@ -24,12 +24,12 @@ bool Player :: cambia_numero_vite (int x) {
     return false;
 }
 
-void Player :: move_x (int x) {
-    coordinata_x += x;
+void Player :: move_x (int change) {
+    coordinata_x += change;
 }
 
-void Player :: move_y (int x) {
-    coordinata_y += x;
+void Player :: move_y (int change) {
+    coordinata_y += change;
 }
 
 int Player :: get_numero_vite () {

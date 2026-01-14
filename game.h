@@ -17,3 +17,5 @@ void write_lives (Player giocatore); //scrive il numero di vite rimanenti al gio
 void write_level (int number); //scrive il numero di livello in cui si trova il giocatore
 Level* next_level (Level *current_level); //porta il giocatore al livello successivo, non succede niente se é l'ultimo livello
 Level* previous_level (Level *current_level); //porta il giocatore al livello precedente, non succede niente se é il primo livello
+void move_player (char direction, Level *current_level, Player &Giocatore); //muove il player controllando di non star andando nei muri
+void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win); //stampa tutte le informazioni a schermo a ogni ciclo

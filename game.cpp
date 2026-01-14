@@ -9,13 +9,13 @@
 #endif
 
 /* NOTA
- * per il commento del funzionamento di tutte le varie funzioni guardare nell'header file, in questo file sono presenti
+ * per il commento del funzionamento di tutte le varie funzioni guardare nel header file, in questo file sono presenti
  * solo commenti che servono durante lo sviluppo/per ricordarmi aggiustamenti da fare in seguito.
 */
 
 
 const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
-
+const char player_skin = '@'; //così se vogliamo cambiare la skin lo si può fare nel chill
 struct Level {
     Map map;
     int time = 60 * 5;
@@ -113,6 +113,57 @@ void write_enemy (Level *level) {
         printw("Enemy left: 0%d",level -> enemy);
 }
 
+void write_location (Player Giocatore, int score) {
+    move (6,100);
+    int x = Giocatore.get_coordinata_x(), y = Giocatore.get_coordinata_y();
+    printw("Player in (%d,%d)",x, y);
+}
+
+bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
+    if (direction == 'w')
+        coordinata_y--;
+    if (direction == 's')
+        coordinata_y++;
+    if (direction == 'd')
+        coordinata_x++;
+    if (direction == 'a')
+        coordinata_x--;
+
+    if (mappa.pos(coordinata_x, coordinata_y) == 'v')
+        return true;
+    return false;
+}
+
+void move_player (char direction, Level* current_level, Player &Giocatore) {
+    if (is_empty(current_level -> map, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), direction)) {
+        current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v'); //così sistemo la casella su cui era il giocatore
+        if (direction == 'w')
+            Giocatore.move_y(-1);
+        if (direction == 's')
+            Giocatore.move_y(+1);
+        if (direction == 'd')
+            Giocatore.move_x(1);
+        if (direction == 'a')
+            Giocatore.move_x(-1);
+        current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), player_skin);
+        move (8,100);
+        printw("Detected movement %c", direction);
+    } else {
+        move (8,100);
+        printw("Impossible movement");
+    }
+}
+
+void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win) {
+    write_enemy(current_level);
+    write_score(score);
+    write_lives(Giocatore);
+    write_level(current_level -> level_number);
+    current_level -> map.stamp(win,38,3);
+    write_location(Giocatore, score);
+    wrefresh(win);
+}
+
 
 char game_loop(WINDOW *win) {
     Player Giocatore = Player ();
@@ -129,20 +180,19 @@ char game_loop(WINDOW *win) {
     move (23,100);
     printw("Press q to exit");
     while (!end_game) {
-        write_enemy(current_level);
-        write_score(score);
-        write_lives(Giocatore);
-        write_level(current_level -> level_number);
-        current_level -> map.stamp(win,38,3);
+        print_routine(current_level, Giocatore, score, win);
         score++;
-        wrefresh(win);
         input = getch();
         if (input == 'q')
             end_game = true;
-        else if (input == 'd')
+        else if (input == 'p')
             current_level = next_level(current_level);
-        else if (input == 'a')
+        else if (input == 'o')
             current_level = previous_level(current_level);
+        else if (input == 'w' || input == 'a' || input == 's' || input == 'd')
+            move_player(input,current_level,Giocatore);
+        else if (input == 'z')
+            end_game = !Giocatore.cambia_numero_vite(-1);
     }
     return 'Q';
 }
