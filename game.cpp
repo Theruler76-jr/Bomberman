@@ -1,6 +1,7 @@
 #include "game.h"
 #include "Map.h"
 #include "Player.h"
+#include <ctime>
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -15,12 +16,16 @@
 
 
 const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
-const char player_skin = '@'; //così se vogliamo cambiare la skin lo si può fare nel chill
+const char player_skin = 'I'; //così se vogliamo cambiare la skin lo si può fare nel chill
+const int time_per_level = 120;
+
+
 struct Level {
     Map map;
     int time = 60 * 5;
     int level_number;
     int enemy;
+    int time_left;
 
     Level *previous = nullptr;
     Level *next = nullptr;
@@ -39,6 +44,7 @@ Level* push_level (Level* head_level, int level_number) {
     to_add -> map.livello(level_number);
     to_add ->level_number = level_number;
     to_add -> enemy = level_number * 3;
+    to_add -> time_left = time_per_level;
     to_add -> next = nullptr;
     if (head_level == nullptr) {
         head_level = to_add;
@@ -104,7 +110,6 @@ Level* previous_level (Level *current_level) {
         return current_level;
 }
 
-
 void write_enemy (Level *level) {
     move(2,10);
     if (level->enemy >= 10)
@@ -114,9 +119,21 @@ void write_enemy (Level *level) {
 }
 
 void write_location (Player Giocatore, int score) {
-    move (6,100);
+    move (8,100);
     int x = Giocatore.get_coordinata_x(), y = Giocatore.get_coordinata_y();
     printw("Player in (%d,%d)",x, y);
+}
+
+
+void write_time_left (Level *current_level) {
+    move (6,100);
+    int seconds_left = current_level -> time_left;
+    if (seconds_left >= 100)
+        printw("Time left %d", seconds_left);
+    else if (seconds_left >= 10)
+        printw("Time left 0%d", seconds_left);
+    else if (seconds_left >= 1)
+        printw("Time left 00%d", seconds_left);
 }
 
 bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
@@ -146,10 +163,10 @@ void move_player (char direction, Level* current_level, Player &Giocatore) {
         if (direction == 'a')
             Giocatore.move_x(-1);
         current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), player_skin);
-        move (8,100);
+        move (10,100);
         printw("Detected movement %c", direction);
     } else {
-        move (8,100);
+        move (10,100);
         printw("Impossible movement");
     }
 }
@@ -161,16 +178,18 @@ void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *w
     write_level(current_level -> level_number);
     current_level -> map.stamp(win,38,3);
     write_location(Giocatore, score);
+    write_time_left(current_level);
     wrefresh(win);
 }
 
 
 char game_loop(WINDOW *win) {
     Player Giocatore = Player ();
-    nodelay(stdscr, FALSE); //serve per far andare getch() se no non funzia :/
+    nodelay(stdscr, TRUE);
     bool  end_game = false;
     char input;
     int score = 0;
+    unsigned long int frame = 0, seconds_occurred = 0;
     Level *current_level = nullptr;
     current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
     werase (win); //cancello il menu'
@@ -180,9 +199,14 @@ char game_loop(WINDOW *win) {
     move (23,100);
     printw("Press q to exit");
     while (!end_game) {
+        if (seconds_occurred != clock()/CLOCKS_PER_SEC) { //serve per tenere traccia del tempo
+            seconds_occurred++;
+            current_level -> time_left--;
+        }
+
         print_routine(current_level, Giocatore, score, win);
-        score++;
         input = getch();
+
         if (input == 'q')
             end_game = true;
         else if (input == 'p')
@@ -193,6 +217,11 @@ char game_loop(WINDOW *win) {
             move_player(input,current_level,Giocatore);
         else if (input == 'z')
             end_game = !Giocatore.cambia_numero_vite(-1);
+
+        //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MOFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
+        //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
+        while (frame == int (clock()/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
+        frame++;
     }
     return 'Q';
 }
