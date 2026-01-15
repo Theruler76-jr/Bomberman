@@ -6,10 +6,21 @@
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
 
+#include "Map.h"
+#include "Player.h"
+#include "Bomb.h"
+#include <ctime>
+
+const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
+const char player_skin = 'I'; //così se vogliamo cambiare la skin lo si può fare nel chill
+const int time_per_level = 120;
+
 char game_loop(WINDOW *win);
+struct  bomb_list;
 struct Level;
 Level* find_last (Level* current); //Funzione ausiliaria di push_level
 Level* push_level (Level* head_level, int level_number); //Funzione ausiliaria di Levels_initializer
+bomb_list* initialize_queue (); //inizializza la coa di bombe
 Level* levels_initializer (Level *head_level); //Con questa funzione creo la lista bidirezionale di tutti i livelli
 Level* remove_level (Level* current_level); //con questa funzione si elimina il livello passato per parametro e ritorna il livello successivo
 void write_score (int score); //scrive il punteggio attuale del giocatore
@@ -20,3 +31,6 @@ Level* next_level (Level *current_level); //porta il giocatore al livello succes
 Level* previous_level (Level *current_level); //porta il giocatore al livello precedente, non succede niente se é il primo livello
 void move_player (char direction, Level *current_level, Player &Giocatore); //muove il player controllando di non star andando nei muri
 void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win); //stampa tutte le informazioni a schermo a ogni ciclo
+bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map map); //aggiunge una bomba alla lista di bombe del livello
+bomb_list* get_last (bomb_list *element); //funzione ausiliaria di add_bomb
+bomb_list* check_bomb_status (bomb_list *head, int time, Player Giocatore, Map map); //controlla se ci sono bombe che devono esplodere

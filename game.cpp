@@ -1,7 +1,4 @@
 #include "game.h"
-#include "Map.h"
-#include "Player.h"
-#include <ctime>
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -14,11 +11,10 @@
  * solo commenti che servono durante lo sviluppo/per ricordarmi aggiustamenti da fare in seguito.
 */
 
-
-const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
-const char player_skin = 'I'; //così se vogliamo cambiare la skin lo si può fare nel chill
-const int time_per_level = 120;
-
+struct bomb_list {
+    Bomb bomba;
+    bomb_list *next;
+};
 
 struct Level {
     Map map;
@@ -26,6 +22,7 @@ struct Level {
     int level_number;
     int enemy;
     int time_left;
+    bomb_list *bomb_queue;
 
     Level *previous = nullptr;
     Level *next = nullptr;
@@ -38,6 +35,10 @@ Level* find_last (Level* current) {
         return find_last (current -> next);
 }
 
+bomb_list* initialize_queue () {
+    return nullptr;
+}
+
 Level* push_level (Level* head_level, int level_number) {
     Level *to_add = new Level;
     to_add -> map = Map();
@@ -45,6 +46,7 @@ Level* push_level (Level* head_level, int level_number) {
     to_add ->level_number = level_number;
     to_add -> enemy = level_number * 3;
     to_add -> time_left = time_per_level;
+    to_add -> bomb_queue = initialize_queue();
     to_add -> next = nullptr;
     if (head_level == nullptr) {
         head_level = to_add;
@@ -183,6 +185,42 @@ void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *w
 }
 
 
+bomb_list* get_last (bomb_list *element) {
+    if (element -> next == nullptr)
+        return (element);
+    else
+        return (get_last(element -> next));
+}
+
+bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map map) {
+    map.cambia(coord_x,coord_y,bomb_skin);
+    bomb_list *to_add = new bomb_list;
+    to_add -> bomba = Bomb (coord_x,coord_y,time_placing,molt_explosion);
+    to_add -> next = nullptr;
+    if (head == nullptr)
+        head = to_add;
+    else {
+        bomb_list *last = get_last (head);
+        last -> next = to_add;
+    }
+    return head;
+}
+
+bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player Giocatore, Map map) {
+    if (head -> bomba.get_activation_time() - time == 3) {
+        head -> bomba.esplodi(map, Giocatore);
+        bomb_list* tmp = head;
+        head = head -> next;
+        delete tmp; //garbage eliminato
+    }
+    return head;
+}
+
+void update_status (bomb_list *&head, unsigned int time_occurred, Player Giocatore, Map map) {
+    head = check_bomb_status(head, time_occurred, Giocatore, map);
+}
+
+
 char game_loop(WINDOW *win) {
     Player Giocatore = Player ();
     nodelay(stdscr, TRUE);
@@ -217,6 +255,8 @@ char game_loop(WINDOW *win) {
             move_player(input,current_level,Giocatore);
         else if (input == 'z')
             end_game = !Giocatore.cambia_numero_vite(-1);
+        else if (input == 'e')
+            current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,1, current_level -> map);
 
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MOFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
         //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
