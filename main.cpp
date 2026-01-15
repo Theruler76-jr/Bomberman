@@ -24,7 +24,7 @@ int main() {
     getmaxyx(stdscr, height, width);
 
     width = 120;
-    height = 25;
+    height = 30;
 
     WINDOW *win = newwin(height, width, 0, 0);
 
