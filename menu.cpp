@@ -27,7 +27,7 @@ char menu_loop(WINDOW *win) {
     getmaxyx(win, height, width);
 
     int input;
-    const char *menu[3] {"New Game", "Leaderboard", "Quit"};
+    const char *menu[3] = {"New Game", "Leaderboard", "Quit"};
     int selection = 0;
 
     start_color();
@@ -69,16 +69,16 @@ char menu_loop(WINDOW *win) {
 
         box(win, 0, 0);
 
-        mvwprintw(win, 0, width/2 - 2, "MENU");
+        //mvwprintw(win, 0, width/2 - 2, "MENU");
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++) {   // prints title ASCII
 
             mvwprintw(win, 3 + i, 60 - strlen(title[i]) / 2, "%s", title[i]);
 
         }
 
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {   // prints menu buttons
 
             if (selection == i) {
                 wattron(win, COLOR_PAIR(1));

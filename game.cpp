@@ -11,6 +11,10 @@
  * solo commenti che servono durante lo sviluppo/per ricordarmi aggiustamenti da fare in seguito.
 */
 
+#include "highscore.h"
+
+
+
 struct bomb_list {
     Bomb bomba;
     bomb_list *next;
@@ -263,5 +267,9 @@ char game_loop(WINDOW *win) {
         while (frame == int (clock()/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
         frame++;
     }
-    return 'Q';
+
+    game_over_screen(win, Giocatore.get_numero_vite(), score);
+
+    return 'H';
+
 }
