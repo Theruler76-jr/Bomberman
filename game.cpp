@@ -11,7 +11,7 @@
  * solo commenti che servono durante lo sviluppo/per ricordarmi aggiustamenti da fare in seguito.
 */
 
-#include "highscore.h"
+#include "game_over.h"
 
 
 

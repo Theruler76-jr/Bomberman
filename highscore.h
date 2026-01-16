@@ -6,6 +6,15 @@
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
 
-void game_over_screen(WINDOW *win, int lives, int score);
+
+struct highscore{
+    char name[16];
+    int score = 0;
+    highscore* next = nullptr;
+};
+
+highscore* add_highscore(highscore* head, char name[], int score);
+highscore* get_highscores();
+void free_memory(highscore* head);
 
 char highscore_loop(WINDOW *win);

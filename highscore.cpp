@@ -8,72 +8,84 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 
 
-void game_over_screen(WINDOW *win, int lives, int score) {
+highscore* add_highscore(highscore* head, char name[], int score) {
 
-    const char *text_lose[4] = {
-        "__   __          ___  _        _ _ ",
-       R"(\ \ / /__ _  _  |   \(_)___ __| | |)",
-       R"( \ V / _ \ || | | |) | / -_) _` |_|)",
-       R"(  |_|\___/\_,_| |___/|_\___\__,_(_))"
-    };
+    if (head == nullptr) {
 
-    const char *text_win[4] = {
-          "__   __         __      __ _      _ ",
-        R"(\ \ / /__ _  _  \ \    / /(_)_ _ | |)",
-        R"( \ V / _ \ || |  \ \/\/ / | | ' \|_|)",
-        R"(  |_|\___/\_,_|   \_/\_/  |_|_||_(_))"
-    };
+        highscore* new_highscore = new highscore();
 
-    int screen_width, screen_height;
-    getmaxyx(win, screen_height, screen_width);
-    if (screen_width == 1 || screen_height == 1) {
-        screen_width = 120;
-        screen_height = 30;
+        strcpy(new_highscore->name, name);
+        new_highscore->score = score;
+
+        return new_highscore;
+
     }
 
-    int dialog_width = 80;
-    int dialog_height = 18;
+    highscore* ptr = head;
 
-    WINDOW *dialog = newwin(dialog_height, dialog_width, screen_height / 2 - dialog_height / 2, screen_width / 2 - dialog_width / 2);
-    nodelay(dialog, TRUE);
+    highscore* new_highscore = new highscore();
 
-    char input;
+    strcpy(new_highscore->name, name);
+    new_highscore->score = score;
 
-    while (true) {
+    while (ptr->score >= score) {
 
-        input = wgetch(dialog);
-
-        if (input == 10) break;
-
-        box(dialog, 0, 0);
-
-        //wattron(dialog, A_BLINK);
-
-        for (int i = 0; i < 4; i++) {   // prints game over message
-
-            if (lives == 0) {
-                mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_lose[i]) / 2, "%s", text_lose[i]);
-            } else {
-                mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_win[i]) / 2, "%s", text_win[i]);
-            }
-
+        if (ptr->next == nullptr) {
+            ptr->next = new_highscore;
+            return head;
         }
 
-        wattroff(dialog, A_BLINK);
+        if (ptr->next->score < score) {
+            highscore* tmp = ptr->next;
+            ptr->next = new_highscore;
+            new_highscore->next = tmp;
+            return head;
+        }
 
-        wattron(dialog, A_BOLD);
-        mvwprintw(dialog, 7, dialog_width/2 - 6, "score: %d", score);
-        wattroff(dialog, A_BOLD);
-
-
-        wrefresh(dialog);
+        ptr = ptr->next;
 
     }
+
+    new_highscore->next = head;
+    return new_highscore;
 
 }
 
+
+highscore* get_highscores() {
+
+    std::ifstream file("highscores.txt");
+
+    if (!file.is_open()) {
+        return nullptr;
+    }
+
+    highscore* head = nullptr;
+
+    char buffer[100];
+    while (file.getline(buffer, 100)) {
+
+        char* name = strtok(buffer, "-");
+        char* score = strtok(nullptr, "");
+
+        head = add_highscore(head, name, atoi(score));
+
+    }
+
+    file.close();
+    return head;
+
+}
+
+
+void free_memory(highscore* head) {
+    if (head == nullptr) return;
+    free_memory(head->next);
+    delete head;
+}
 
 
 
@@ -88,6 +100,9 @@ char highscore_loop(WINDOW *win) {
         R"(    |_||_|_\__, |_||_| |___/\__\___/_| \___/__/)",
           "            |___/                                "
     };
+
+    highscore* head = get_highscores();
+    highscore* ptr = head;
 
     keypad(win, TRUE);
 
@@ -119,6 +134,8 @@ char highscore_loop(WINDOW *win) {
 
         if (input == 10) {
 
+            free_memory(head);
+
             switch (selection) {
                 case 0:
                     return 'M';
@@ -133,14 +150,14 @@ char highscore_loop(WINDOW *win) {
 
         box(win, '|', '#');
 
-        for (int i = 0; i < 5; i++) {   // prints title ASCII
+        for (int i = 0; i < 5; i++) {   // prints ASCII title
 
             mvwprintw(win, 3 + i, 12, "%s", title[i]);
 
         }
 
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {   // prints menu options
 
             int y_pos = 5;
             int x_pos = (width / 6) * (4 + i) - strlen(menu[i]) / 2;
@@ -157,6 +174,34 @@ char highscore_loop(WINDOW *win) {
 
             wattroff(win, COLOR_PAIR(1));
             wattroff(win, A_BOLD);
+
+        }
+
+        ptr = head;
+
+        for (int i = 1; ptr != nullptr && i <= 10; i++) {    // prints leaderboard
+
+            int y_pos = 9 + 2 * i;
+            int x_pos = width / 2 - 16;
+
+            switch (i) {
+                case 1:
+                    mvwprintw(win, y_pos, x_pos, "%dST", i);
+                    break;
+                case 2:
+                    mvwprintw(win, y_pos, x_pos, "%dND", i);
+                    break;
+                case 3:
+                    mvwprintw(win, y_pos, x_pos, "%dRD", i);
+                    break;
+                default:
+                    mvwprintw(win, y_pos, x_pos, "%dTH", i);
+            }
+
+            mvwprintw(win, y_pos, x_pos + 6, "%s", ptr->name);
+            mvwprintw(win, y_pos, width / 2 + 12, "%d", ptr->score);
+
+            ptr = ptr->next;
 
         }
 
