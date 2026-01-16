@@ -92,10 +92,10 @@ void write_lives (Player Giocatore, WINDOW *win) {
     }; //Stforek
 
     const char *heart [4] = {
-        " **  **             ",
-        "********            ",
-        " ******             ",
-        "   **               "
+        " *  *             ",
+        "******            ",
+        " ****             ",
+        "  **               "
     };
 
     //stampa della scritta LIVES
@@ -106,7 +106,7 @@ void write_lives (Player Giocatore, WINDOW *win) {
     //stampa dei cuori
     for (int j = 0; j < Giocatore.get_numero_vite(); j++) {
         for (int z = 0; z < 4; z++) {
-            mvwprintw(win,6 + z, 75 + (j * 11),heart[z]);
+            mvwprintw(win,6 + z, 75 + (j * 8),heart[z]);
         }
     }
 
@@ -278,6 +278,55 @@ bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocat
 void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map) {
     head = check_bomb_status(head, time_occurred, Giocatore, map);
 }
+
+
+
+void print_number (WINDOW *win, int number, int digits, int coordinata_x, int coordinata_t) {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 char game_loop(WINDOW *win) {
