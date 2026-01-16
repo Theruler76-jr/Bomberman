@@ -14,7 +14,6 @@
 #include "game_over.h"
 
 
-
 struct bomb_list {
     Bomb bomba;
     bomb_list *next;
@@ -87,19 +86,16 @@ Level* remove_level (Level* current_level) {
     return current_level;
 }
 
-void write_score (int score) {
-    move(2,100);
-    printw("Score: %d", score);
+void write_score (int score, WINDOW *win) {
+    mvwprintw(win,2,100,"Score: %d", score);
 }
 
-void write_lives (Player giocatore) {
-    move(4, 100);
-    printw("Lives left: %d", giocatore.get_numero_vite());
+void write_lives (Player giocatore, WINDOW *win) {
+    mvwprintw(win,4,100,"Lives left: %d", giocatore.get_numero_vite());
 }
 
-void write_level (int number) {
-    move(2, 50);
-    printw("Level: %d", number);
+void write_level (int number, WINDOW *win) {
+    mvwprintw(win,2,50,"Level: %d", number);
 }
 
 Level* next_level (Level *current_level) {
@@ -116,30 +112,26 @@ Level* previous_level (Level *current_level) {
         return current_level;
 }
 
-void write_enemy (Level *level) {
-    move(2,10);
+void write_enemy (Level *level, WINDOW *win) {
     if (level->enemy >= 10)
-        printw("Enemy left: %d",level -> enemy);
+        mvwprintw(win,2,10,"Enemy left: %d",level -> enemy);
     else
-        printw("Enemy left: 0%d",level -> enemy);
+        mvwprintw(win,2,10,"Enemy left: 0%d",level -> enemy);
 }
 
-void write_location (Player Giocatore, int score) {
-    move (8,100);
-    int x = Giocatore.get_coordinata_x(), y = Giocatore.get_coordinata_y();
-    printw("Player in (%d,%d)",x, y);
+void write_location (Player Giocatore, WINDOW *win) {
+    mvwprintw(win,8,100,"Player in (%d,%d)",Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y());
 }
 
 
-void write_time_left (Level *current_level) {
-    move (6,100);
+void write_time_left (Level *current_level, WINDOW *win) {
     int seconds_left = current_level -> time_left;
     if (seconds_left >= 100)
-        printw("Time left %d", seconds_left);
+        mvwprintw(win,6,100,"Time left %d", seconds_left);
     else if (seconds_left >= 10)
-        printw("Time left 0%d", seconds_left);
+        mvwprintw(win,6,100,"Time left 0%d", seconds_left);
     else if (seconds_left >= 1)
-        printw("Time left 00%d", seconds_left);
+        mvwprintw(win,6,100,"Time left 00%d", seconds_left);
 }
 
 bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
@@ -180,23 +172,18 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore) {
         if (direction == 'a')
             Giocatore.move_x(-1);
         current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), player_skin);
-        move (10,100);
-        printw("Detected movement %c", direction);
-    } else {
-        move (10,100);
-        printw("Impossible movement");
     }
     return current_level;
 }
 
 void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win) {
-    write_enemy(current_level);
-    write_score(score);
-    write_lives(Giocatore);
-    write_level(current_level -> level_number);
+    write_enemy(current_level,win);
+    write_score(score,win);
+    write_lives(Giocatore,win);
+    write_level(current_level -> level_number,win);
     current_level -> map.stamp(win,38,3);
-    write_location(Giocatore, score);
-    write_time_left(current_level);
+    write_location(Giocatore, win);
+    write_time_left(current_level,win);
     wrefresh(win);
 }
 
@@ -244,13 +231,12 @@ char game_loop(WINDOW *win) {
     bool  end_game = false;
     char input;
     int score = 0;
-    unsigned long int frame = 0, seconds_occurred = 0;
+    unsigned long int frame = 0, seconds_occurred = clock()/CLOCKS_PER_SEC; //cosí se il game_loop parte dopo non ci sono problemi
     Level *current_level = nullptr;
     current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
     current_level->map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
     werase (win); //cancello il menu'
     box(win,0,0);
-    wrefresh(win);
     //in fase di testing per saperlo, alla fine andra' rimosso e sistemato
     move (21,97);
     printw("Press E to drop a bomb");
@@ -263,6 +249,7 @@ char game_loop(WINDOW *win) {
         }
 
         print_routine(current_level, Giocatore, score, win);
+        wrefresh(win);
         input = getch();
 
         if (input == 'q')
