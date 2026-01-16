@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "game.h"
 
-const char bomb_skin = '$';
+const char bomb_skin = 'm';
 
 
 class Bomb {
@@ -20,5 +20,5 @@ public:
     int get_coordinata_y ();
     void cambia_moltiplicatore_esplosione (int); //cambia del tutto, non aggiunge ne sottrae.
     int get_activation_time (); //restituisce quando e' stata piazzata la bomba (time globale di quando é iniziata l'esecuzione)
-    void esplodi (Map mappa, Player &Giocatore); // fa esplodere la bomba e riduce le vite del giocatore in caso venisse colpito
+    void esplodi (Map &mappa, Player &Giocatore); // fa esplodere la bomba e riduce le vite del giocatore in caso venisse colpito
 };

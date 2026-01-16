@@ -74,7 +74,7 @@ Level* levels_initializer (Level *head_level) {
 
 
 Level* remove_level (Level* current_level) {
-    if (current_level -> next == nullptr && current_level -> previous == nullptr) //Significa che era l'ultimo livello quindi l partita é terminata
+    if (current_level -> next == nullptr && current_level -> previous == nullptr) //Significa che era l'ultimo livello quindi la partita é terminata
         return nullptr;
     Level *to_delete = current_level;
     to_delete -> next -> previous = to_delete -> previous;
@@ -157,8 +157,15 @@ bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
     return false;
 }
 
-void move_player (char direction, Level* current_level, Player &Giocatore) {
-    if (is_empty(current_level -> map, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), direction)) {
+Level* move_player (char direction, Level* current_level, Player &Giocatore) {
+    if (direction == 'd' && Giocatore.get_coordinata_x() == 40 && Giocatore.get_coordinata_y() == 10) {
+        if (current_level -> enemy == 0)
+            current_level = remove_level(current_level);
+        else
+            current_level = current_level -> next;
+
+        Giocatore.move_x(-40);
+    } else if (is_empty(current_level -> map, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), direction)) {
         current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v'); //così sistemo la casella su cui era il giocatore
         if (direction == 'w')
             Giocatore.move_y(-1);
@@ -175,6 +182,7 @@ void move_player (char direction, Level* current_level, Player &Giocatore) {
         move (10,100);
         printw("Impossible movement");
     }
+    return current_level;
 }
 
 void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win) {
@@ -196,22 +204,41 @@ bomb_list* get_last (bomb_list *element) {
         return (get_last(element -> next));
 }
 
-bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map map) {
-    map.cambia(coord_x,coord_y,bomb_skin);
-    bomb_list *to_add = new bomb_list;
-    to_add -> bomba = Bomb (coord_x,coord_y,time_placing,molt_explosion);
-    to_add -> next = nullptr;
-    if (head == nullptr)
-        head = to_add;
-    else {
-        bomb_list *last = get_last (head);
-        last -> next = to_add;
+bool detect_free_space (int &coord_x, int &coord_y, Map map) {
+    if (map.pos(coord_x+1, coord_y) == 'v') {
+        coord_x++;
+        return true;
+    }
+    if (map.pos(coord_x, coord_y+1) == 'v') {
+        coord_y++;
+        return true;
+    }
+    if (map.pos(coord_x, coord_y-1) == 'v') {
+        coord_y--;
+        return true;
+    }
+    return false;
+}
+
+
+bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map &map) {
+    if (detect_free_space (coord_x, coord_y, map)) {
+        map.cambia(coord_x,coord_y,bomb_skin);
+        bomb_list *to_add = new bomb_list;
+        to_add -> bomba = Bomb (coord_x,coord_y,time_placing,molt_explosion);
+        to_add -> next = nullptr;
+        if (head == nullptr)
+            head = to_add;
+        else {
+            bomb_list *last = get_last (head);
+            last -> next = to_add;
+        }
     }
     return head;
 }
 
-bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player Giocatore, Map map) {
-    if (head -> bomba.get_activation_time() - time == 3) {
+bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocatore, Map &map) {
+    if (head != nullptr && (time - head -> bomba.get_activation_time() >= 3)) {
         head -> bomba.esplodi(map, Giocatore);
         bomb_list* tmp = head;
         head = head -> next;
@@ -220,7 +247,7 @@ bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player Giocato
     return head;
 }
 
-void update_status (bomb_list *&head, unsigned int time_occurred, Player Giocatore, Map map) {
+void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map) {
     head = check_bomb_status(head, time_occurred, Giocatore, map);
 }
 
@@ -238,8 +265,10 @@ char game_loop(WINDOW *win) {
     box(win,0,0);
     wrefresh(win);
     //in fase di testing per saperlo, alla fine andra' rimosso e sistemato
+    move (21,97);
+    printw("Press E to drop a bomb");
     move (23,100);
-    printw("Press q to exit");
+    printw("Press Q to exit");
     while (!end_game) {
         if (seconds_occurred != clock()/CLOCKS_PER_SEC) { //serve per tenere traccia del tempo
             seconds_occurred++;
@@ -256,13 +285,14 @@ char game_loop(WINDOW *win) {
         else if (input == 'o')
             current_level = previous_level(current_level);
         else if (input == 'w' || input == 'a' || input == 's' || input == 'd')
-            move_player(input,current_level,Giocatore);
+            current_level = move_player(input,current_level,Giocatore);
         else if (input == 'z')
             end_game = !Giocatore.cambia_numero_vite(-1);
         else if (input == 'e')
             current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,1, current_level -> map);
 
-        //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MOFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
+        update_status(current_level -> bomb_queue, seconds_occurred,Giocatore, current_level -> map);
+        //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
         //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
         while (frame == int (clock()/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
         frame++;

@@ -29,8 +29,8 @@ void write_level (int number); //scrive il numero di livello in cui si trova il 
 void write_time_left (Level *current_level); //scrive il numero di secondi rimasti per ogni livello
 Level* next_level (Level *current_level); //porta il giocatore al livello successivo, non succede niente se é l'ultimo livello
 Level* previous_level (Level *current_level); //porta il giocatore al livello precedente, non succede niente se é il primo livello
-void move_player (char direction, Level *current_level, Player &Giocatore); //muove il player controllando di non star andando nei muri
+Level* move_player (char direction, Level *current_level, Player &Giocatore); //muove il player controllando di non star andando nei muri
 void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win); //stampa tutte le informazioni a schermo a ogni ciclo
-bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map map); //aggiunge una bomba alla lista di bombe del livello
+bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map &map); //aggiunge una bomba alla lista di bombe del livello
 bomb_list* get_last (bomb_list *element); //funzione ausiliaria di add_bomb
-bomb_list* check_bomb_status (bomb_list *head, int time, Player Giocatore, Map map); //controlla se ci sono bombe che devono esplodere
+bomb_list* check_bomb_status (bomb_list *&head, int time, Player &Giocatore, Map &map); //controlla se ci sono bombe che devono esplodere
