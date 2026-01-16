@@ -14,7 +14,7 @@ Item::Item(Map *_mappa, Player *_pl, Bomb *_b) {
 
 raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl, Bomb *_b) : Item(_mappa, _pl, _b){
     aspetto='R';
-
+    mappa->cambia(x,y,'R');
 }
 
 void raggio_bomba::applica_effetto() {
@@ -23,6 +23,7 @@ void raggio_bomba::applica_effetto() {
 
 nuova_vita::nuova_vita(Map *_mappa, Player *_pl, Bomb *_b) : Item(_mappa, _pl, _b){
     aspetto='L';
+    mappa->cambia(x,y,'L');
 }
 
 void nuova_vita::applica_effetto() {
@@ -31,6 +32,7 @@ void nuova_vita::applica_effetto() {
 
 num_bombe::num_bombe(Map *_mappa, Player *_pl, Bomb *_b) : Item(_mappa, _pl, _b){
     aspetto='N';
+    mappa->cambia(x,y,'N');
 }
 
 void num_bombe::applica_effetto() {
