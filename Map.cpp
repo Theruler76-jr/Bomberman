@@ -71,17 +71,18 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
         for (int j=0; j<col; j++) {
             if (map[i][j]=='I') { //muro indistruttibile (bianco)
                 wattron(win,COLOR_PAIR(1));
-                mvwaddch(win,i+y_start,j+x_start,'+');
+                mvwaddch(win,i+y_start,j+x_start,ACS_BLOCK);
                 wattroff(win,COLOR_PAIR(1));
             }
             else if (map[i][j]=='m' || map[i][j]=='R' || map[i][j]=='L' || map[i][j]=='N') { //muro distruttibile (grigio)
                 wattron(win,COLOR_PAIR(2));
-                mvwaddch(win,i+y_start,j+x_start,'0');
+                mvwaddch(win,i+y_start,j+x_start,ACS_CKBOARD);
+                //mvwprintw(win,i+y_start,j+x_start,"░");
                 wattroff(win,COLOR_PAIR(2));
             }
             else if (map[i][j]=='v'){ //vuoto (nero)
                 wattron(win,COLOR_PAIR(3));
-                mvwaddch(win,i+y_start,j+x_start,'-');
+                mvwaddch(win,i+y_start,j+x_start,' ');
                 wattroff(win,COLOR_PAIR(3));
             }
             else if (map[i][j]=='@') { //player
@@ -91,7 +92,7 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
             }
             else if (map[i][j]=='$') { //bomba
                 wattron(win,COLOR_PAIR(4));
-                mvwaddch(win,i+y_start,j+x_start,'$');
+                mvwaddch(win,i+y_start,j+x_start,ACS_LANTERN);
                 wattroff(win,COLOR_PAIR(4));
             }
             else if (map[i][j]=='r') { //item con muro distrutto

@@ -20,12 +20,12 @@ struct bomb_list {
 };
 
 struct Level {
-    Map map;
+    Map map = Map();
     int time = 60 * 5;
     int level_number;
     int enemy;
-    int time_left;
-    bomb_list *bomb_queue;
+    int time_left = time_per_level;
+    bomb_list *bomb_queue = nullptr;
 
     Level *previous = nullptr;
     Level *next = nullptr;
@@ -38,19 +38,12 @@ Level* find_last (Level* current) {
         return find_last (current -> next);
 }
 
-bomb_list* initialize_queue () {
-    return nullptr;
-}
-
 Level* push_level (Level* head_level, int level_number) {
     Level *to_add = new Level;
-    to_add -> map = Map();
     to_add -> map.livello(level_number);
-    to_add ->level_number = level_number;
+    to_add -> level_number = level_number;
     to_add -> enemy = level_number * 3;
-    to_add -> time_left = time_per_level;
-    to_add -> bomb_queue = initialize_queue();
-    to_add -> next = nullptr;
+
     if (head_level == nullptr) {
         head_level = to_add;
         to_add -> previous = nullptr;
@@ -226,30 +219,33 @@ void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocat
 
 
 char game_loop(WINDOW *win) {
-    Player Giocatore = Player ();
+
     nodelay(stdscr, TRUE);
-    bool  end_game = false;
+
+    werase(win); //cancello il menu'
+    box(win, 0, 0);
+
+    bool end_game = false;
     char input;
     int score = 0;
     unsigned long int frame = 0, seconds_occurred = clock()/CLOCKS_PER_SEC; //cosí se il game_loop parte dopo non ci sono problemi
+
+    Player Giocatore = Player();
+
     Level *current_level = nullptr;
     current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
     current_level->map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
-    werase (win); //cancello il menu'
-    box(win,0,0);
+
     //in fase di testing per saperlo, alla fine andra' rimosso e sistemato
-    move (21,97);
-    printw("Press E to drop a bomb");
-    move (23,100);
-    printw("Press Q to exit");
+    mvprintw(21, 97, "Press E to drop a bomb");
+    mvprintw(23, 100, "Press Q to exit");
+
     while (!end_game) {
         if (seconds_occurred != clock()/CLOCKS_PER_SEC) { //serve per tenere traccia del tempo
             seconds_occurred++;
             current_level -> time_left--;
         }
 
-        print_routine(current_level, Giocatore, score, win);
-        wrefresh(win);
         input = getch();
 
         if (input == 'q')
@@ -262,10 +258,14 @@ char game_loop(WINDOW *win) {
             current_level = move_player(input,current_level,Giocatore);
         else if (input == 'z')
             end_game = !Giocatore.cambia_numero_vite(-1);
-        else if (input == 'e')
+        else if (input == ' ')
             current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,1, current_level -> map);
 
         update_status(current_level -> bomb_queue, seconds_occurred,Giocatore, current_level -> map);
+
+        print_routine(current_level, Giocatore, score, win);
+        wrefresh(win);
+
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
         //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
         while (frame == int (clock()/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
