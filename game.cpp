@@ -168,7 +168,9 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore) {
         Giocatore.move_y(-9);
         current_level -> map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
     } else if (is_empty(current_level -> map, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), direction)) {
-        current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v'); //così sistemo la casella su cui era il giocatore
+        if (current_level -> map.pos(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y()) != bomb_skin) //cosí nel caso ci sia una bomba lascia stampata quella
+            current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v'); //così sistemo la casella su cui era il giocatore
+
         if (direction == 'w')
             Giocatore.move_y(-1);
         if (direction == 's')
@@ -206,25 +208,8 @@ bomb_list* get_last (bomb_list *element) {
         return (get_last(element -> next));
 }
 
-bool detect_free_space (int &coord_x, int &coord_y, Map map) {
-    if (map.pos(coord_x+1, coord_y) == 'v') {
-        coord_x++;
-        return true;
-    }
-    if (map.pos(coord_x, coord_y+1) == 'v') {
-        coord_y++;
-        return true;
-    }
-    if (map.pos(coord_x, coord_y-1) == 'v') {
-        coord_y--;
-        return true;
-    }
-    return false;
-}
-
 
 bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map &map) {
-    if (detect_free_space (coord_x, coord_y, map)) {
         map.cambia(coord_x,coord_y,bomb_skin);
         bomb_list *to_add = new bomb_list;
         to_add -> bomba = Bomb (coord_x,coord_y,time_placing,molt_explosion);
@@ -235,7 +220,6 @@ bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int tim
             bomb_list *last = get_last (head);
             last -> next = to_add;
         }
-    }
     return head;
 }
 

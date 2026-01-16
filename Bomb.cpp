@@ -65,9 +65,13 @@ void Bomb :: esplodi (Map &mappa, Player &Giocatore) {
         mappa.cambia(coordinata_x-moltiplicatore_esplosione,coordinata_y,'n');
 
     //La seguente pier-codata é frutto del fatto che a 4 condizioni diverse corrisponde la stessa azione
-    if (mappa.pos(coordinata_x,coordinata_y+moltiplicatore_esplosione) == player_skin || mappa.pos(coordinata_x+moltiplicatore_esplosione,coordinata_y) == player_skin || mappa.pos(coordinata_x,coordinata_y-moltiplicatore_esplosione) == player_skin || mappa.pos(coordinata_x-moltiplicatore_esplosione,coordinata_y) == player_skin)
+    if (mappa.pos(coordinata_x,coordinata_y+moltiplicatore_esplosione) == player_skin || mappa.pos(coordinata_x+moltiplicatore_esplosione,coordinata_y) == player_skin || mappa.pos(coordinata_x,coordinata_y-moltiplicatore_esplosione) == player_skin || mappa.pos(coordinata_x-moltiplicatore_esplosione,coordinata_y) == player_skin || (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() == coordinata_y))
         Giocatore.cambia_numero_vite(-1);
 
     //cancello la bomba
-    mappa.cambia(coordinata_x,coordinata_y,'v');
+    if (Giocatore.get_coordinata_x() != coordinata_x || Giocatore.get_coordinata_y() != coordinata_y)
+        mappa.cambia(coordinata_x,coordinata_y,'v');
+    else
+        mappa.cambia(coordinata_x,coordinata_y,player_skin);
+
 }
