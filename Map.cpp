@@ -1,7 +1,13 @@
 #include "Map.h"
+#include "Bomb.h"
+#include "enemy.h"
+#include "Player.h"
+#include "utility.h"
 
 #include <iostream>
 #include <cmath>
+
+#include "utility.h"
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -43,14 +49,24 @@ void Map::livello(int lv) {
             n_muri--;
         }
     }
+    if (lv==1) {
+        map[10][0]='I';
+    }
+    if (lv==5) {
+        map[10][40]='I';
+    }
 }
-
+ //Player pl, Item it, Bomb b, enemy en
 void Map::stamp(WINDOW *win, int x_start, int y_start) {
     start_color();
     init_color(COLOR_GRAY,574,574,574);
     init_pair(1,COLOR_WHITE,COLOR_WHITE);
     init_pair(2,COLOR_GRAY,COLOR_GRAY);
     init_pair(3,COLOR_BLACK,COLOR_BLACK);
+    init_pair(4,COLOR_WHITE,COLOR_BLACK);
+    init_pair(5,COLOR_RED,COLOR_BLACK);
+    init_pair(6,COLOR_RED,COLOR_GRAY);
+    init_pair(7,COLOR_RED,COLOR_WHITE);
     for (int i=0; i<row; i++) {
         for (int j=0; j<col; j++) {
             if (map[i][j]=='I') { //muro indistruttibile (bianco)
@@ -58,15 +74,60 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
                 mvwaddch(win,i+y_start,j+x_start,'+');
                 wattroff(win,COLOR_PAIR(1));
             }
-            else if (map[i][j]=='m') { //muro distruttibile (grigio)
+            else if (map[i][j]=='m' || map[i][j]=='R' || map[i][j]=='L' || map[i][j]=='N') { //muro distruttibile (grigio)
                 wattron(win,COLOR_PAIR(2));
                 mvwaddch(win,i+y_start,j+x_start,'0');
                 wattroff(win,COLOR_PAIR(2));
             }
-            else { //vuoto (nero)
+            else if (map[i][j]=='v'){ //vuoto (nero)
                 wattron(win,COLOR_PAIR(3));
                 mvwaddch(win,i+y_start,j+x_start,'-');
                 wattroff(win,COLOR_PAIR(3));
+            }
+            else if (map[i][j]=='@') { //player
+                wattron(win,COLOR_PAIR(4));
+                mvwaddch(win,i+y_start,j+x_start,'@');
+                wattroff(win,COLOR_PAIR(4));
+            }
+            else if (map[i][j]=='$') { //bomba
+                wattron(win,COLOR_PAIR(4));
+                mvwaddch(win,i+y_start,j+x_start,'$');
+                wattroff(win,COLOR_PAIR(4));
+            }
+            else if (map[i][j]=='r') { //item con muro distrutto
+                wattron(win,COLOR_PAIR(4));
+                mvwaddch(win,i+y_start,j+x_start,'R');
+                wattroff(win,COLOR_PAIR(4));
+            }
+            else if (map[i][j]=='l') { //item con muro distrutto
+                wattron(win,COLOR_PAIR(4));
+                mvwaddch(win,i+y_start,j+x_start,'L');
+                wattroff(win,COLOR_PAIR(4));
+            }
+            else if (map[i][j]=='n') { //item con muro distrutto
+                wattron(win,COLOR_PAIR(4));
+                mvwaddch(win,i+y_start,j+x_start,'N');
+                wattroff(win,COLOR_PAIR(4));
+            }
+            else if (map[i][j]=='#') { //nemico base
+                wattron(win,COLOR_PAIR(5));
+                mvwaddch(win,i+y_start,j+x_start,'N');
+                wattroff(win,COLOR_PAIR(5));
+            }
+            else if (map[i][j]=='%') { //nemico forte su vuoto
+                wattron(win,COLOR_PAIR(5));
+                mvwaddch(win,i+y_start,j+x_start,'%');
+                wattroff(win,COLOR_PAIR(5));
+            }
+            else if (map[i][j]=='x') { //nemico forte su muro
+                wattron(win,COLOR_PAIR(6));
+                mvwaddch(win,i+y_start,j+x_start,'%');
+                wattroff(win,COLOR_PAIR(6));
+            }
+            else if (map[i][j]=='z') { //nemico forte su muro indistruttibile
+                wattron(win,COLOR_PAIR(7));
+                mvwaddch(win,i+y_start,j+x_start,'%');
+                wattroff(win,COLOR_PAIR(7));
             }
         }
     }

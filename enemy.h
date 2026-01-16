@@ -9,7 +9,7 @@ protected:
     char aspetto;
     Map *mappa;
 public:
-    enemy(char asp, Map *_mappa);
+    enemy(Map *_mappa);
     int get_x();
     int get_y();
     void stamp(WINDOW *win, int start_x, int start_y);
@@ -20,12 +20,12 @@ class base_enemy : public enemy {
 protected:
     int dir;
 public:
-    base_enemy(char asp, Map *_mappa);
+    base_enemy(Map *_mappa);
     void move();
 };
 
 class advanced_enemy : public enemy {
 public:
-    advanced_enemy(char asp, Map *_mappa);
+    advanced_enemy(Map *_mappa);
     void move(Player x);
 };
