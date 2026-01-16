@@ -13,6 +13,7 @@ struct highscore{
     highscore* next = nullptr;
 };
 
+void save_highscore(char name[], int score);
 highscore* add_highscore(highscore* head, char name[], int score);
 highscore* get_highscores();
 void free_memory(highscore* head);

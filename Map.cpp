@@ -77,7 +77,6 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
             else if (map[i][j]=='m' || map[i][j]=='R' || map[i][j]=='L' || map[i][j]=='N') { //muro distruttibile (grigio)
                 wattron(win,COLOR_PAIR(2));
                 mvwaddch(win,i+y_start,j+x_start,ACS_CKBOARD);
-                //mvwprintw(win,i+y_start,j+x_start,"░");
                 wattroff(win,COLOR_PAIR(2));
             }
             else if (map[i][j]=='v'){ //vuoto (nero)

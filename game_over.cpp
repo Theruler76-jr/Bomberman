@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "highscore.h"
 
 void game_over_screen(WINDOW *win, int lives, int score) {
 
@@ -40,12 +41,16 @@ void game_over_screen(WINDOW *win, int lives, int score) {
     nodelay(dialog, TRUE);
 
     char input;
+    char name[16] = "nuovonickname";
 
     while (true) {
 
         input = wgetch(dialog);
 
-        if (input == 10) break;
+        if (input == 10) {
+            save_highscore(name, score);
+            break;
+        }
 
         box(dialog, 0, 0);
 

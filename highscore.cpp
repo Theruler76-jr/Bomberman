@@ -11,6 +11,14 @@
 #include <fstream>
 
 
+void save_highscore(char name[], int score) {
+    std::ofstream file;
+    file.open("highscores.txt", std::ios_base::app);
+    file << "\n" << name << "-" << score;
+    file.close();
+}
+
+
 highscore* add_highscore(highscore* head, char name[], int score) {
 
     if (head == nullptr) {
@@ -113,9 +121,17 @@ char highscore_loop(WINDOW *win) {
         height = 30;
     }
 
+    int scoreboard_width = width / 2;
+    int scoreboard_height = height / 3 * 2;
+
+    WINDOW* scoreboard = newwin(scoreboard_height, scoreboard_width, 8, width / 4);
+    box(scoreboard, 0, 0);
+
+
     int input;
     const char *menu[2] = {"Menu", "Quit"};
     int selection = 0;
+    int scroll = 0;
 
     start_color();
     init_pair(1, COLOR_YELLOW, COLOR_BLACK);
@@ -132,9 +148,18 @@ char highscore_loop(WINDOW *win) {
             selection = 1;
         }
 
-        if (input == 10) {
+        if (input == KEY_UP || input == 'w' || input == 'W') {
+            if (scroll > -100) scroll -= 2;
+        }
+
+        if (input == KEY_DOWN || input == 's' || input == 'S') {
+            if (scroll < 0) scroll += 2;
+        }
+
+        if (input == 10 || input == ' ' || input == 'e' || input == 'E') {
 
             free_memory(head);
+            nodelay(stdscr, TRUE);
 
             switch (selection) {
                 case 0:
@@ -152,14 +177,14 @@ char highscore_loop(WINDOW *win) {
 
         for (int i = 0; i < 5; i++) {   // prints ASCII title
 
-            mvwprintw(win, 3 + i, 12, "%s", title[i]);
+            mvwprintw(win, 2 + i, 12, "%s", title[i]);
 
         }
 
 
         for (int i = 0; i < 2; i++) {   // prints menu options
 
-            int y_pos = 5;
+            int y_pos = 4;
             int x_pos = (width / 6) * (4 + i) - strlen(menu[i]) / 2;
 
             mvwprintw(win, y_pos, x_pos - 2, " ");
@@ -179,34 +204,47 @@ char highscore_loop(WINDOW *win) {
 
         ptr = head;
 
+        mvwaddch(win, height / 2, 26, ACS_UARROW);
+        mvwaddch(win, height / 2 + 3, 26, ACS_DARROW);
+
+        werase(scoreboard);
+        box(scoreboard, 0, 0);
+
         for (int i = 1; ptr != nullptr && i <= 10; i++) {    // prints leaderboard
 
-            int y_pos = 9 + 2 * i;
-            int x_pos = width / 2 - 16;
+            int y_pos = 2 * i + scroll;
+            int x_pos = scoreboard_width / 2 - 16;
+
+            if (y_pos <= 0 || y_pos > scoreboard_height - 1) {
+                ptr = ptr->next;
+                continue;
+            }
 
             switch (i) {
                 case 1:
-                    mvwprintw(win, y_pos, x_pos, "%dST", i);
+                    mvwprintw(scoreboard, y_pos, x_pos, "%dST", i);
                     break;
                 case 2:
-                    mvwprintw(win, y_pos, x_pos, "%dND", i);
+                    mvwprintw(scoreboard, y_pos, x_pos, "%dND", i);
                     break;
                 case 3:
-                    mvwprintw(win, y_pos, x_pos, "%dRD", i);
+                    mvwprintw(scoreboard, y_pos, x_pos, "%dRD", i);
                     break;
                 default:
-                    mvwprintw(win, y_pos, x_pos, "%dTH", i);
+                    mvwprintw(scoreboard, y_pos, x_pos, "%dTH", i);
             }
 
-            mvwprintw(win, y_pos, x_pos + 6, "%s", ptr->name);
-            mvwprintw(win, y_pos, width / 2 + 12, "%d", ptr->score);
+            mvwprintw(scoreboard, y_pos, x_pos + 6, "%s", ptr->name);
+            mvwprintw(scoreboard, y_pos, scoreboard_width / 2 + 12, "%d", ptr->score);
 
             ptr = ptr->next;
 
         }
 
         wrefresh(win);
+        wrefresh(scoreboard);
+
+        nodelay(stdscr, FALSE);
 
     }
-
 }

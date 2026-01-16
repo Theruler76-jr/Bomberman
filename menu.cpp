@@ -112,24 +112,32 @@ char menu_loop(WINDOW *win) {
                 if (selection < 2) selection++;
                 break;
 
-            case 10:
-
-                switch (selection) {
-                    case 0:
-                        return 'G';
-                    case 1:
-                        return 'H';
-                    case 2:
-                        return 'Q';
-                    default:
-                        return 'E';
-                }
-
             default:
                 break;
         }
 
+        if (input == 10 || input == ' ' || input == 'e' || input == 'E') {
+            switch (selection) {
+            case 0:
+                return 'G';
+            case 1:
+                return 'H';
+            case 2:
+                return 'Q';
+            default:
+                return 'E';
+            }
+        }
+
+
         box(win, '!', '=');
+
+
+        for (int i = 0; i < 7; i++) {   // prints title ASCII
+
+            mvwprintw(win, 4 + i, width/2 - strlen(title[frame][i]) / 2, "%s", title[frame][i]);
+
+        }
 
         for (int i = 0; i < 10; i++) {    // updates and draws embers
 
@@ -153,14 +161,6 @@ char menu_loop(WINDOW *win) {
             mvwprintw(win, embers[i][1], embers[i][0], "%c", c);
 
         }
-
-
-        for (int i = 0; i < 7; i++) {   // prints title ASCII
-
-            mvwprintw(win, 3 + i, width/2 - strlen(title[frame][i]) / 2, "%s", title[frame][i]);
-
-        }
-
 
         for (int i = 0; i < 3; i++) {   // prints menu buttons
 
