@@ -66,11 +66,11 @@ char menu_loop(WINDOW *win) {
         height = 30;
     }
 
-    int ash[10][2];
+    int embers[10][2];
 
     for (int i = 0; i < 10; i++) {
-        ash[i][0] = rand() % width;
-        ash[i][1] = rand() % height;
+        embers[i][0] = rand() % width;
+        embers[i][1] = rand() % height;
     }
 
     int input;
@@ -81,6 +81,8 @@ char menu_loop(WINDOW *win) {
     init_pair(1, COLOR_YELLOW, COLOR_BLACK);
 
     while (true) {
+
+        int snapshot = clock();
 
         input = getch();
 
@@ -131,33 +133,33 @@ char menu_loop(WINDOW *win) {
 
         for (int i = 0; i < 10; i++) {    // updates and draws embers
 
-            mvwprintw(win, ash[i][1], ash[i][0], " ");
+            mvwprintw(win, embers[i][1], embers[i][0], " ");
 
-            ash[i][1] -= rand() % (3 * (3 - selection));
-            ash[i][0] += rand() % 4 - 2;
+            embers[i][1] -= rand() % (3 * (3 - selection));
+            embers[i][0] += rand() % 4 - 2;
 
-            if (ash[i][1] <= 0) {
-                ash[i][0] = rand() % width;
-                ash[i][1] = height - 2;
+            if (embers[i][1] <= 0) {
+                embers[i][0] = rand() % width;
+                embers[i][1] = height - 2;
             }
 
-            if (ash[i][0] <= 0) ash[i][0] = width;
-            if (ash[i][0] >= width) ash[i][1] = 0;
+            if (embers[i][0] <= 0) embers[i][0] = width;
+            if (embers[i][0] >= width) embers[i][1] = 0;
 
             char c = ':';
-            if (ash[i][1] > height / 3) c = '+';
-            if (ash[i][1] > height / 3 * 2) c = '#';
+            if (embers[i][1] > height / 3) c = '+';
+            if (embers[i][1] > height / 3 * 2) c = '#';
 
-            mvwprintw(win, ash[i][1], ash[i][0], "%c", c);
+            mvwprintw(win, embers[i][1], embers[i][0], "%c", c);
 
         }
+
 
         for (int i = 0; i < 7; i++) {   // prints title ASCII
 
             mvwprintw(win, 3 + i, width/2 - strlen(title[frame][i]) / 2, "%s", title[frame][i]);
 
         }
-
 
 
         for (int i = 0; i < 3; i++) {   // prints menu buttons
@@ -178,15 +180,13 @@ char menu_loop(WINDOW *win) {
 
         }
 
-        //mvwprintw(win, 0, 0, "%d, %d", width, height);
-
         wrefresh(win);
         //refresh();
-        int snapshot = clock();
-        while (clock() - snapshot < 90) {};
+
+        while (clock() - snapshot < 90) {}
+
         frame++;
         frame = frame % total_frames;
-        //frame = rand() % 3;
-    }
 
+    }
 }
