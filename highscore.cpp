@@ -106,7 +106,7 @@ char highscore_loop(WINDOW *win) {
           "    | || (_)__ _| |_   / __| __ ___ _ _ ___ ___",
         R"(    | __ | / _` | ' \  \__ \/ _/ _ \ '_/ -_|_-<)",
         R"(    |_||_|_\__, |_||_| |___/\__\___/_| \___/__/)",
-          "            |___/                                "
+          "           |___/                               "
     };
 
     highscore* head = get_highscores();
@@ -149,11 +149,11 @@ char highscore_loop(WINDOW *win) {
         }
 
         if (input == KEY_UP || input == 'w' || input == 'W') {
-            if (scroll > -100) scroll -= 2;
+            if (scroll < 0) scroll += 2;
         }
 
         if (input == KEY_DOWN || input == 's' || input == 'S') {
-            if (scroll < 0) scroll += 2;
+            if (scroll > -100) scroll -= 2;
         }
 
         if (input == 10 || input == ' ' || input == 'e' || input == 'E') {
