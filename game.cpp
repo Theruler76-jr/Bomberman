@@ -83,12 +83,74 @@ void write_score (int score, WINDOW *win) {
     mvwprintw(win,2,100,"Score: %d", score);
 }
 
-void write_lives (Player giocatore, WINDOW *win) {
-    mvwprintw(win,4,100,"Lives left: %d", giocatore.get_numero_vite());
+void write_lives (Player Giocatore, WINDOW *win) {
+     const char *lives_title [4] = {
+          " _   _  _   _  ___  __   ",
+         R"(| | | || \ / || __/' _/)",
+         R"(| |_| |`\ V /'| _|`._`. )",
+         R"(|___|_|  \_/  |___|___/ )",
+    }; //Stforek
+
+    const char *heart [4] = {
+        " **  **             ",
+        "********            ",
+        " ******             ",
+        "   **               "
+    };
+
+    //stampa della scritta LIVES
+    for (int i = 0; i < 4; i++) {
+        mvwprintw(win,6+i,50,lives_title[i]);
+    }
+
+    //stampa dei cuori
+    for (int j = 0; j < Giocatore.get_numero_vite(); j++) {
+        for (int z = 0; z < 4; z++) {
+            mvwprintw(win,6 + z, 75 + (j * 11),heart[z]);
+        }
+    }
+
 }
 
 void write_level (int number, WINDOW *win) {
-    mvwprintw(win,2,50,"Level: %d", number);
+    //mvwprintw(win,2,50,"Level: %d", number);
+    const char *level_title [4] = {
+          " _   ___ _   _  ___ _",
+        R"(| | | __| \ / || __| |   )",
+        R"(| |_| _|`\ V /'| _|| |_  )",
+        R"(|___|___| \_/  |___|___| )"
+    };
+
+    for (int i = 0; i < 4; i++) {
+        mvwprintw(win,2 + i, 5,level_title[i]);
+    }
+
+    const char *numbers [20] = {
+           " __    ",
+           "/  |   ",
+           "`7 |   ",
+           " |_|   ",
+           " ___   ",
+           "(_  |  ",
+           " / /   ",
+           "|___|  ",
+           " __    ",
+           "|__`.  ",
+           " |_ |  ",
+           "|__.   ",
+           " _  _  ",
+           "| || | ",
+           "`._  _|",
+           "   |_| ",
+           " ___   ",
+           "| __|  ",
+           "`._`.  ",
+           "!__.'  ",
+    };
+
+    for (int i = 0; i < 4; i++) {
+        mvwprintw(win,2 + i, 32,numbers[i + ((number -1) * 4)]);
+    }
 }
 
 Level* next_level (Level *current_level) {
@@ -107,9 +169,9 @@ Level* previous_level (Level *current_level) {
 
 void write_enemy (Level *level, WINDOW *win) {
     if (level->enemy >= 10)
-        mvwprintw(win,2,10,"Enemy left: %d",level -> enemy);
+        mvwprintw(win,10,100,"Enemy left: %d",level -> enemy);
     else
-        mvwprintw(win,2,10,"Enemy left: 0%d",level -> enemy);
+        mvwprintw(win,10,100,"Enemy left: 0%d",level -> enemy);
 }
 
 void write_location (Player Giocatore, WINDOW *win) {
@@ -174,7 +236,7 @@ void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *w
     write_score(score,win);
     write_lives(Giocatore,win);
     write_level(current_level -> level_number,win);
-    current_level -> map.stamp(win,38,3);
+    current_level -> map.stamp(win,5,7);
     write_location(Giocatore, win);
     write_time_left(current_level,win);
     wrefresh(win);
@@ -260,8 +322,10 @@ char game_loop(WINDOW *win) {
             end_game = !Giocatore.cambia_numero_vite(-1);
         else if (input == ' ')
             current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,1, current_level -> map);
-
+        //parte degli update
         update_status(current_level -> bomb_queue, seconds_occurred,Giocatore, current_level -> map);
+        if (Giocatore.get_numero_vite() <= 0)
+            end_game = true;
 
         print_routine(current_level, Giocatore, score, win);
         wrefresh(win);
