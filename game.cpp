@@ -164,7 +164,9 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore) {
         else
             current_level = current_level -> next;
 
-        Giocatore.move_x(-40);
+        Giocatore.move_x(-39);
+        Giocatore.move_y(-9);
+        current_level -> map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
     } else if (is_empty(current_level -> map, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), direction)) {
         current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v'); //così sistemo la casella su cui era il giocatore
         if (direction == 'w')
@@ -261,6 +263,7 @@ char game_loop(WINDOW *win) {
     unsigned long int frame = 0, seconds_occurred = 0;
     Level *current_level = nullptr;
     current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
+    current_level->map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
     werase (win); //cancello il menu'
     box(win,0,0);
     wrefresh(win);

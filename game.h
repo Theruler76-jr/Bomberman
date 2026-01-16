@@ -12,7 +12,7 @@
 #include <ctime>
 
 const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
-const char player_skin = 'I'; //così se vogliamo cambiare la skin lo si può fare nel chill
+const char player_skin = '@'; //così se vogliamo cambiare la skin lo si può fare nel chill
 const int time_per_level = 120;
 
 char game_loop(WINDOW *win);

@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "game.h"
 
-const char bomb_skin = 'm';
+const char bomb_skin = '$';
 
 
 class Bomb {
