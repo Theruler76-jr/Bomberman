@@ -68,6 +68,10 @@ void Bomb :: esplodi (Map &mappa, Player &Giocatore) {
         }
     }
 
+    //controllo se mina e giocatore sono nello stesso posto
+    if (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() == coordinata_y)
+        Giocatore.cambia_numero_vite(-1);
+
     //cancello la bomba
     if (Giocatore.get_coordinata_x() != coordinata_x || Giocatore.get_coordinata_y() != coordinata_y)
         mappa.cambia(coordinata_x,coordinata_y,'v');

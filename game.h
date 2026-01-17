@@ -19,7 +19,6 @@ char game_loop(WINDOW *win);
 struct  bomb_list;
 struct Level;
 
-void write_enemy (Level *level, WINDOW *win); //scrive il numero di nemici rimasti nel livello
 void write_score (int score, WINDOW* win); //scrive il punteggio attuale del giocatore
 void write_lives (Player giocatore, WINDOW *win); //scrive il numero di vite rimanenti al giocatore
 void write_level (int number,WINDOW *win); //scrive il numero di livello in cui si trova il giocatore

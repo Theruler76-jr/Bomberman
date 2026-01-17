@@ -13,6 +13,9 @@
 
 #include "game_over.h"
 
+const int inizio_mappa_x = 32;
+const int inizio_mappa_y = 4;
+
 
 struct bomb_list {
     Bomb bomba;
@@ -80,7 +83,25 @@ Level* remove_level (Level* current_level) {
 }
 
 void write_score (int score, WINDOW *win) {
-    mvwprintw(win,2,100,"Score: %d", score);
+    const char *score_title[4] = {
+     "  __   ___ __  ___ ___  ",
+     R"(/' _/ / _//__\| _ \ __| )",
+     R"(`._`.| \_| \/ | v / _|  )",
+     R"(|___/ \__/\__/|_|_\___| )"
+    };
+
+    for (int i = 0; i < 4; i++) {
+        mvwprintw(win, inizio_mappa_y + 7 + i, inizio_mappa_x + 48, score_title[i]);
+    }
+
+    //con questo if centro le cifre dei numeri
+    int x = 0;
+    if (score < 100)
+        x = 58;
+    else
+        x = 57;
+
+    mvwprintw(win, inizio_mappa_y + 12, inizio_mappa_x + x, "%d",score);
 }
 
 void write_lives (Player Giocatore, WINDOW *win) {
@@ -91,65 +112,70 @@ void write_lives (Player Giocatore, WINDOW *win) {
          R"(|___|_|  \_/  |___|___/ )",
     }; //Stforek
 
-    const char *heart [4] = {
-        " *  *             ",
-        "******            ",
-        " ****             ",
-        "  **               "
-    };
-
     //stampa della scritta LIVES
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win,6+i,50,lives_title[i]);
+        mvwprintw(win,inizio_mappa_y+ i, inizio_mappa_x + 48,lives_title[i]);
     }
 
     //stampa dei cuori
+    mvwprintw(win,inizio_mappa_y + 5, inizio_mappa_x + 55, "             "); //unico modo per gestire bene i cuori
     for (int j = 0; j < Giocatore.get_numero_vite(); j++) {
-        for (int z = 0; z < 4; z++) {
-            mvwprintw(win,6 + z, 75 + (j * 8),heart[z]);
-        }
+        mvwaddch(win, inizio_mappa_y + 5, inizio_mappa_x + 55 + (j * 3), ACS_DIAMOND);
     }
 
 }
 
 void write_level (int number, WINDOW *win) {
     //mvwprintw(win,2,50,"Level: %d", number);
-    const char *level_title [4] = {
-          " _   ___ _   _  ___ _",
-        R"(| | | __| \ / || __| |   )",
-        R"(| |_| _|`\ V /'| _|| |_  )",
-        R"(|___|___| \_/  |___|___| )"
+    const char *level_title [16] = {
+        "   __   ",
+        "  / /   ",
+        " / /__  ",
+        "/____/_ ",
+        "  / __/ ",
+        " / _/   ",
+        "/___/ __",
+        " | | / /",
+        " | |/ / ",
+        " |___/_ ",
+        "  / __/ ",
+        " / _/   ",
+        "/___/   ",
+        "  / /   ",
+        " / /__  ",
+        "/____/  "
     };
 
-    for (int i = 0; i < 4; i++) {
-        mvwprintw(win,2 + i, 5,level_title[i]);
+    for (int i = 0; i < 16; i++) {
+        mvwprintw(win,inizio_mappa_y + i, inizio_mappa_x - 12,level_title[i]);
     }
 
     const char *numbers [20] = {
-           " __    ",
-           "/  |   ",
-           "`7 |   ",
-           " |_|   ",
-           " ___   ",
-           "(_  |  ",
-           " / /   ",
-           "|___|  ",
-           " __    ",
-           "|__`.  ",
-           " |_ |  ",
-           "|__.   ",
-           " _  _  ",
-           "| || | ",
-           "`._  _|",
-           "   |_| ",
-           " ___   ",
-           "| __|  ",
-           "`._`.  ",
-           "!__.'  ",
+       "  ___     ",
+       " <  /     ",
+       " / /      ",
+       "/_/       ",
+       "  ___     ",
+       " |_  |    ",
+       " / __/    ",
+       "/____/    ",
+       "  ____    ",
+       " |_  /    ",
+       " _/_ <    ",
+       "/____/    ",
+       "  ____    ",
+       " / / /    ",
+       "/_  _/    ",
+       "/_/       ",
+       "   ____   ",
+       "  / __/   ",
+       R"( /__ \ )",
+       "/____/    "
+
     };
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win,2 + i, 32,numbers[i + ((number -1) * 4)]);
+        mvwprintw(win,inizio_mappa_y + 16 + i, inizio_mappa_x - 12,numbers[i + ((number -1) * 4)]);
     }
 }
 
@@ -167,26 +193,20 @@ Level* previous_level (Level *current_level) {
         return current_level;
 }
 
-void write_enemy (Level *level, WINDOW *win) {
-    if (level->enemy >= 10)
-        mvwprintw(win,10,100,"Enemy left: %d",level -> enemy);
-    else
-        mvwprintw(win,10,100,"Enemy left: 0%d",level -> enemy);
-}
-
-void write_location (Player Giocatore, WINDOW *win) {
-    mvwprintw(win,8,100,"Player in (%d,%d)",Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y());
-}
-
 
 void write_time_left (Level *current_level, WINDOW *win) {
-    int seconds_left = current_level -> time_left;
-    if (seconds_left >= 100)
-        mvwprintw(win,6,100,"Time left %d", seconds_left);
-    else if (seconds_left >= 10)
-        mvwprintw(win,6,100,"Time left 0%d", seconds_left);
-    else if (seconds_left >= 1)
-        mvwprintw(win,6,100,"Time left 00%d", seconds_left);
+
+    const char *time_title[4] = {
+        " _____ _ __ __ ___  ",
+        "|_   _| |  V  | __| ",
+        R"(  | | | | \_/ | _|  )",
+        "  |_| |_|_| |_|___| "
+    };
+
+    for (int i = 0; i < 4; i++) {
+        mvwprintw(win,inizio_mappa_y + 14 + i, inizio_mappa_x + 49, time_title[i]);
+    }
+        mvwprintw(win,inizio_mappa_y + 19, inizio_mappa_x + 57,"%d  ", current_level -> time_left);
 }
 
 bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
@@ -232,12 +252,10 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore) {
 }
 
 void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win) {
-    write_enemy(current_level,win);
     write_score(score,win);
     write_lives(Giocatore,win);
     write_level(current_level -> level_number,win);
-    current_level -> map.stamp(win,5,7);
-    write_location(Giocatore, win);
+    current_level -> map.stamp(win,inizio_mappa_x,inizio_mappa_y);
     write_time_left(current_level,win);
     wrefresh(win);
 }
@@ -280,55 +298,6 @@ void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocat
 }
 
 
-
-void print_number (WINDOW *win, int number, int digits, int coordinata_x, int coordinata_t) {
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 char game_loop(WINDOW *win) {
 
     nodelay(stdscr, TRUE);
@@ -346,10 +315,6 @@ char game_loop(WINDOW *win) {
     Level *current_level = nullptr;
     current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
     current_level->map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
-
-    //in fase di testing per saperlo, alla fine andra' rimosso e sistemato
-    mvprintw(21, 97, "Press E to drop a bomb");
-    mvprintw(23, 100, "Press Q to exit");
 
     while (!end_game) {
         if (seconds_occurred != clock()/CLOCKS_PER_SEC) { //serve per tenere traccia del tempo
