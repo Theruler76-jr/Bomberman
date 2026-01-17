@@ -58,22 +58,24 @@ void game_over_screen(WINDOW *win, int lives, int score) {
     wattroff(dialog, A_BLINK);
 
     wattron(dialog, A_BOLD);
-    mvwprintw(dialog, 7, dialog_width/2 - 6, "score: %d", score);
+    mvwprintw(dialog, 9, dialog_width/2 - 6, "score: %d", score);
     wattroff(dialog, A_BOLD);
 
-    mvwprintw(dialog, dialog_height / 2 + 2, dialog_width / 2 - 30, "Insert Nickname:");
+    mvwprintw(dialog, dialog_height / 2 + 4, dialog_width / 2 - 18, "Insert Nickname:");
 
     wrefresh(dialog);
 
-    WINDOW* input_box = newwin(3, dialog_width / 2, screen_height / 2 + 1, screen_width / 2 - 10);
+    WINDOW* input_box = newwin(3, 18, screen_height / 2 + 3, screen_width / 2);
     box(input_box, 0, 0);
     wrefresh(input_box);
-
+    
     char name[16];
     int i = 0;
     int ch;
 
     memset(name, 0, sizeof(name));
+    curs_set(1);
+    wmove(input_box, 1, i + 1);
 
     while (true) {
         ch = wgetch(input_box);
@@ -93,7 +95,7 @@ void game_over_screen(WINDOW *win, int lives, int score) {
             }
         }
 
-         if (i < 15 && isprint(ch)) {
+         if (i < 16 && isprint(ch)) {
             name[i] = (char)ch;
             i++;
             mvwaddch(input_box, 1, i, ch);
@@ -104,7 +106,8 @@ void game_over_screen(WINDOW *win, int lives, int score) {
 
     }
 
-    save_highscore(name, score);
+    if (name[0] != '\0') save_highscore(name, score);
+    curs_set(0);
 
 }
 

@@ -102,7 +102,6 @@ void free_memory(highscore* head) {
 }
 
 
-
 char highscore_loop(WINDOW *win) {
 
     werase(win);
