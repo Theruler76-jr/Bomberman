@@ -1,8 +1,4 @@
 #include "Map.h"
-#include "Bomb.h"
-#include "enemy.h"
-#include "Player.h"
-#include "utility.h"
 
 #include <iostream>
 #include <cmath>
@@ -44,7 +40,7 @@ void Map::livello(int lv) {
     while (n_muri>0){
         int x=rand()%39+1;
         int y=rand()%19+1;
-        if ((x!=1 || y!=1) && (x!=2 || y!=1) && (x!=3 || y!=1) && (x!=1 || y!=2) && map[y][x]=='v') {
+        if ((x!=1 || y!=10) && (x!=1 || y!=9) && (x!=2 || y!=9) && map[y][x]=='v') {
             map[y][x]='m';
             n_muri--;
         }

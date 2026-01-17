@@ -92,7 +92,7 @@ void write_score (int score, WINDOW *win) {
     };
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win, inizio_mappa_y + 7 + i, inizio_mappa_x + 48, score_title[i]);
+        mvwprintw(win, inizio_mappa_y + 7 + i, inizio_mappa_x + 48, "%s", score_title[i]);
     }
 
     //con questo if centro le cifre dei numeri
@@ -115,7 +115,7 @@ void write_lives (Player Giocatore, WINDOW *win) {
 
     //stampa della scritta LIVES
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win,inizio_mappa_y+ i, inizio_mappa_x + 48,lives_title[i]);
+        mvwprintw(win,inizio_mappa_y+ i, inizio_mappa_x + 48,"%s",lives_title[i]);
     }
 
     //stampa dei cuori
@@ -148,7 +148,7 @@ void write_level (int number, WINDOW *win) {
     };
 
     for (int i = 0; i < 16; i++) {
-        mvwprintw(win,inizio_mappa_y + i, inizio_mappa_x - 12,level_title[i]);
+        mvwprintw(win,inizio_mappa_y + i, inizio_mappa_x - 12, "%s", level_title[i]);
     }
 
     const char *numbers [20] = {
@@ -176,7 +176,7 @@ void write_level (int number, WINDOW *win) {
     };
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win,inizio_mappa_y + 16 + i, inizio_mappa_x - 12,numbers[i + ((number -1) * 4)]);
+        mvwprintw(win,inizio_mappa_y + 16 + i, inizio_mappa_x - 12, "%s", numbers[i + ((number -1) * 4)]);
     }
 }
 
@@ -205,7 +205,7 @@ void write_time_left (Level *current_level, WINDOW *win) {
     };
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win,inizio_mappa_y + 14 + i, inizio_mappa_x + 49, time_title[i]);
+        mvwprintw(win,inizio_mappa_y + 14 + i, inizio_mappa_x + 49, "%s", time_title[i]);
     }
         mvwprintw(win,inizio_mappa_y + 19, inizio_mappa_x + 57,"%d  ", current_level -> time_left);
 }
