@@ -89,6 +89,12 @@ highscore* get_highscores() {
 }
 
 
+int get_total_highscores(highscore* head) {
+    if (head == nullptr) return 0;
+    return 1 + get_total_highscores(head->next);
+}
+
+
 void free_memory(highscore* head) {
     if (head == nullptr) return;
     free_memory(head->next);
@@ -110,6 +116,7 @@ char highscore_loop(WINDOW *win) {
     };
 
     highscore* head = get_highscores();
+    int total_highscores = get_total_highscores(head);
     highscore* ptr = head;
 
     keypad(win, TRUE);
@@ -122,7 +129,7 @@ char highscore_loop(WINDOW *win) {
     }
 
     int scoreboard_width = width / 2;
-    int scoreboard_height = height / 3 * 2;
+    int scoreboard_height = height / 3 * 2 - 1;
 
     WINDOW* scoreboard = newwin(scoreboard_height, scoreboard_width, 8, width / 4);
     box(scoreboard, 0, 0);
@@ -153,7 +160,7 @@ char highscore_loop(WINDOW *win) {
         }
 
         if (input == KEY_DOWN || input == 's' || input == 'S') {
-            if (scroll > -100) scroll -= 2;
+            if (scroll > -total_highscores * 2 + scoreboard_height - 2) scroll -= 2;
         }
 
         if (input == 10 || input == ' ' || input == 'e' || input == 'E') {
@@ -205,22 +212,26 @@ char highscore_loop(WINDOW *win) {
         ptr = head;
 
         mvwaddch(win, height / 2, 26, ACS_UARROW);
-        mvwaddch(win, height / 2 + 3, 26, ACS_DARROW);
+        mvwaddch(win, height / 2 + 4, 26, ACS_DARROW);
 
         werase(scoreboard);
         box(scoreboard, 0, 0);
 
-        for (int i = 1; ptr != nullptr && i <= 10; i++) {    // prints leaderboard
+        for (int i = 1; ptr != nullptr && i <= total_highscores; i++) {    // prints leaderboard
 
             int y_pos = 2 * i + scroll;
             int x_pos = scoreboard_width / 2 - 16;
 
-            if (y_pos <= 0 || y_pos > scoreboard_height - 1) {
+            if (y_pos <= 0 || y_pos >= scoreboard_height - 1) {
                 ptr = ptr->next;
                 continue;
             }
 
-            switch (i) {
+            if (i >= 10) x_pos--;
+
+            if (i == 11 || i == 12 || i == 13) mvwprintw(scoreboard, y_pos, x_pos, "%dTH", i);
+            else {
+                switch (i % 10) {
                 case 1:
                     mvwprintw(scoreboard, y_pos, x_pos, "%dST", i);
                     break;
@@ -232,7 +243,10 @@ char highscore_loop(WINDOW *win) {
                     break;
                 default:
                     mvwprintw(scoreboard, y_pos, x_pos, "%dTH", i);
+                }
             }
+
+            if (i >= 10) x_pos++;
 
             mvwprintw(scoreboard, y_pos, x_pos + 6, "%s", ptr->name);
             mvwprintw(scoreboard, y_pos, scoreboard_width / 2 + 12, "%d", ptr->score);

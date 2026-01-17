@@ -8,6 +8,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <cctype>
 
 #include "highscore.h"
 
@@ -38,44 +39,72 @@ void game_over_screen(WINDOW *win, int lives, int score) {
     int dialog_height = 18;
 
     WINDOW *dialog = newwin(dialog_height, dialog_width, screen_height / 2 - dialog_height / 2, screen_width / 2 - dialog_width / 2);
-    nodelay(dialog, TRUE);
+    nodelay(dialog, FALSE);
 
-    char input;
-    char name[16] = "nuovonickname";
+    box(dialog, 0, 0);
 
-    while (true) {
+    //wattron(dialog, A_BLINK);
 
-        input = wgetch(dialog);
+    for (int i = 0; i < 4; i++) {   // prints game over message
 
-        if (input == 10) {
-            save_highscore(name, score);
-            break;
+        if (lives == 0) {
+            mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_lose[i]) / 2, "%s", text_lose[i]);
+        } else {
+            mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_win[i]) / 2, "%s", text_win[i]);
         }
-
-        box(dialog, 0, 0);
-
-        //wattron(dialog, A_BLINK);
-
-        for (int i = 0; i < 4; i++) {   // prints game over message
-
-            if (lives == 0) {
-                mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_lose[i]) / 2, "%s", text_lose[i]);
-            } else {
-                mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_win[i]) / 2, "%s", text_win[i]);
-            }
-
-        }
-
-        wattroff(dialog, A_BLINK);
-
-        wattron(dialog, A_BOLD);
-        mvwprintw(dialog, 7, dialog_width/2 - 6, "score: %d", score);
-        wattroff(dialog, A_BOLD);
-
-
-        wrefresh(dialog);
 
     }
+
+    wattroff(dialog, A_BLINK);
+
+    wattron(dialog, A_BOLD);
+    mvwprintw(dialog, 7, dialog_width/2 - 6, "score: %d", score);
+    wattroff(dialog, A_BOLD);
+
+    mvwprintw(dialog, dialog_height / 2 + 2, dialog_width / 2 - 30, "Insert Nickname:");
+
+    wrefresh(dialog);
+
+    WINDOW* input_box = newwin(3, dialog_width / 2, screen_height / 2 + 1, screen_width / 2 - 10);
+    box(input_box, 0, 0);
+    wrefresh(input_box);
+
+    char name[16];
+    int i = 0;
+    int ch;
+
+    memset(name, 0, sizeof(name));
+
+    while (true) {
+        ch = wgetch(input_box);
+
+        if (ch == 10 || ch == KEY_ENTER) {
+
+            name[i] = '\0';
+            break;
+
+        }
+
+        if (ch == KEY_BACKSPACE || ch == 127 || ch == '\b') {
+            if (i > 0) {
+                i--;
+                mvwaddch(input_box, 1, i + 1, ' ');
+                wmove(input_box, 1, i + 1);
+            }
+        }
+
+         if (i < 15 && isprint(ch)) {
+            name[i] = (char)ch;
+            i++;
+            mvwaddch(input_box, 1, i, ch);
+            wmove(input_box, 1, i + 1);
+        }
+
+        wrefresh(input_box);
+
+    }
+
+    save_highscore(name, score);
 
 }
 

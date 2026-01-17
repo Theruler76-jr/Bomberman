@@ -86,7 +86,7 @@ Level* remove_level (Level* current_level) {
 void write_score (int score, WINDOW *win) {
     const char *score_title[4] = {
      "  __   ___ __  ___ ___  ",
-     R"(/' _/ / _//__\| _ \ __| )",
+     R"(/'__/ / _//__\| _ \ __| )",
      R"(`._`.| \_| \/ | v / _|  )",
      R"(|___/ \__/\__/|_|_\___| )"
     };
@@ -108,7 +108,7 @@ void write_score (int score, WINDOW *win) {
 void write_lives (Player Giocatore, WINDOW *win) {
      const char *lives_title [4] = {
           " _   _  _   _  ___  __   ",
-         R"(| | | || \ / || __/' _/)",
+         R"(| | | || \ / || __/'__/)",
          R"(| |_| |`\ V /'| _|`._`. )",
          R"(|___|_|  \_/  |___|___/ )",
     }; //Stforek
