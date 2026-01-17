@@ -73,7 +73,8 @@ Level* remove_level (Level* current_level) {
         return nullptr;
     Level *to_delete = current_level;
     to_delete -> next -> previous = to_delete -> previous;
-    to_delete -> previous -> next = to_delete -> next;
+    if (to_delete -> previous != nullptr)
+        to_delete -> previous -> next = to_delete -> next;
     if (current_level -> next == nullptr) //In questo modo se é stato completato l'ultimo livello ma ne restano altri incompleti viene riportato al livello incompleto piú vicino
         current_level = current_level -> previous;       //se invece si volesse far ripartire dal primo basta fare una funzione ricorsiva ausiliaria
     else
@@ -221,33 +222,72 @@ bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
 
     if (mappa.pos(coordinata_x, coordinata_y) == 'v')
         return true;
+
     return false;
 }
 
-Level* move_player (char direction, Level* current_level, Player &Giocatore) {
-    if (direction == 'd' && Giocatore.get_coordinata_x() == 40 && Giocatore.get_coordinata_y() == 10) {
-        if (current_level -> enemy == 0)
-            current_level = remove_level(current_level);
-        else
-            current_level = current_level -> next;
+bool particular_position (int coord_x, int coord_y) {
+    if (coord_y == 10 && (coord_x == 0 || coord_x == 39))
+        return true;
 
-        Giocatore.move_x(-39);
-        Giocatore.move_y(-9);
-        current_level -> map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
-    } else if (is_empty(current_level -> map, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), direction)) {
-        if (current_level -> map.pos(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y()) != bomb_skin) //cosí nel caso ci sia una bomba lascia stampata quella
-            current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v'); //così sistemo la casella su cui era il giocatore
+    return false;
+}
 
-        if (direction == 'w')
-            Giocatore.move_y(-1);
-        if (direction == 's')
-            Giocatore.move_y(+1);
-        if (direction == 'd')
+
+Level* move_player (char direction, Level* current_level, Player &Giocatore, int &score) {
+
+    bool modified = false;
+
+    //calcolo la nuova posizione del giocatore
+    if (particular_position(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) && (direction == 'd' || direction == 'a')) { //caso in cui potrebbe dover cambiare mappa
+
+        //cancello il giocatore dalla posizione attuale in cui é
+        if (current_level -> map.pos(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) != bomb_skin)
+            current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v');
+
+        // controllo se deve essere eliminata la mappa
+        if (direction == 'd' && Giocatore.get_coordinata_x() == 39) {
+            if (current_level -> enemy == 0) {
+                score += current_level -> time_left;
+                current_level = remove_level(current_level);
+            }
+            else
+                current_level = next_level(current_level);
+
+            Giocatore.move_x(-38);
+        }
+        else if (direction == 'a' && Giocatore.get_coordinata_x() == 0) {
+            current_level = previous_level(current_level);
             Giocatore.move_x(1);
-        if (direction == 'a')
-            Giocatore.move_x(-1);
-        current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), player_skin);
+        }
+        Giocatore.move_y(-9);
+
+        modified = true;
+
+    } else {
+        if (is_empty (current_level -> map, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), direction)) {
+
+            //cancello il giocatore dalla posizione attuale in cui é
+            if (current_level -> map.pos(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) != bomb_skin)
+                current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v');
+
+            //muovo il giocatore
+            if (direction == 'w')
+                Giocatore.move_y(-1);
+            if (direction == 's')
+                Giocatore.move_y(1);
+            if (direction == 'd')
+                Giocatore.move_x(1);
+            if (direction == 'a')
+                Giocatore.move_x(-1);
+
+            modified = true;
+        }
     }
+
+    //riscrivo il giocatore nella posizione "aggiornata"
+    if (modified)
+        current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), player_skin);
     return current_level;
 }
 
@@ -319,7 +359,8 @@ char game_loop(WINDOW *win) {
     while (!end_game) {
         if (seconds_occurred != clock()/CLOCKS_PER_SEC) { //serve per tenere traccia del tempo
             seconds_occurred++;
-            current_level -> time_left--;
+            if (current_level -> enemy > 0)
+                current_level -> time_left--;
         }
 
         input = getch();
@@ -331,11 +372,13 @@ char game_loop(WINDOW *win) {
         else if (input == 'o')
             current_level = previous_level(current_level);
         else if (input == 'w' || input == 'a' || input == 's' || input == 'd')
-            current_level = move_player(input,current_level,Giocatore);
+            current_level = move_player(input,current_level,Giocatore,score);
         else if (input == 'z')
             end_game = !Giocatore.cambia_numero_vite(-1);
         else if (input == ' ')
             current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,1, current_level -> map);
+        else if (input == 'e')
+            current_level -> enemy --;
         //parte degli update
         update_status(current_level -> bomb_queue, seconds_occurred,Giocatore, current_level -> map);
         if (Giocatore.get_numero_vite() <= 0)
