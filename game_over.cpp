@@ -47,7 +47,7 @@ void game_over_screen(WINDOW *win, int lives, int score) {
 
     for (int i = 0; i < 4; i++) {   // prints game over message
 
-        if (lives == 0) {
+        if (lives <= 0) {
             mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_lose[i]) / 2, "%s", text_lose[i]);
         } else {
             mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_win[i]) / 2, "%s", text_win[i]);
@@ -68,7 +68,7 @@ void game_over_screen(WINDOW *win, int lives, int score) {
     WINDOW* input_box = newwin(3, 18, screen_height / 2 + 3, screen_width / 2);
     box(input_box, 0, 0);
     wrefresh(input_box);
-    
+
     char name[16];
     int i = 0;
     int ch;
