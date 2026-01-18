@@ -1,12 +1,13 @@
 #include "Player.h"
 
 
- Player :: Player (int c_x, int c_y, int n_v, int n_b) {
+ Player :: Player (int c_x, int c_y, int n_v, int m_b) {
      coordinata_x = c_x;
      coordinata_y = c_y;
      numero_vite = n_v;
      numero_bombe = 1;
-     moltiplicatore_bombe = 1;
+     bombe_schierate = 0;
+     moltiplicatore_bombe = m_b;
 }
 
 
@@ -49,3 +50,16 @@ void Player::cambia_moltiplicatore_bombe(int x) {
 int Player::get_moltiplicatore_bombe() {
     return moltiplicatore_bombe;
 }
+
+int Player :: get_numero_bombe () {
+     return numero_bombe;
+ }
+
+
+int Player :: get_bombe_schierate () {
+     return bombe_schierate;
+ }
+
+void Player :: cambia_numero_bombe_schierate (int x) {
+     bombe_schierate += x;
+ }

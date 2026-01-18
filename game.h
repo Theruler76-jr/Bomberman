@@ -14,6 +14,7 @@
 const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
 const char player_skin = '@'; //così se vogliamo cambiare la skin lo si può fare nel chill
 const int time_per_level = 200;
+const int score_per_enemy = 10;
 
 char game_loop(WINDOW *win);
 struct  bomb_list;
@@ -39,3 +40,6 @@ bomb_list* check_bomb_status (bomb_list *&head, int time, Player &Giocatore, Map
 
 bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction); //controlla se una casella della mappa é vuota o meno
 bool particular_positionmv (int coord_x, int coord_y, char direction); //controlla se il player si trova in una posizione speciale
+
+struct enemy_list;
+enemy_list* rimuovi_nemico(enemy_list *el, int x, int y);

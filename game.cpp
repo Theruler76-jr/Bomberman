@@ -366,7 +366,7 @@ bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
     if (direction == 'a')
         coordinata_x--;
 
-    if (mappa.pos(coordinata_x, coordinata_y) != 'I' && mappa.pos(coordinata_x, coordinata_y) != 'm')
+    if (mappa.pos(coordinata_x, coordinata_y) != 'I' && mappa.pos(coordinata_x, coordinata_y) != 'm' && mappa.pos(coordinata_x, coordinata_y) != bomb_skin)
         return true;
 
     return false;
@@ -459,7 +459,8 @@ bomb_list* get_last (bomb_list *element) {
 }
 
 
-bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map &map) {
+bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int time_placing, int molt_explosion, Map &map, Player &Giocatore) {
+    if (Giocatore.get_bombe_schierate() < Giocatore.get_numero_bombe()) {
         map.cambia(coord_x,coord_y,bomb_skin);
         bomb_list *to_add = new bomb_list;
         to_add -> bomba = Bomb (coord_x,coord_y,time_placing,molt_explosion);
@@ -470,12 +471,14 @@ bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int tim
             bomb_list *last = get_last (head);
             last -> next = to_add;
         }
+        Giocatore.cambia_numero_bombe_schierate(1);
+    }
     return head;
 }
 
-bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocatore, Map &map) {
+bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocatore, Map &map, Level *current_level, int &score) {
     if (head != nullptr && (time - head -> bomba.get_activation_time() >= 3)) {
-        head -> bomba.esplodi(map, Giocatore);
+        head -> bomba.esplodi(map, Giocatore, score, current_level -> el);
         bomb_list* tmp = head;
         head = head -> next;
         delete tmp; //garbage eliminato
@@ -483,8 +486,8 @@ bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocat
     return head;
 }
 
-void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map) {
-    head = check_bomb_status(head, time_occurred, Giocatore, map);
+void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map, Level *current_level, int &score) {
+    head = check_bomb_status(head, time_occurred, Giocatore, map, current_level, score);
 }
 
 
@@ -495,7 +498,7 @@ char game_loop(WINDOW *win) {
     werase(win); //cancello il menu'
     box(win, 0, 0);
 
-    bool end_game = false;
+    bool end_game = false, time_exipired = false;
     char input;
     int score = 0;
     unsigned long int frame = 0, seconds_occurred = clock()/CLOCKS_PER_SEC; //cosí se il game_loop parte dopo non ci sono problemi
@@ -527,12 +530,16 @@ char game_loop(WINDOW *win) {
         else if (input == 'z')
             end_game = !Giocatore.cambia_numero_vite(-1);
         else if (input == ' ')
-            current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,Giocatore.get_moltiplicatore_bombe(), current_level -> map);
+            current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,Giocatore.get_moltiplicatore_bombe(), current_level -> map, Giocatore);
         else if (input == 'e')
             current_level -> enemy --;
+
+
         //parte degli update
-        update_status(current_level -> bomb_queue, seconds_occurred,Giocatore, current_level -> map);
-        if (Giocatore.get_numero_vite() <= 0)
+        update_status(current_level -> bomb_queue, seconds_occurred,Giocatore, current_level -> map, current_level, score);
+        if (current_level -> time_left == 0)
+            time_exipired = true;
+        if (Giocatore.get_numero_vite() <= 0 || time_exipired)
             end_game = true;
 
         current_level->il=controlla_item(plptr,current_level->il);
@@ -546,6 +553,7 @@ char game_loop(WINDOW *win) {
         frame++;
     }
 
+    //per crespi: la boolena che volevi è: time_expired
     game_over_screen(win, Giocatore.get_numero_vite(), score);
 
     return 'H';

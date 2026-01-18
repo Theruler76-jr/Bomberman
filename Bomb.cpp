@@ -1,4 +1,5 @@
 #include "Bomb.h"
+#include "enemy.h"
 
 Bomb :: Bomb() {}
 
@@ -22,42 +23,74 @@ int Bomb :: get_activation_time () {
     return activation_time;
 }
 
-void Bomb :: esplodi (Map &mappa, Player &Giocatore) {
+void Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lista_nemici) {
 
     for (int x_off = -moltiplicatore_esplosione; x_off <= moltiplicatore_esplosione; x_off++) {
         switch (mappa.pos(coordinata_x + x_off, coordinata_y)) {
-        case 'm':
-            mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
-            break;
-        case 'R':
-            mappa.cambia(coordinata_x + x_off, coordinata_y,'r');
-            break;
-        case 'L':
-            mappa.cambia(coordinata_x + x_off, coordinata_y,'l');
-            break;
-        case 'N':
-            mappa.cambia(coordinata_x + x_off, coordinata_y,'n');
-            break;
+            case 'm':
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                break;
+            case 'R':
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'r');
+                break;
+            case 'L':
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'l');
+                break;
+            case 'N':
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'n');
+                break;
+            case '#':
+                score += score_per_enemy;
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                break;
+            case '%':
+                score += score_per_enemy;
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                break;
+            case 'x':
+                score += score_per_enemy;
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                break;
         }
+
         if (Giocatore.get_coordinata_x() == coordinata_x + x_off && Giocatore.get_coordinata_y() == coordinata_y)
             Giocatore.cambia_numero_vite(-1);
     }
 
     for (int y_off = -moltiplicatore_esplosione; y_off <= moltiplicatore_esplosione; y_off++) {
         switch (mappa.pos(coordinata_x, coordinata_y + y_off)) {
-        case 'm':
-            mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+            case 'm':
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
             break;
-        case 'R':
-            mappa.cambia(coordinata_x, coordinata_y + y_off,'r');
-            break;
-        case 'L':
-            mappa.cambia(coordinata_x, coordinata_y + y_off,'l');
-            break;
-        case 'N':
-            mappa.cambia(coordinata_x, coordinata_y + y_off,'n');
-            break;
+            case 'R':
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'r');
+                break;
+            case 'L':
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'l');
+                break;
+            case 'N':
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'n');
+                break;
+            case '#':
+                score += score_per_enemy;
+                rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+                break;
+            case '%':
+                score += score_per_enemy;
+                rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+                break;
+            case 'x':
+                score += score_per_enemy;
+                rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+                break;
         }
+
         if (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() + y_off == coordinata_y)
             Giocatore.cambia_numero_vite(-1);
     }
@@ -71,5 +104,7 @@ void Bomb :: esplodi (Map &mappa, Player &Giocatore) {
         mappa.cambia(coordinata_x,coordinata_y,'v');
     else
         mappa.cambia(coordinata_x,coordinata_y,player_skin);
+
+    Giocatore.cambia_numero_bombe_schierate(-1);
 
 }
