@@ -6,6 +6,7 @@
      coordinata_y = c_y;
      numero_vite = n_v;
      numero_bombe = 1;
+     moltiplicatore_bombe = 1;
 }
 
 
@@ -36,6 +37,14 @@ int Player :: get_numero_vite () {
      return numero_vite;
  }
 
-void Player::cambia_numero_bombe(int x) {
+void Player :: cambia_numero_bombe(int x) {
     numero_bombe += x;
+}
+
+void Player::cambia_moltiplicatore_bombe(int x) {
+    moltiplicatore_bombe += x;
+}
+
+int Player::get_moltiplicatore_bombe() {
+    return moltiplicatore_bombe;
 }

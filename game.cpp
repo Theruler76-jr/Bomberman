@@ -1,4 +1,6 @@
 #include "game.h"
+#include "enemy.h"
+#include "utility.h"
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -16,6 +18,91 @@
 const int inizio_mappa_x = 32;
 const int inizio_mappa_y = 4;
 
+//lista di nemici
+struct enemy_list {
+    enemy *nemico;
+    enemy_list *next;
+};
+
+//lista di item
+struct item_list {
+    Item *utility;
+    item_list *next;
+};
+
+//ti metto le funzioni che creano la lista di nemici e item in base al livello
+
+enemy_list* push_nemici(enemy_list* el, enemy *_nemico) {
+    enemy_list *temp=new enemy_list;
+    temp->nemico=_nemico;
+    temp->next=el;
+    return(temp);
+}
+
+enemy_list* crea_nemici(int livello, Map *_mappa) {
+    enemy_list *en=NULL;
+    if (livello==1) {
+        en=push_nemici(en, new base_enemy(_mappa));
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new base_enemy(_mappa));
+    }
+    else if (livello==2) {
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new base_enemy(_mappa));
+    }
+    else if (livello==3) {
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new advanced_enemy(_mappa));
+    }
+    else if (livello==4) {
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new advanced_enemy(_mappa));
+        en=push_nemici(en,new advanced_enemy(_mappa));
+    }
+    else if (livello==5) {
+        en=push_nemici(en,new base_enemy(_mappa));
+        en=push_nemici(en,new advanced_enemy(_mappa));
+        en=push_nemici(en,new advanced_enemy(_mappa));
+        en=push_nemici(en,new advanced_enemy(_mappa));
+    }
+    return(en);
+}
+
+item_list* push_item(item_list* il, Item *_utility) {
+    item_list *temp=new item_list;
+    temp->utility=_utility;
+    temp->next=il;
+    return(temp);
+}
+
+item_list* crea_item(int livello, Map *_mappa, Player *pl) {
+    item_list *il=NULL;
+    if (livello==1) {
+        il=push_item(il,new raggio_bomba(_mappa, pl));
+        il=push_item(il,new num_bombe(_mappa, pl));
+    }
+    else if (livello==2) {
+        il=push_item(il,new nuova_vita(_mappa,pl));
+        il=push_item(il,new num_bombe(_mappa, pl));
+    }
+    else if (livello==3) {
+        il=push_item(il,new nuova_vita(_mappa,pl));
+        il=push_item(il,new raggio_bomba(_mappa, pl));
+    }
+    else if (livello==4) {
+        il=push_item(il,new raggio_bomba(_mappa, pl));
+        il=push_item(il,new nuova_vita(_mappa,pl));
+    }
+    else if (livello==5) {
+        il=push_item(il,new nuova_vita(_mappa,pl));
+        il=push_item(il,new num_bombe(_mappa, pl));
+    }
+    return(il);
+}
 
 struct bomb_list {
     Bomb bomba;
@@ -29,6 +116,8 @@ struct Level {
     int enemy;
     int time_left = time_per_level;
     bomb_list *bomb_queue = nullptr;
+    item_list *il = nullptr;
+    enemy_list *el = nullptr;
 
     Level *previous = nullptr;
     Level *next = nullptr;
@@ -41,11 +130,18 @@ Level* find_last (Level* current) {
         return find_last (current -> next);
 }
 
-Level* push_level (Level* head_level, int level_number) {
+Level* push_level (Level* head_level, int level_number, Player *pl) {
     Level *to_add = new Level;
     to_add -> map.livello(level_number);
     to_add -> level_number = level_number;
-    to_add -> enemy = level_number * 3;
+    if (level_number<3) {
+        to_add -> enemy = 3;
+    }
+    else {
+        to_add -> enemy = 4;
+    }
+    to_add -> el = crea_nemici(level_number,&(to_add->map));
+    to_add ->il = crea_item(level_number,&(to_add->map),pl);
 
     if (head_level == nullptr) {
         head_level = to_add;
@@ -59,9 +155,9 @@ Level* push_level (Level* head_level, int level_number) {
     }
 }
 
-Level* levels_initializer (Level *head_level) {
+Level* levels_initializer (Level *head_level, Player *pl) {
     for (int i = 0; i < numero_livelli; i++) {
-        head_level = push_level(head_level, i + 1); //aggiungere tutti i parametri attuali
+        head_level = push_level(head_level, i + 1,pl); //aggiungere tutti i parametri attuali
     }
     return head_level;
 }
@@ -351,9 +447,10 @@ char game_loop(WINDOW *win) {
     unsigned long int frame = 0, seconds_occurred = clock()/CLOCKS_PER_SEC; //cosí se il game_loop parte dopo non ci sono problemi
 
     Player Giocatore = Player();
+    Player *plptr=&Giocatore;
 
     Level *current_level = nullptr;
-    current_level = levels_initializer(current_level); //cosí ho creato tutti i livelli;
+    current_level = levels_initializer(current_level,plptr); //cosí ho creato tutti i livelli;
     current_level->map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
 
     while (!end_game) {
@@ -376,7 +473,7 @@ char game_loop(WINDOW *win) {
         else if (input == 'z')
             end_game = !Giocatore.cambia_numero_vite(-1);
         else if (input == ' ')
-            current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,1, current_level -> map);
+            current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,Giocatore.get_moltiplicatore_bombe(), current_level -> map);
         else if (input == 'e')
             current_level -> enemy --;
         //parte degli update

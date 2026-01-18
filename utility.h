@@ -9,26 +9,25 @@ protected:
     char aspetto;
     Map *mappa;
     Player *pl;
-    Bomb *b;
 public:
-    Item(Map *_mappa, Player *_pl, Bomb *_b);
+    Item(Map *_mappa=NULL, Player *_pl=NULL);
 };
 
-class raggio_bomba :Item {
+class raggio_bomba : public Item {
 public:
-    raggio_bomba(Map *_mappa, Player *_pl, Bomb *_b);
+    raggio_bomba(Map *_mappa, Player *_pl);
     void applica_effetto();
 };
 
-class nuova_vita :Item {
+class nuova_vita : public Item {
 public:
-    nuova_vita(Map *_mappa, Player *_pl, Bomb *_b);
+    nuova_vita(Map *_mappa, Player *_pl);
     void applica_effetto();
 
 };
 
-class num_bombe :Item {
+class num_bombe : public Item {
 public:
-    num_bombe(Map *_mappa, Player *_pl, Bomb *_b);
+    num_bombe(Map *_mappa, Player *_pl);
     void applica_effetto();
 };

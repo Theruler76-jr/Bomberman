@@ -18,10 +18,6 @@ int Bomb :: get_coordinata_y () {
     return coordinata_y;
 }
 
-void Bomb :: cambia_moltiplicatore_esplosione (int change) {
-    moltiplicatore_esplosione = change;
-}
-
 int Bomb :: get_activation_time () {
     return activation_time;
 }

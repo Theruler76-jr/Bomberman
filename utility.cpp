@@ -2,26 +2,25 @@
 
 #include <iostream>
 
-Item::Item(Map *_mappa, Player *_pl, Bomb *_b) {
+Item::Item(Map *_mappa, Player *_pl) {
     mappa=_mappa;
     pl=_pl;
-    b=_b;
     do {
         x=rand()%39+1;
         y=rand()%19+1;
     }while (mappa->pos(x,y)!='m');
 }
 
-raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl, Bomb *_b) : Item(_mappa, _pl, _b){
+raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     aspetto='R';
     mappa->cambia(x,y,'R');
 }
 
 void raggio_bomba::applica_effetto() {
-    b->cambia_moltiplicatore_esplosione(2);
+   pl->cambia_moltiplicatore_bombe(1);
 }
 
-nuova_vita::nuova_vita(Map *_mappa, Player *_pl, Bomb *_b) : Item(_mappa, _pl, _b){
+nuova_vita::nuova_vita(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     aspetto='L';
     mappa->cambia(x,y,'L');
 }
@@ -30,7 +29,7 @@ void nuova_vita::applica_effetto() {
     pl->cambia_numero_vite(1);
 }
 
-num_bombe::num_bombe(Map *_mappa, Player *_pl, Bomb *_b) : Item(_mappa, _pl, _b){
+num_bombe::num_bombe(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     aspetto='N';
     mappa->cambia(x,y,'N');
 }

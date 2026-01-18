@@ -6,6 +6,7 @@ protected:
     int coordinata_y;
     int numero_vite;
     int numero_bombe;
+    int moltiplicatore_bombe;
 public:
     Player (int c_x = 1, int c_y = 1, int n_v = 3, int n_b = 0); //da decidere il numero di vite con cui partire
     int get_coordinata_x ();
@@ -15,5 +16,7 @@ public:
     void move_y (int x);
     int get_numero_vite ();
     void cambia_numero_bombe (int x);
+    void cambia_moltiplicatore_bombe (int x);
+    int get_moltiplicatore_bombe ();
 };
 

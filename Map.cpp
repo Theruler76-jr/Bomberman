@@ -130,7 +130,7 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
 }
 
 char Map :: pos (int x, int y) {
-    if (x<0 || x>21 || y<0 || y>41) {
+    if (x < 0 || x >= col || y < 0 || y >= row) {
         return(0);
     }
     return(map[y][x]);
