@@ -19,10 +19,11 @@ int Player :: get_coordinata_y () {
 }
 
 bool Player :: cambia_numero_vite (int x) {
-    numero_vite += x;
-    if (numero_vite > 0)
+    if (numero_vite + x >= 0) {
+        numero_vite += x;
         return true;
-    return false;
+    }
+     return false;
 }
 
 void Player :: move_x (int change) {

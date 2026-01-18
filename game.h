@@ -38,4 +38,4 @@ bomb_list* get_last (bomb_list *element); //funzione ausiliaria di add_bomb
 bomb_list* check_bomb_status (bomb_list *&head, int time, Player &Giocatore, Map &map); //controlla se ci sono bombe che devono esplodere
 
 bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction); //controlla se una casella della mappa é vuota o meno
-bool particular_position (int coord_x, int coord_y); //controlla se il player si trova in una posizione speciale
+bool particular_positionmv (int coord_x, int coord_y, char direction); //controlla se il player si trova in una posizione speciale

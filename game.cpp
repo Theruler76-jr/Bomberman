@@ -316,15 +316,20 @@ bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
     if (direction == 'a')
         coordinata_x--;
 
-    if (mappa.pos(coordinata_x, coordinata_y) == 'v')
+    if (mappa.pos(coordinata_x, coordinata_y) != 'I' && mappa.pos(coordinata_x, coordinata_y) != 'm')
         return true;
 
     return false;
 }
 
-bool particular_position (int coord_x, int coord_y) {
-    if (coord_y == 10 && (coord_x == 0 || coord_x == 39))
-        return true;
+bool particular_positionmv (int coord_x, int coord_y, char direction) {
+    if (coord_y == 10) {
+        if (coord_x == 0 && direction == 'a')
+            return true;
+        if (coord_x == 40 && direction == 'd')
+            return true;
+        return false;
+    }
 
     return false;
 }
@@ -335,14 +340,14 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
     bool modified = false;
 
     //calcolo la nuova posizione del giocatore
-    if (particular_position(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) && (direction == 'd' || direction == 'a')) { //caso in cui potrebbe dover cambiare mappa
+    if (particular_positionmv(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), direction)) { //caso in cui potrebbe dover cambiare mappa
 
         //cancello il giocatore dalla posizione attuale in cui é
         if (current_level -> map.pos(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) != bomb_skin)
             current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v');
 
         // controllo se deve essere eliminata la mappa
-        if (direction == 'd' && Giocatore.get_coordinata_x() == 39) {
+        if (direction == 'd' && Giocatore.get_coordinata_x() == 40) {
             if (current_level -> enemy == 0) {
                 score += current_level -> time_left;
                 current_level = remove_level(current_level);
@@ -350,13 +355,12 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
             else
                 current_level = next_level(current_level);
 
-            Giocatore.move_x(-38);
+            Giocatore.move_x(-40);
         }
         else if (direction == 'a' && Giocatore.get_coordinata_x() == 0) {
             current_level = previous_level(current_level);
-            Giocatore.move_x(1);
+            Giocatore.move_x(40);
         }
-        Giocatore.move_y(-9);
 
         modified = true;
 

@@ -38,10 +38,9 @@ void Bomb :: esplodi (Map &mappa, Player &Giocatore) {
         case 'N':
             mappa.cambia(coordinata_x + x_off, coordinata_y,'n');
             break;
-        case player_skin:
-            Giocatore.cambia_numero_vite(-1);
-            break;
         }
+        if (Giocatore.get_coordinata_x() == coordinata_x + x_off && Giocatore.get_coordinata_y() == coordinata_y)
+            Giocatore.cambia_numero_vite(-1);
     }
 
     for (int y_off = -moltiplicatore_esplosione; y_off <= moltiplicatore_esplosione; y_off++) {
@@ -58,15 +57,14 @@ void Bomb :: esplodi (Map &mappa, Player &Giocatore) {
         case 'N':
             mappa.cambia(coordinata_x, coordinata_y + y_off,'n');
             break;
-        case player_skin:
-            Giocatore.cambia_numero_vite(-1);
-            break;
         }
+        if (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() + y_off == coordinata_y)
+            Giocatore.cambia_numero_vite(-1);
     }
-
-    //controllo se mina e giocatore sono nello stesso posto
+    //per come è stata impostata la funzione tocca fare un controllo aggiuntivo:
     if (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() == coordinata_y)
-        Giocatore.cambia_numero_vite(-1);
+        Giocatore.cambia_numero_vite(1);
+
 
     //cancello la bomba
     if (Giocatore.get_coordinata_x() != coordinata_x || Giocatore.get_coordinata_y() != coordinata_y)
