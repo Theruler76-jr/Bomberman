@@ -11,6 +11,16 @@ Item::Item(Map *_mappa, Player *_pl) {
     }while (mappa->pos(x,y)!='m');
 }
 
+int Item::get_x() {
+    return(x);
+}
+
+int Item::get_y() {
+    return(y);
+}
+
+
+
 raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     aspetto='R';
     mappa->cambia(x,y,'R');

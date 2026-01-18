@@ -47,6 +47,9 @@ void Map::livello(int lv) {
     }
     if (lv==1) {
         map[10][0]='I';
+        map[1][1]='v';
+        map[2][1]='v';
+        map[1][2]='v';
     }
     if (lv==5) {
         map[10][40]='I';
@@ -107,7 +110,7 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
             }
             else if (map[i][j]=='#') { //nemico base
                 wattron(win,COLOR_PAIR(5));
-                mvwaddch(win,i+y_start,j+x_start,'N');
+                mvwaddch(win,i+y_start,j+x_start,'#');
                 wattroff(win,COLOR_PAIR(5));
             }
             else if (map[i][j]=='%') { //nemico forte su vuoto

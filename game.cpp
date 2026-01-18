@@ -72,6 +72,24 @@ enemy_list* crea_nemici(int livello, Map *_mappa) {
     return(en);
 }
 
+enemy_list* rimuovi_nemico(enemy_list *el, int x, int y) {
+    enemy_list *temp=el, *prev=el;
+    while (temp!=nullptr) {
+        if (temp->nemico->get_x()==x && temp->nemico->get_y()==y) {
+            if (prev==el) {
+                return(el->next);
+            }
+            else {
+                prev->next=temp->next;
+                return(el);
+            }
+        }
+        prev=temp;
+        temp=temp->next;
+    }
+    return(el);
+}
+
 item_list* push_item(item_list* il, Item *_utility) {
     item_list *temp=new item_list;
     temp->utility=_utility;
@@ -100,6 +118,38 @@ item_list* crea_item(int livello, Map *_mappa, Player *pl) {
     else if (livello==5) {
         il=push_item(il,new nuova_vita(_mappa,pl));
         il=push_item(il,new num_bombe(_mappa, pl));
+    }
+    return(il);
+}
+
+void move_enemies(enemy_list* el, Player *pl) {
+    enemy_list* temp=el;
+    while (temp!=nullptr) {
+        advanced_enemy *adv=dynamic_cast<advanced_enemy*>(temp->nemico);
+        if (adv!=nullptr) {
+            adv->move(pl);
+        } else {
+            temp->nemico->move();
+        }
+        temp=temp->next;
+    }
+}
+
+item_list* controlla_item(Player *pl, item_list *il){
+    item_list *temp=il, *prev=il;
+    while (temp!=nullptr) {
+        if (temp->utility->get_x()==pl->get_coordinata_x() && temp->utility->get_y()==pl->get_coordinata_y()) {
+            temp->utility->applica_effetto();
+            if (prev==temp) {
+                return(il->next);
+            }
+            else {
+                prev->next=temp->next;
+                return(il);
+            }
+        }
+        prev=temp;
+        temp=temp->next;
     }
     return(il);
 }
@@ -485,7 +535,9 @@ char game_loop(WINDOW *win) {
         if (Giocatore.get_numero_vite() <= 0)
             end_game = true;
 
+        current_level->il=controlla_item(plptr,current_level->il);
         print_routine(current_level, Giocatore, score, win);
+        move_enemies(current_level->el,plptr);
         wrefresh(win);
 
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I

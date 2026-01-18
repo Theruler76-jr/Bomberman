@@ -14,7 +14,7 @@
 
 //superclasse NEMICO
 enemy :: enemy(Map *_mappa) {
-    velocita=20000;
+    velocita=10;
     mappa=_mappa;
     do {
         x=rand()%39+1;
@@ -71,9 +71,13 @@ void base_enemy::move() {
 advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
     aspetto='%';
     mappa->cambia(x,y,'%');
+    velocita=20;
 }
 
-void advanced_enemy::move(Player pl) {
+void advanced_enemy::move() {
+}
+
+void advanced_enemy::move(Player *pl) {
     if (tick>=velocita) {
         //se è sul vuoto
         if (mappa->pos(x,y)=='%') {
@@ -90,32 +94,32 @@ void advanced_enemy::move(Player pl) {
             mappa->cambia(x,y,'I');
         }
 
-        if (pl.get_coordinata_x()==x) {
-            if (pl.get_coordinata_y()>y) {
+        if (pl->get_coordinata_x()==x) {
+            if (pl->get_coordinata_y()>y) {
                 y+=1;
             }
             else {
                 y-=1;
             }
         }
-        else if (pl.get_coordinata_y()==y) {
-            if (pl.get_coordinata_x()>x) {
+        else if (pl->get_coordinata_y()==y) {
+            if (pl->get_coordinata_x()>x) {
                 x+=1;
             }
             else {
                 x-=1;
             }
         }
-        else if (abs(pl.get_coordinata_y()-y)<abs(pl.get_coordinata_x()-x)) {
-            if (pl.get_coordinata_y()>y) {
+        else if (abs(pl->get_coordinata_y()-y)<abs(pl->get_coordinata_x()-x)) {
+            if (pl->get_coordinata_y()>y) {
                 y+=1;
             }
             else {
                 y-=1;
             }
         }
-        else if (abs(pl.get_coordinata_x()-x)<abs(pl.get_coordinata_y()-y)) {
-            if (pl.get_coordinata_x()>x) {
+        else if (abs(pl->get_coordinata_x()-x)<abs(pl->get_coordinata_y()-y)) {
+            if (pl->get_coordinata_x()>x) {
                 x+=1;
             }
             else {

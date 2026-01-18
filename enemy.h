@@ -12,8 +12,7 @@ public:
     enemy(Map *_mappa=NULL);
     int get_x();
     int get_y();
-    void stamp(WINDOW *win, int start_x, int start_y);
-    void remove_old(WINDOW *win, int start_x, int start_y);
+    virtual void move()=0;
 };
 
 class base_enemy : public enemy {
@@ -27,5 +26,6 @@ public:
 class advanced_enemy : public enemy {
 public:
     advanced_enemy(Map *_mappa=NULL);
-    void move(Player x);
+    void move();
+    void move(Player *x);
 };

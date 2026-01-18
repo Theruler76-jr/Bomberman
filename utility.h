@@ -11,6 +11,9 @@ protected:
     Player *pl;
 public:
     Item(Map *_mappa=NULL, Player *_pl=NULL);
+    int get_x();
+    int get_y();
+    virtual void applica_effetto()=0;
 };
 
 class raggio_bomba : public Item {
