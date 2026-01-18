@@ -40,28 +40,29 @@ base_enemy::base_enemy(Map *_mappa) : enemy (_mappa){
 
 void base_enemy::move() {
     if (tick>=velocita) {
-        //rimetto il vuoto sotto
-        mappa->cambia(x,y,'v');
+        if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v') {
+            //rimetto il vuoto sotto
+            mappa->cambia(x,y,'v');
+            while ((dir==0 && (x==1 || mappa->pos(x-1,y)!='v')) || (dir==1 && (y==1 || mappa->pos(x,y-1)!='v')) || (dir==2 && (x==39 || mappa->pos(x+1,y)!='v')) || (dir==3 && (y==19 || mappa->pos(x,y+1)!='v')) || dir==-1) {
+                dir=rand()%4;
+            }
+            if (dir==0) {
+                x-=1;
+            }
+            if (dir==1) {
+                y-=1;
+            }
+            if (dir==2) {
+                x+=1;
+            }
+            if (dir==3) {
+                y+=1;
+            }
+            tick=0;
 
-        while ((dir==0 && (x==1 || mappa->pos(x-1,y)!='v')) || (dir==1 && (y==1 || mappa->pos(x,y-1)!='v')) || (dir==2 && (x==39 || mappa->pos(x+1,y)!='v')) || (dir==3 && (y==19 || mappa->pos(x,y+1)!='v')) || dir==-1) {
-            dir=rand()%4;
+            //nuova posizione del nemico
+            mappa->cambia(x,y,'#');
         }
-        if (dir==0) {
-            x-=1;
-        }
-        if (dir==1) {
-            y-=1;
-        }
-        if (dir==2) {
-            x+=1;
-        }
-        if (dir==3) {
-            y+=1;
-        }
-        tick=0;
-
-        //nuova posizione del nemico
-        mappa->cambia(x,y,'#');
     }
     else tick++;
 }
@@ -79,68 +80,71 @@ void advanced_enemy::move() {
 
 void advanced_enemy::move(Player *pl) {
     if (tick>=velocita) {
-        //se è sul vuoto
-        if (mappa->pos(x,y)=='%') {
-            mappa->cambia(x,y,'v');
-        }
+        if (pl->get_coordinata_x()!=x || pl->get_coordinata_y()!=y) {
+            //se è sul vuoto
+            if (mappa->pos(x,y)=='%') {
+                mappa->cambia(x,y,'v');
+            }
 
-        //se è su un muro distruttibile
-        if (mappa->pos(x,y)=='x') {
-            mappa->cambia(x,y,'m');
-        }
+            //se è su un muro distruttibile
+            if (mappa->pos(x,y)=='x') {
+                mappa->cambia(x,y,'m');
+            }
 
-        //se è su un muro indistruttibile
-        if (mappa->pos(x,y)=='z') {
-            mappa->cambia(x,y,'I');
-        }
+            //se è su un muro indistruttibile
+            if (mappa->pos(x,y)=='z') {
+                mappa->cambia(x,y,'I');
+            }
 
-        if (pl->get_coordinata_x()==x) {
-            if (pl->get_coordinata_y()>y) {
-                y+=1;
-            }
-            else {
-                y-=1;
-            }
-        }
-        else if (pl->get_coordinata_y()==y) {
-            if (pl->get_coordinata_x()>x) {
-                x+=1;
-            }
-            else {
-                x-=1;
-            }
-        }
-        else if (abs(pl->get_coordinata_y()-y)<abs(pl->get_coordinata_x()-x)) {
-            if (pl->get_coordinata_y()>y) {
-                y+=1;
-            }
-            else {
-                y-=1;
-            }
-        }
-        else if (abs(pl->get_coordinata_x()-x)<abs(pl->get_coordinata_y()-y)) {
-            if (pl->get_coordinata_x()>x) {
-                x+=1;
-            }
-            else {
-                x-=1;
-            }
-        }
-        tick=0;
 
-        //se è sul vuoto
-        if (mappa->pos(x,y)=='v') {
-            mappa->cambia(x,y,'%');
-        }
+            if (pl->get_coordinata_x()==x) {
+                if (pl->get_coordinata_y()>y) {
+                    y+=1;
+                }
+                else {
+                    y-=1;
+                }
+            }
+            else if (pl->get_coordinata_y()==y) {
+                if (pl->get_coordinata_x()>x) {
+                    x+=1;
+                }
+                else {
+                    x-=1;
+                }
+            }
+            else if (abs(pl->get_coordinata_y()-y)<abs(pl->get_coordinata_x()-x)) {
+                if (pl->get_coordinata_y()>y) {
+                    y+=1;
+                }
+                else {
+                    y-=1;
+                }
+            }
+            else if (abs(pl->get_coordinata_x()-x)<abs(pl->get_coordinata_y()-y)) {
+                if (pl->get_coordinata_x()>x) {
+                    x+=1;
+                }
+                else {
+                    x-=1;
+                }
+            }
+            tick=0;
 
-        //se è su un muro distruttibile
-        if (mappa->pos(x,y)=='m') {
-            mappa->cambia(x,y,'x');
-        }
+            //se è sul vuoto
+            if (mappa->pos(x,y)=='v') {
+                mappa->cambia(x,y,'%');
+            }
 
-        //se è su un muro indistruttibile
-        if (mappa->pos(x,y)=='I') {
-            mappa->cambia(x,y,'z');
+            //se è su un muro distruttibile
+            if (mappa->pos(x,y)=='m') {
+                mappa->cambia(x,y,'x');
+            }
+
+            //se è su un muro indistruttibile
+            if (mappa->pos(x,y)=='I') {
+                mappa->cambia(x,y,'z');
+            }
         }
     }
     else tick++;
