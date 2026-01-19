@@ -1,6 +1,8 @@
 #include "game.h"
 #include "enemy.h"
 #include "utility.h"
+#include "game_over.h"
+
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -13,10 +15,12 @@
  * solo commenti che servono durante lo sviluppo/per ricordarmi aggiustamenti da fare in seguito.
 */
 
-#include "game_over.h"
+
 
 const int inizio_mappa_x = 32;
 const int inizio_mappa_y = 4;
+const int player_speed = 3; // ogni quanti fps il player si puó muovere
+const int frame_per_animation = 20;
 
 //lista di nemici
 struct enemy_list {
@@ -445,6 +449,89 @@ void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *w
     wrefresh(win);
 }
 
+struct bomb_animation {
+    int coord_x;
+    int coord_y;
+    int moltiplicatore;
+    int ticks = 20;
+    bomb_animation* next = nullptr;
+};
+
+bomb_animation* get_last_bomb_animation (bomb_animation *head) {
+    if (head -> next == nullptr)
+        return head;
+    else
+        return get_last_bomb_animation (head);
+}
+
+bomb_animation* push_animation (int c_x, int c_y, int molt, bomb_animation* head_list) {
+    bomb_animation *to_add = new bomb_animation;
+    to_add -> coord_x = c_x;
+    to_add -> coord_y = c_y;
+    to_add -> moltiplicatore = molt;
+
+    if (head_list == nullptr) {
+        head_list = to_add;
+        return head_list;
+    }
+    bomb_animation *last = get_last_bomb_animation (head_list);
+    last -> next = to_add;
+}
+
+void write_animation (bomb_animation* head_list, Map &mappa) {
+    if (head_list != nullptr) {
+        for (int x_offs = - head_list -> moltiplicatore; x_offs <= head_list -> moltiplicatore; x_offs ++) {
+            if (mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) != 'I') {
+                mappa.cambia(head_list -> coord_x + x_offs, head_list ->coord_y, bomb_skin);
+            }
+        }
+
+        for (int y_offs = - head_list -> moltiplicatore; y_offs <= head_list -> moltiplicatore; y_offs ++) {
+            if (mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) != 'I') {
+                mappa.cambia(head_list -> coord_x, head_list ->coord_y + y_offs, bomb_skin);
+            }
+        }
+        write_animation(head_list -> next, mappa);
+    }
+
+}
+
+void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, Player Giocatore) {
+    for (int x_offs = -moltiplicatore; x_offs <= moltiplicatore; x_offs ++) {
+        if (mappa.pos(coord_x + x_offs, coord_y) != 'I'){
+            if (coord_x + x_offs == Giocatore.get_coordinata_x() && coord_y == Giocatore.get_coordinata_y())
+                mappa.cambia(coord_x + x_offs, coord_y, player_skin);
+            else
+                mappa.cambia(coord_x + x_offs, coord_y, 'v');
+        }
+    }
+    for (int y_offs = - moltiplicatore; y_offs <= moltiplicatore; y_offs ++) {
+        if (mappa.pos(coord_x, coord_y + y_offs) != 'I') {
+            if (coord_x == Giocatore.get_coordinata_x() && coord_y + y_offs == Giocatore.get_coordinata_y())
+                mappa.cambia(coord_x, coord_y + y_offs, player_skin);
+            else
+            mappa.cambia(coord_x, coord_y + y_offs, 'v');
+        }
+    }
+}
+
+bomb_animation* update_list (bomb_animation* head_list, Map &mappa, Player Giocatore) {
+    if (head_list != nullptr) {
+        head_list -> ticks --;
+        if (head_list -> ticks == 0) {
+            bomb_animation *to_delete = head_list;
+            erase_animation(head_list ->coord_x, head_list -> coord_y, head_list -> moltiplicatore, mappa, Giocatore);
+            head_list = head_list ->next;
+            delete to_delete;
+            return update_list (head_list, mappa, Giocatore);
+        } else {
+            head_list -> next = update_list(head_list -> next, mappa, Giocatore);
+            return head_list;
+        }
+    }
+    return nullptr;
+}
+
 
 bomb_list* get_last (bomb_list *element) {
     if (element -> next == nullptr)
@@ -471,9 +558,20 @@ bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int tim
     return head;
 }
 
-bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocatore, Map &map, Level *current_level, int &score) {
+bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocatore, Map &map, Level *&current_level, int &score, bomb_animation* &queue_bomb_animation) {
     if (head != nullptr && (time - head -> bomba.get_activation_time() >= 3)) {
-        head -> bomba.esplodi(map, Giocatore, score, current_level -> el);
+        int bomb_x = head -> bomba.get_coordinata_x(), bomb_y = head -> bomba.get_coordinata_y();
+
+        //faccio esplodere la bomba e controllo se ho ucciso un nemico
+        bool enemy_killed = head -> bomba.esplodi(map, Giocatore, score, current_level -> el);
+
+        // gestisco l'animazione della bomba che esplode
+        queue_bomb_animation = push_animation (bomb_x, bomb_y, Giocatore.get_moltiplicatore_bombe(), queue_bomb_animation);
+        write_animation(queue_bomb_animation, map);
+
+        if (enemy_killed)
+            current_level -> enemy --;
+
         bomb_list* tmp = head;
         head = head -> next;
         delete tmp; //garbage eliminato
@@ -481,8 +579,8 @@ bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocat
     return head;
 }
 
-void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map, Level *current_level, int &score) {
-    head = check_bomb_status(head, time_occurred, Giocatore, map, current_level, score);
+void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map, Level *current_level, int &score, bomb_animation*& queue_bomb_animation) {
+    head = check_bomb_status(head, time_occurred, Giocatore, map, current_level, score, queue_bomb_animation);
 }
 
 
@@ -495,7 +593,7 @@ char game_loop(WINDOW *win) {
 
     bool end_game = false, time_exipired = false;
     char input;
-    int score = 0;
+    int score = 0, ticks_player = 0;
     unsigned long int frame = 0, seconds_occurred = clock()/CLOCKS_PER_SEC; //cosí se il game_loop parte dopo non ci sono problemi
 
     Player Giocatore = Player();
@@ -504,6 +602,8 @@ char game_loop(WINDOW *win) {
     Level *current_level = nullptr;
     current_level = levels_initializer(current_level,plptr); //cosí ho creato tutti i livelli;
     current_level->map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
+
+    bomb_animation *queue_bomb_animation = nullptr;
 
     while (!end_game) {
         if (seconds_occurred != clock()/CLOCKS_PER_SEC) { //serve per tenere traccia del tempo
@@ -520,8 +620,10 @@ char game_loop(WINDOW *win) {
             current_level = next_level(current_level);
         else if (input == 'o')
             current_level = previous_level(current_level);
-        else if (input == 'w' || input == 'a' || input == 's' || input == 'd')
+        else if ((input == 'w' || input == 'a' || input == 's' || input == 'd') && ticks_player == 0) {
             current_level = move_player(input,current_level,Giocatore,score);
+            ticks_player = player_speed;
+        }
         else if (input == 'z')
             end_game = !Giocatore.cambia_numero_vite(-1);
         else if (input == ' ')
@@ -531,11 +633,15 @@ char game_loop(WINDOW *win) {
 
 
         //parte degli update
-        update_status(current_level -> bomb_queue, seconds_occurred,Giocatore, current_level -> map, current_level, score);
+        update_status(current_level -> bomb_queue, seconds_occurred,Giocatore, current_level -> map, current_level, score, queue_bomb_animation);
         if (current_level -> time_left == 0)
             time_exipired = true;
         if (Giocatore.get_numero_vite() <= 0 || time_exipired)
             end_game = true;
+        if (ticks_player > 0)
+            ticks_player--;
+
+        queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore);
 
         current_level->il=controlla_item(plptr,current_level->il);
         print_routine(current_level, Giocatore, score, win);

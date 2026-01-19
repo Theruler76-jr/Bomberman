@@ -1,5 +1,8 @@
 #include "Bomb.h"
 #include "enemy.h"
+#include "game.h"
+#include "Map.h"
+#include "Player.h"
 
 Bomb :: Bomb() {}
 
@@ -23,7 +26,8 @@ int Bomb :: get_activation_time () {
     return activation_time;
 }
 
-void Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lista_nemici) {
+bool Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lista_nemici) {
+    bool enemy_killed = false;
 
     for (int x_off = -moltiplicatore_esplosione; x_off <= moltiplicatore_esplosione; x_off++) {
         switch (mappa.pos(coordinata_x + x_off, coordinata_y)) {
@@ -43,16 +47,19 @@ void Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &li
                 score += score_per_enemy;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                enemy_killed = true;
                 break;
             case '%':
-                score += score_per_enemy;
+                score += score_per_enemy + 5;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                enemy_killed = true;
                 break;
             case 'x':
-                score += score_per_enemy;
+                score += score_per_enemy + 10;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                enemy_killed = true;
                 break;
         }
 
@@ -76,18 +83,21 @@ void Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &li
                 break;
             case '#':
                 score += score_per_enemy;
-                rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+                enemy_killed = true;
                 break;
             case '%':
-                score += score_per_enemy;
-                rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
+                score += score_per_enemy + 5;
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+                enemy_killed = true;
                 break;
             case 'x':
-                score += score_per_enemy;
-                rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
+                score += score_per_enemy + 10;
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+                enemy_killed = true;
                 break;
         }
 
@@ -106,5 +116,6 @@ void Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &li
         mappa.cambia(coordinata_x,coordinata_y,player_skin);
 
     Giocatore.cambia_numero_bombe_schierate(-1);
+    return enemy_killed;
 
 }
