@@ -376,7 +376,12 @@ bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
     if (direction == 'a')
         coordinata_x--;
 
-    if (mappa.pos(coordinata_x, coordinata_y) != 'I' && mappa.pos(coordinata_x, coordinata_y) != 'm' && mappa.pos(coordinata_x, coordinata_y) != bomb_skin)
+    if (mappa.pos(coordinata_x, coordinata_y) != 'I'      //condizioni per far muovere il plyer
+        && mappa.pos(coordinata_x, coordinata_y) != 'm'
+        && mappa.pos(coordinata_x, coordinata_y) != bomb_skin
+        && mappa.pos(coordinata_x, coordinata_y) != 'R'
+        && mappa.pos(coordinata_x, coordinata_y) != 'L'
+        && mappa.pos(coordinata_x, coordinata_y) != 'N')
         return true;
 
     return false;
@@ -508,13 +513,13 @@ void write_animation (bomb_animation* head_list, Map &mappa) {
 
 }
 
-void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, Player Giocatore) {
+void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, Player Giocatore, Level* current_level) {
     for (int x_offs = -moltiplicatore; x_offs <= moltiplicatore; x_offs ++) {
         if (mappa.pos(coord_x + x_offs, coord_y) != 'I'){
             if (coord_x + x_offs == Giocatore.get_coordinata_x() && coord_y == Giocatore.get_coordinata_y())
                 mappa.cambia(coord_x + x_offs, coord_y, player_skin);
             else
-                mappa.cambia(coord_x + x_offs, coord_y, 'v');
+                mappa.cambia(coord_x + x_offs, coord_y, controlla_pos(current_level -> il,coord_x + x_offs, coord_y));
         }
     }
     for (int y_offs = - moltiplicatore; y_offs <= moltiplicatore; y_offs ++) {
@@ -522,22 +527,22 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
             if (coord_x == Giocatore.get_coordinata_x() && coord_y + y_offs == Giocatore.get_coordinata_y())
                 mappa.cambia(coord_x, coord_y + y_offs, player_skin);
             else
-            mappa.cambia(coord_x, coord_y + y_offs, 'v');
+            mappa.cambia(coord_x, coord_y + y_offs, controlla_pos(current_level -> il,coord_x, coord_y + y_offs));
         }
     }
 }
 
-bomb_animation* update_list (bomb_animation* head_list, Map &mappa, Player Giocatore) {
+bomb_animation* update_list (bomb_animation* head_list, Map &mappa, Player Giocatore, Level *current_level) {
     if (head_list != nullptr) {
         head_list -> ticks --;
         if (head_list -> ticks == 0) {
             bomb_animation *to_delete = head_list;
-            erase_animation(head_list ->coord_x, head_list -> coord_y, head_list -> moltiplicatore, mappa, Giocatore);
+            erase_animation(head_list ->coord_x, head_list -> coord_y, head_list -> moltiplicatore, mappa, Giocatore, current_level);
             head_list = head_list ->next;
             delete to_delete;
-            return update_list (head_list, mappa, Giocatore);
+            return update_list (head_list, mappa, Giocatore, current_level);
         } else {
-            head_list -> next = update_list(head_list -> next, mappa, Giocatore);
+            head_list -> next = update_list(head_list -> next, mappa, Giocatore, current_level);
             return head_list;
         }
     }
@@ -653,12 +658,11 @@ char game_loop(WINDOW *win) {
         if (ticks_player > 0)
             ticks_player--;
 
-        queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore);
+        queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore, current_level);
 
         current_level->il=controlla_item(plptr,current_level->il);
         print_routine(current_level, Giocatore, score, win);
         move_enemies(current_level->el,plptr);
-        wrefresh(win);
 
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
         //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
