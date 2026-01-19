@@ -213,7 +213,7 @@ char highscore_loop(WINDOW *win) {
         mvwaddch(win, height / 2, 26, ACS_UARROW);
         mvwaddch(win, height / 2 + 4, 26, ACS_DARROW);
 
-        werase(scoreboard);
+        //werase(scoreboard);
         box(scoreboard, 0, 0);
 
         for (int i = 1; ptr != nullptr && i <= total_highscores; i++) {    // prints leaderboard
