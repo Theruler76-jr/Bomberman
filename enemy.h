@@ -12,7 +12,7 @@ public:
     enemy(Map *_mappa=NULL);
     int get_x();
     int get_y();
-    virtual void move()=0;
+    virtual void move(Player *pl)=0;
 };
 
 class base_enemy : public enemy {
@@ -20,12 +20,11 @@ protected:
     int dir;
 public:
     base_enemy(Map *_mappa=NULL);
-    void move();
+    void move(Player *pl);
 };
 
 class advanced_enemy : public enemy {
 public:
     advanced_enemy(Map *_mappa=NULL);
-    void move();
-    void move(Player *x);
+    void move(Player *pl);
 };

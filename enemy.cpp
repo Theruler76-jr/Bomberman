@@ -38,12 +38,12 @@ base_enemy::base_enemy(Map *_mappa) : enemy (_mappa){
     mappa->cambia(x,y,'#');
 }
 
-void base_enemy::move() {
+void base_enemy::move(Player *pl) {
     if (tick>=velocita) {
-        if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v') {
+        if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v' || mappa->pos(x-1,y)=='@' || mappa->pos(x,y-1)=='@' || mappa->pos(x+1,y)=='@' || mappa->pos(x,y+1)=='@') {
             //rimetto il vuoto sotto
             mappa->cambia(x,y,'v');
-            while ((dir==0 && (x==1 || mappa->pos(x-1,y)!='v')) || (dir==1 && (y==1 || mappa->pos(x,y-1)!='v')) || (dir==2 && (x==39 || mappa->pos(x+1,y)!='v')) || (dir==3 && (y==19 || mappa->pos(x,y+1)!='v')) || dir==-1) {
+            while ((dir==0 && (x==1 || (mappa->pos(x-1,y)!='v' && mappa->pos(x-1,y)!='@') )) || (dir==1 && (y==1 || (mappa->pos(x,y-1)!='v' && mappa->pos(x,y-1)!='@'))) || (dir==2 && (x==39 || (mappa->pos(x+1,y)!='v' && mappa->pos(x+1,y)!='@') )) || (dir==3 && (y==19 || (mappa->pos(x,y+1)!='v' && mappa->pos(x,y+1)!='@') )) || dir==-1) {
                 dir=rand()%4;
             }
             if (dir==0) {
@@ -62,6 +62,11 @@ void base_enemy::move() {
 
             //nuova posizione del nemico
             mappa->cambia(x,y,'#');
+
+
+            if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
+                pl->cambia_numero_vite(-1);
+            }
         }
     }
     else tick++;
@@ -73,9 +78,6 @@ advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
     aspetto='%';
     mappa->cambia(x,y,'%');
     velocita=20;
-}
-
-void advanced_enemy::move() {
 }
 
 void advanced_enemy::move(Player *pl) {
@@ -144,6 +146,9 @@ void advanced_enemy::move(Player *pl) {
             //se è su un muro indistruttibile
             if (mappa->pos(x,y)=='I') {
                 mappa->cambia(x,y,'z');
+            }
+            if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
+                pl->cambia_numero_vite(-1);
             }
         }
     }
