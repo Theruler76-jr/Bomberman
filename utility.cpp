@@ -19,8 +19,16 @@ int Item::get_y() {
     return(y);
 }
 
-char Item::get_aspetto() {
-    return(aspetto);
+char Item::get_aspetto() { //restituisce lettera piccola
+    if (aspetto=='R') {
+        return('r');
+    }
+    if (aspetto=='L') {
+        return('l');
+    }
+    if (aspetto=='N') {
+        return('n');
+    }
 }
 
 raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
