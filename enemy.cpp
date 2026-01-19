@@ -47,8 +47,15 @@ base_enemy::base_enemy(Map *_mappa) : enemy (_mappa){
 void base_enemy::move(Player *pl) {
     if (tick>=velocita) {
         if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v' || mappa->pos(x-1,y)=='@' || mappa->pos(x,y-1)=='@' || mappa->pos(x+1,y)=='@' || mappa->pos(x,y+1)=='@') {
-            //rimetto il vuoto sotto
-            mappa->cambia(x,y,'v');
+
+            //rimetto il vuoto o il player sotto
+            if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
+                mappa->cambia(x,y,'@');
+            }
+            else {
+                mappa->cambia(x,y,'v');
+            }
+
             while ((dir==0 && (x==1 || (mappa->pos(x-1,y)!='v' && mappa->pos(x-1,y)!='@') )) || (dir==1 && (y==1 || (mappa->pos(x,y-1)!='v' && mappa->pos(x,y-1)!='@'))) || (dir==2 && (x==39 || (mappa->pos(x+1,y)!='v' && mappa->pos(x+1,y)!='@') )) || (dir==3 && (y==19 || (mappa->pos(x,y+1)!='v' && mappa->pos(x,y+1)!='@') )) || dir==-1) {
                 dir=rand()%4;
             }

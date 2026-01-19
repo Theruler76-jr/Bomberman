@@ -147,15 +147,17 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
     }
 }
 
-char Map :: pos (int x, int y) {
-    if (x < 0 || x >= col || y < 0 || y >= row) {
-        return(0);
+char Map::pos (int x, int y) {
+    if (x<0 || x>=col || y<0 || y>=row) {
+        return('['); //carattere random per segnalare errore
     }
     return(map[y][x]);
 }
 
 void Map::cambia(int x, int y, char nuovo) {
-    map[y][x]=nuovo;
+    if (x>=0 && x<col && y>=0 && y<row) {
+        map[y][x]=nuovo;
+    }
 }
 
 //test per stampare i livelli
