@@ -12,20 +12,28 @@
 
 #include "highscore.h"
 
-void game_over_screen(WINDOW *win, int lives, int score) {
+void game_over_screen(WINDOW *win, int lives, int score, bool times_up) {
 
-    const char *text_lose[4] = {
+    const char *text_lose[5] = {
         "__   __          ___  _        _ _ ",
        R"(\ \ / /__ _  _  |   \(_)___ __| | |)",
        R"( \ V / _ \ || | | |) | / -_) _` |_|)",
        R"(  |_|\___/\_,_| |___/|_\___\__,_(_))"
     };
 
-    const char *text_win[4] = {
+    const char *text_win[5] = {
         "__   __         __      __ _      _ ",
       R"(\ \ / /__ _  _  \ \    / /(_)_ _ | |)",
       R"( \ V / _ \ || |  \ \/\/ / | | ' \|_|)",
       R"(  |_|\___/\_,_|   \_/\_/  |_|_||_(_))"
+  };
+
+    const char *text_times_up[5] = {
+    " _____ _              _                _ ",
+    "|_   _(_)_ __  ___ __( )___  _  _ _ __| |",
+   R"( | | | | '  \/ -_|_-</(_-< | || | '_ \_|)",
+   R"( |_| |_|_|_|_\___/__/ /__/  \_,_| .__(_))",
+    "                                 |_|     "
   };
 
     int screen_width, screen_height;
@@ -45,10 +53,12 @@ void game_over_screen(WINDOW *win, int lives, int score) {
 
     //wattron(dialog, A_BLINK);
 
-    for (int i = 0; i < 4; i++) {   // prints game over message
+    for (int i = 0; i < 5; i++) {   // prints game over message
 
         if (lives <= 0) {
             mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_lose[i]) / 2, "%s", text_lose[i]);
+        } else if (times_up) {
+            mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_win[i]) / 2, "%s", text_times_up[i]);
         } else {
             mvwprintw(dialog, 2 + i, dialog_width/2 - strlen(text_win[i]) / 2, "%s", text_win[i]);
         }
