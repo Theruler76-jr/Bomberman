@@ -153,6 +153,17 @@ item_list* controlla_item(Player *pl, item_list *il){
     return(il);
 }
 
+char controlla_pos(item_list *il, int x, int y) {
+    item_list *temp=il;
+    while (temp!=NULL) {
+        if (temp->utility->get_x()==x && temp->utility->get_y()==y) {
+            return(temp->utility->get_aspetto());
+        }
+        temp=temp->next;
+    }
+    return('v');
+}
+
 struct bomb_list {
     Bomb bomba;
     bomb_list *next;

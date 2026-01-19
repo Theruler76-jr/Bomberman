@@ -14,6 +14,7 @@ public:
     int get_x();
     int get_y();
     virtual void applica_effetto()=0;
+    char get_aspetto();
 };
 
 class raggio_bomba : public Item {

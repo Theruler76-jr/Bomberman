@@ -19,7 +19,9 @@ int Item::get_y() {
     return(y);
 }
 
-
+char Item::get_aspetto() {
+    return(aspetto);
+}
 
 raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     aspetto='R';
