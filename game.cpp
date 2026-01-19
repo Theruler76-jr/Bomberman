@@ -481,6 +481,7 @@ bomb_animation* push_animation (int c_x, int c_y, int molt, bomb_animation* head
     }
     bomb_animation *last = get_last_bomb_animation (head_list);
     last -> next = to_add;
+    return head_list;
 }
 
 void write_animation (bomb_animation* head_list, Map &mappa) {
