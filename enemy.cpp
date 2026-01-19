@@ -11,6 +11,7 @@
 #include <iostream>
 #include <ctime>
 #define COLOR_GRAY 8
+#define tempo_danno 15
 
 //superclasse NEMICO
 enemy :: enemy(Map *_mappa) {
@@ -21,6 +22,7 @@ enemy :: enemy(Map *_mappa) {
         y=rand()%19+1;
     }while (mappa->pos(x,y)!='v');
     tick=0;
+    count_down_danno=0;
 }
 
 int enemy::get_x() {
@@ -62,14 +64,19 @@ void base_enemy::move(Player *pl) {
 
             //nuova posizione del nemico
             mappa->cambia(x,y,'#');
-
-
-            if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
-                pl->cambia_numero_vite(-1);
-            }
         }
     }
     else tick++;
+
+    //danno al player
+    if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y && count_down_danno<=0) {
+        pl->cambia_numero_vite(-1);
+        count_down_danno=tempo_danno;
+    }
+
+    if (count_down_danno>0) {
+        count_down_danno--;
+    }
 }
 
 
@@ -147,10 +154,17 @@ void advanced_enemy::move(Player *pl) {
             if (mappa->pos(x,y)=='I') {
                 mappa->cambia(x,y,'z');
             }
-            if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
-                pl->cambia_numero_vite(-1);
-            }
         }
     }
     else tick++;
+
+    //danno al player
+    if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y && count_down_danno<=0) {
+        pl->cambia_numero_vite(-1);
+        count_down_danno=tempo_danno;
+    }
+
+    if (count_down_danno>0) {
+        count_down_danno--;
+    }
 }

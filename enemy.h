@@ -8,6 +8,7 @@ protected:
     int tick, velocita;
     char aspetto;
     Map *mappa;
+    int count_down_danno;
 public:
     enemy(Map *_mappa=NULL);
     int get_x();
