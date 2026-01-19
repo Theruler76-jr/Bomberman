@@ -14,14 +14,14 @@
 
 void game_over_screen(WINDOW *win, int lives, int score, bool times_up) {
 
-    const char *text_lose[5] = {
+    const char *text_lose[4] = {
         "__   __          ___  _        _ _ ",
        R"(\ \ / /__ _  _  |   \(_)___ __| | |)",
        R"( \ V / _ \ || | | |) | / -_) _` |_|)",
        R"(  |_|\___/\_,_| |___/|_\___\__,_(_))"
     };
 
-    const char *text_win[5] = {
+    const char *text_win[4] = {
         "__   __         __      __ _      _ ",
       R"(\ \ / /__ _  _  \ \    / /(_)_ _ | |)",
       R"( \ V / _ \ || |  \ \/\/ / | | ' \|_|)",

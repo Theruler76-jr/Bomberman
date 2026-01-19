@@ -14,6 +14,21 @@
 
 #include <ctime>
 
+/*LEGENDA MAPPA:
+ I -> muro indistruttibile
+ m -> muro distruttibile
+ v -> vuoto
+ @ -> player
+ $ -> bomba
+ R/L/N -> item sotto un muro
+ r/l/n -> item nel vuoto
+ # -> nemico base
+ % -> nemico forte (sul vuoto)
+ x -> nemico forte (sul muro distruttibile)
+ z -> nemico forte (sul muro indistruttibile)
+*/
+
+
 Map :: Map () {
     for (int i=0; i<row; i++) {
         for (int j=0; j<col; j++) {

@@ -125,12 +125,7 @@ item_list* crea_item(int livello, Map *_mappa, Player *pl) {
 void move_enemies(enemy_list* el, Player *pl) {
     enemy_list* temp=el;
     while (temp!=nullptr) {
-        advanced_enemy *adv=dynamic_cast<advanced_enemy*>(temp->nemico);
-        if (adv!=nullptr) {
-            adv->move(pl);
-        } else {
-            temp->nemico->move();
-        }
+        temp->nemico->move(pl);
         temp=temp->next;
     }
 }
