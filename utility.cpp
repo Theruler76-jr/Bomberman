@@ -29,6 +29,7 @@ char Item::get_aspetto() { //restituisce lettera piccola
     if (aspetto=='N') {
         return('n');
     }
+    return('k'); //caso base mai usato
 }
 
 raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
