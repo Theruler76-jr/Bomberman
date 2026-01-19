@@ -8,7 +8,6 @@
 
 #include "Map.h"
 #include "Player.h"
-#include "Bomb.h"
 #include <ctime>
 
 const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
