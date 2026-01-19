@@ -660,7 +660,7 @@ char game_loop(WINDOW *win) {
     }
 
     //per crespi: la boolena che volevi è: time_expired
-    game_over_screen(win, Giocatore.get_numero_vite(), score);
+    game_over_screen(win, Giocatore.get_numero_vite(), score, time_exipired);
 
     return 'H';
 
