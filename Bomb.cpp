@@ -61,6 +61,12 @@ bool Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &li
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
                 enemy_killed = true;
                 break;
+            case 'z':
+                score += score_per_enemy + 15;
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                enemy_killed = true;
+                break;
         }
 
         if (Giocatore.get_coordinata_x() == coordinata_x + x_off && Giocatore.get_coordinata_y() == coordinata_y)
@@ -95,6 +101,12 @@ bool Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &li
                 break;
             case 'x':
                 score += score_per_enemy + 10;
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+                enemy_killed = true;
+                break;
+            case 'z':
+                score += score_per_enemy + 15;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
                 enemy_killed = true;
