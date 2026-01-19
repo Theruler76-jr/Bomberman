@@ -32,6 +32,10 @@ char Item::get_aspetto() { //restituisce lettera piccola
     return('k'); //caso base mai usato
 }
 
+Item::~Item() {
+
+}
+
 raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     aspetto='R';
     mappa->cambia(x,y,'R');

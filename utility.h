@@ -13,6 +13,7 @@ public:
     Item(Map *_mappa=NULL, Player *_pl=NULL);
     int get_x();
     int get_y();
+    virtual ~Item()=0;
     virtual void applica_effetto()=0;
     char get_aspetto();
 };

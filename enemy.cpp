@@ -18,7 +18,7 @@ enemy :: enemy(Map *_mappa) {
     velocita=10;
     mappa=_mappa;
     do {
-        x=rand()%39+1;
+        x=rand()%35+5;
         y=rand()%19+1;
     }while (mappa->pos(x,y)!='v');
     tick=0;
@@ -31,6 +31,10 @@ int enemy::get_x() {
 
 int enemy::get_y() {
     return(y);
+}
+
+enemy::~enemy() {
+
 }
 
 //NEMICO BASE (si muove nella stessa direzione finchè non trova un ostacolo)
@@ -82,6 +86,10 @@ void base_enemy::move(Player *pl) {
 
 //NEMICO FORTE (si muove sopra i muri e insegue il player)
 advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
+    do {
+        x=rand()%20+20;
+        y=rand()%19+1;
+    }while (mappa->pos(x,y)!='v');
     aspetto='%';
     mappa->cambia(x,y,'%');
     velocita=20;

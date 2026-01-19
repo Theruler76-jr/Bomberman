@@ -13,6 +13,7 @@ public:
     enemy(Map *_mappa=NULL);
     int get_x();
     int get_y();
+    virtual ~enemy()=0;
     virtual void move(Player *pl)=0;
 };
 

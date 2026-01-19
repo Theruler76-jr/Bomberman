@@ -77,14 +77,19 @@ enemy_list* crea_nemici(int livello, Map *_mappa) {
 }
 
 enemy_list* rimuovi_nemico(enemy_list *el, int x, int y) {
-    enemy_list *temp=el, *prev=el;
+    enemy_list *temp=el, *prev=NULL;
     while (temp!=nullptr) {
         if (temp->nemico->get_x()==x && temp->nemico->get_y()==y) {
-            if (prev==el) {
-                return(el->next);
+            if (prev==NULL) {
+                el=el->next;
+                delete temp->nemico;
+                delete temp;
+                return(el);
             }
             else {
                 prev->next=temp->next;
+                delete temp->nemico;
+                delete temp;
                 return(el);
             }
         }
@@ -135,15 +140,20 @@ void move_enemies(enemy_list* el, Player *pl) {
 }
 
 item_list* controlla_item(Player *pl, item_list *il){
-    item_list *temp=il, *prev=il;
+    item_list *temp=il, *prev=NULL;
     while (temp!=nullptr) {
         if (temp->utility->get_x()==pl->get_coordinata_x() && temp->utility->get_y()==pl->get_coordinata_y()) {
             temp->utility->applica_effetto();
-            if (prev==temp) {
-                return(il->next);
+            if (prev==NULL) {
+                il=il->next;
+                delete temp->utility;
+                delete temp;
+                return(il);
             }
             else {
                 prev->next=temp->next;
+                delete temp->utility;
+                delete temp;
                 return(il);
             }
         }
