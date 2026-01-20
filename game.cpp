@@ -95,13 +95,14 @@ enemy_list* rimuovi_nemico(enemy_list *el, int x, int y) {
     return(el);
 }
 
-enemy_list* elimina_enemy_exp(enemy_list *el, int &score, Map *mappa) {
+enemy_list* elimina_enemy_exp(enemy_list *el, int &score, Map *mappa, Level *lv) {
     enemy_list *temp=el;
     while (temp!=nullptr) {
         enemy_list *prossimo=temp->next;
 
         if (mappa->pos(temp->nemico->get_x(),temp->nemico->get_y())==bomb_exp || mappa->pos(temp->nemico->get_x(),temp->nemico->get_y())==bomb_skin) {
             temp->nemico->punteggio(score);
+            (lv->enemy)--;
             el=rimuovi_nemico(el,temp->nemico->get_x(),temp->nemico->get_y());
         }
 
@@ -690,10 +691,10 @@ char game_loop(WINDOW *win) {
 
         queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore, current_level);
 
-        current_level->el=elimina_enemy_exp(current_level->el,score,mapptr);
         current_level->il=controlla_item(current_level,plptr,current_level->il,score);
-        print_routine(current_level, Giocatore, score, win);
+        current_level->el=elimina_enemy_exp(current_level->el,score,mapptr,current_level);
         move_enemies(current_level->el,plptr);
+        print_routine(current_level, Giocatore, score, win);
 
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
         //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
