@@ -26,8 +26,8 @@ int Bomb :: get_activation_time () {
     return activation_time;
 }
 
-bool Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lista_nemici) {
-    bool enemy_killed = false;
+int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lista_nemici) {
+    int enemy_killed = 0;
 
     for (int x_off = -moltiplicatore_esplosione; x_off <= moltiplicatore_esplosione; x_off++) {
         switch (mappa.pos(coordinata_x + x_off, coordinata_y)) {
@@ -43,29 +43,35 @@ bool Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &li
             case 'N':
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'n');
                 break;
+            case 'P':
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'p');
+                break;
+            case 'T':
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'t');
+                break;
             case '#':
                 score += score_per_enemy;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
-                enemy_killed = true;
+                enemy_killed++;
                 break;
             case '%':
                 score += score_per_enemy + 5;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
-                enemy_killed = true;
+                enemy_killed++;
                 break;
             case 'x':
                 score += score_per_enemy + 10;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
-                enemy_killed = true;
+                enemy_killed++;
                 break;
             case 'z':
                 score += score_per_enemy + 15;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
-                enemy_killed = true;
+                enemy_killed++;
                 break;
         }
 
@@ -87,29 +93,35 @@ bool Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &li
             case 'N':
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'n');
                 break;
+            case 'P':
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'p');
+                break;
+            case 'T':
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'t');
+                break;
             case '#':
                 score += score_per_enemy;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
-                enemy_killed = true;
+                enemy_killed++;
                 break;
             case '%':
                 score += score_per_enemy + 5;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
-                enemy_killed = true;
+                enemy_killed++;
                 break;
             case 'x':
                 score += score_per_enemy + 10;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
-                enemy_killed = true;
+                enemy_killed++;
                 break;
             case 'z':
                 score += score_per_enemy + 15;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
-                enemy_killed = true;
+                enemy_killed++;
                 break;
         }
 

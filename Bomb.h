@@ -20,5 +20,5 @@ public:
     int get_coordinata_x ();
     int get_coordinata_y ();
     int get_activation_time (); //restituisce quando e' stata piazzata la bomba (time globale di quando é iniziata l'esecuzione)
-    bool esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list *&lista_nemici); // fa esplodere la bomba e riduce le vite del giocatore in caso venisse colpito
+    int esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list *&lista_nemici); // fa esplodere la bomba e riduce le vite del giocatore in caso venisse colpito
 };

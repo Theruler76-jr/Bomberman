@@ -21,6 +21,7 @@ const int inizio_mappa_x = 32;
 const int inizio_mappa_y = 4;
 const int player_speed = 3; // ogni quanti fps il player si puó muovere
 const int frame_per_animation = 20;
+const char skin_bomb_animation = bomb_skin;
 
 //lista di nemici
 struct enemy_list;
@@ -418,7 +419,7 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
             current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v');
 
         // controllo se deve essere eliminata la mappa
-        if (direction == 'd' && Giocatore.get_coordinata_x() == 40) {
+        if (direction == 'd' && Giocatore.get_coordinata_x() == 40 && current_level -> next != nullptr) {
             if (current_level -> enemy == 0) {
                 score += current_level -> time_left;
                 current_level = remove_level(current_level);
@@ -428,7 +429,7 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
 
             Giocatore.move_x(-40);
         }
-        else if (direction == 'a' && Giocatore.get_coordinata_x() == 0) {
+        else if (direction == 'a' && Giocatore.get_coordinata_x() == 0 && current_level -> previous != nullptr) {
             current_level = previous_level(current_level);
             Giocatore.move_x(40);
         }
@@ -501,20 +502,42 @@ bomb_animation* push_animation (int c_x, int c_y, int molt, bomb_animation* head
     return head_list;
 }
 
-void write_animation (bomb_animation* head_list, Map &mappa) {
+void write_animation (bomb_animation* head_list, Map &mappa, enemy_list *lista_nemici, int &enemy, Player &Giocatore) {
     if (head_list != nullptr) {
         for (int x_offs = - head_list -> moltiplicatore; x_offs <= head_list -> moltiplicatore; x_offs ++) {
+            //controllo eventuali nemici da eliminare durante l'animazione
+            if (mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) == '#' ||
+                mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) == '%' ||
+                mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) == 'x' ||
+                mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) == 'z') {
+                lista_nemici = rimuovi_nemico(lista_nemici, head_list -> coord_x + x_offs, head_list ->coord_y);
+                enemy--;
+                }
+
             if (mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) != 'I') {
-                mappa.cambia(head_list -> coord_x + x_offs, head_list ->coord_y, bomb_skin);
+                if (head_list -> coord_x + x_offs == Giocatore.get_coordinata_x() && head_list ->coord_y == Giocatore.get_coordinata_y())
+                    Giocatore.cambia_numero_vite(-1);
+                mappa.cambia(head_list -> coord_x + x_offs, head_list ->coord_y, skin_bomb_animation);
             }
         }
 
         for (int y_offs = - head_list -> moltiplicatore; y_offs <= head_list -> moltiplicatore; y_offs ++) {
+            //controllo eventuali nemici da eliminare durante l'animazione
+            if (mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) == '#' ||
+                mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) == '%' ||
+                mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) == 'x' ||
+                mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) == 'z') {
+                lista_nemici = rimuovi_nemico(lista_nemici, head_list -> coord_x, head_list ->coord_y + y_offs);
+                enemy--;
+                }
+
             if (mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) != 'I') {
-                mappa.cambia(head_list -> coord_x, head_list ->coord_y + y_offs, bomb_skin);
+                if (head_list -> coord_x == Giocatore.get_coordinata_x() && head_list ->coord_y + y_offs == Giocatore.get_coordinata_y())
+                    Giocatore.cambia_numero_vite(-1);
+                mappa.cambia(head_list -> coord_x, head_list ->coord_y + y_offs, skin_bomb_animation);
             }
         }
-        write_animation(head_list -> next, mappa);
+        write_animation(head_list -> next, mappa, lista_nemici, enemy, Giocatore);
     }
 
 }
@@ -586,14 +609,13 @@ bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocat
         int bomb_x = head -> bomba.get_coordinata_x(), bomb_y = head -> bomba.get_coordinata_y();
 
         //faccio esplodere la bomba e controllo se ho ucciso un nemico
-        bool enemy_killed = head -> bomba.esplodi(map, Giocatore, score, current_level -> el);
+        int enemy_killed = head -> bomba.esplodi(map, Giocatore, score, current_level -> el);
 
         // gestisco l'animazione della bomba che esplode
         queue_bomb_animation = push_animation (bomb_x, bomb_y, Giocatore.get_moltiplicatore_bombe(), queue_bomb_animation);
-        write_animation(queue_bomb_animation, map);
+        write_animation(queue_bomb_animation, map, current_level -> el, current_level -> enemy, Giocatore);
 
-        if (enemy_killed)
-            current_level -> enemy --;
+        current_level -> enemy -= enemy_killed;
 
         bomb_list* tmp = head;
         head = head -> next;
