@@ -39,7 +39,7 @@ enemy_list* push_nemici(enemy_list* el, enemy *_nemico) {
 }
 
 enemy_list* crea_nemici(int livello, Map *_mappa) {
-    enemy_list *en=NULL;
+    enemy_list *en=nullptr;
     if (livello==1) {
         en=push_nemici(en, new base_enemy(_mappa));
         en=push_nemici(en,new base_enemy(_mappa));
@@ -73,10 +73,10 @@ enemy_list* crea_nemici(int livello, Map *_mappa) {
 }
 
 enemy_list* rimuovi_nemico(enemy_list *el, int x, int y) {
-    enemy_list *temp=el, *prev=NULL;
+    enemy_list *temp=el, *prev=nullptr;
     while (temp!=nullptr) {
         if (temp->nemico->get_x()==x && temp->nemico->get_y()==y) {
-            if (prev==NULL) {
+            if (prev==nullptr) {
                 el=el->next;
                 delete temp->nemico;
                 delete temp;
@@ -95,6 +95,21 @@ enemy_list* rimuovi_nemico(enemy_list *el, int x, int y) {
     return(el);
 }
 
+enemy_list* elimina_enemy_exp(enemy_list *el, int &score, Map *mappa) {
+    enemy_list *temp=el;
+    while (temp!=nullptr) {
+        enemy_list *prossimo=temp->next;
+
+        if (mappa->pos(temp->nemico->get_x(),temp->nemico->get_y())==bomb_exp) {
+            temp->nemico->punteggio(score);
+            el=rimuovi_nemico(el,temp->nemico->get_x(),temp->nemico->get_y());
+        }
+
+        temp=prossimo;
+    }
+    return(el);
+}
+
 item_list* push_item(item_list* il, Item *_utility) {
     item_list *temp=new item_list;
     temp->utility=_utility;
@@ -103,7 +118,7 @@ item_list* push_item(item_list* il, Item *_utility) {
 }
 
 item_list* crea_item(int livello, Map *_mappa, Player *pl) {
-    item_list *il=NULL;
+    item_list *il=nullptr;
     if (livello==1) {
         il=push_item(il,new raggio_bomba(_mappa, pl));
         il=push_item(il,new num_bombe(_mappa, pl));
@@ -147,11 +162,11 @@ void move_enemies(enemy_list* el, Player *pl) {
 }
 
 item_list* controlla_item(Level *lv, Player *pl, item_list *il, int &score){
-    item_list *temp=il, *prev=NULL;
+    item_list *temp=il, *prev=nullptr;
     while (temp!=nullptr) {
         if (temp->utility->get_x()==pl->get_coordinata_x() && temp->utility->get_y()==pl->get_coordinata_y()) {
             temp->utility->applica_effetto(lv,score);
-            if (prev==NULL) {
+            if (prev==nullptr) {
                 il=il->next;
                 delete temp->utility;
                 delete temp;
@@ -172,7 +187,7 @@ item_list* controlla_item(Level *lv, Player *pl, item_list *il, int &score){
 
 char controlla_pos(item_list *il, int x, int y) {
     item_list *temp=il;
-    while (temp!=NULL) {
+    while (temp!=nullptr) {
         if (temp->utility->get_x()==x && temp->utility->get_y()==y) {
             return(temp->utility->get_aspetto());
         }
@@ -647,6 +662,7 @@ char game_loop(WINDOW *win) {
     Level *current_level = nullptr;
     current_level = levels_initializer(current_level,plptr); //cosí ho creato tutti i livelli;
     current_level->map.cambia(Giocatore.get_coordinata_x(),Giocatore.get_coordinata_y(),player_skin);
+    Map *mapptr=&current_level->map;
 
     bomb_animation *queue_bomb_animation = nullptr;
 
@@ -688,6 +704,7 @@ char game_loop(WINDOW *win) {
 
         queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore, current_level);
 
+        current_level->el=elimina_enemy_exp(current_level->el,score,mapptr);
         current_level->il=controlla_item(current_level,plptr,current_level->il,score);
         print_routine(current_level, Giocatore, score, win);
         move_enemies(current_level->el,plptr);

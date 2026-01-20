@@ -103,6 +103,9 @@ void base_enemy::move(Player *pl) {
     }
 }
 
+void base_enemy::punteggio(int &score) {
+    score+=score_per_enemy;
+}
 
 //NEMICO FORTE (si muove sopra i muri e insegue il player)
 advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
@@ -212,4 +215,8 @@ void advanced_enemy::move(Player *pl) {
     if (count_down_danno>0) {
         count_down_danno--;
     }
+}
+
+void advanced_enemy::punteggio(int &score) {
+    score+=score_per_enemy+5;
 }

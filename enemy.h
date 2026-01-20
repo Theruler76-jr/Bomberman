@@ -15,6 +15,7 @@ public:
     int get_y();
     virtual ~enemy()=0;
     virtual void move(Player *pl)=0;
+    virtual void punteggio(int &score)=0;
 };
 
 class base_enemy : public enemy {
@@ -23,10 +24,12 @@ protected:
 public:
     base_enemy(Map *_mappa=NULL);
     void move(Player *pl);
+    void punteggio(int &score);
 };
 
 class advanced_enemy : public enemy {
 public:
     advanced_enemy(Map *_mappa=NULL);
     void move(Player *pl);
+    void punteggio(int &score);
 };
