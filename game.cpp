@@ -100,7 +100,7 @@ enemy_list* elimina_enemy_exp(enemy_list *el, int &score, Map *mappa) {
     while (temp!=nullptr) {
         enemy_list *prossimo=temp->next;
 
-        if (mappa->pos(temp->nemico->get_x(),temp->nemico->get_y())==bomb_exp) {
+        if (mappa->pos(temp->nemico->get_x(),temp->nemico->get_y())==bomb_exp || mappa->pos(temp->nemico->get_x(),temp->nemico->get_y())==bomb_skin) {
             temp->nemico->punteggio(score);
             el=rimuovi_nemico(el,temp->nemico->get_x(),temp->nemico->get_y());
         }
