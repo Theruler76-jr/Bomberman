@@ -52,7 +52,10 @@ void base_enemy::move(Player *pl) {
             if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
                 mappa->cambia(x,y,'@');
             }
-            else {
+            else if (mappa->pos(x,y)=='$') {
+                mappa->cambia(x,y,'$');
+            }
+            else{
                 mappa->cambia(x,y,'v');
             }
 
@@ -111,15 +114,22 @@ void advanced_enemy::move(Player *pl) {
             }
 
             //se è su un muro distruttibile
-            if (mappa->pos(x,y)=='x') {
+            else if (mappa->pos(x,y)=='x') {
                 mappa->cambia(x,y,'m');
             }
 
             //se è su un muro indistruttibile
-            if (mappa->pos(x,y)=='z') {
+            else if (mappa->pos(x,y)=='z') {
                 mappa->cambia(x,y,'I');
             }
 
+            else if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
+                mappa->cambia(x,y,'@');
+            }
+
+            else if (mappa->pos(x,y)=='$') {
+                mappa->cambia(x,y,'$');
+            }
 
             if (pl->get_coordinata_x()==x) {
                 if (pl->get_coordinata_y()>y) {
