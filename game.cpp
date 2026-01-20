@@ -76,37 +76,50 @@ enemy_list* rimuovi_nemico(enemy_list *el, int x, int y) {
     enemy_list *temp=el, *prev=nullptr;
     while (temp!=nullptr) {
         if (temp->nemico->get_x()==x && temp->nemico->get_y()==y) {
+            enemy_list *da_eliminare=temp;
             if (prev==nullptr) {
                 el=el->next;
-                delete temp->nemico;
-                delete temp;
-                return(el);
+                temp=el;
             }
             else {
                 prev->next=temp->next;
-                delete temp->nemico;
-                delete temp;
-                return(el);
+                temp=temp->next;
             }
+            delete da_eliminare->nemico;
+            delete da_eliminare;
         }
-        prev=temp;
-        temp=temp->next;
+        else {
+            prev=temp;
+            temp=temp->next;
+        }
     }
     return(el);
 }
 
 enemy_list* elimina_enemy_exp(enemy_list *el, int &score, Map *mappa, Level *lv) {
-    enemy_list *temp=el;
+    enemy_list *temp=el, *prev=nullptr;
     while (temp!=nullptr) {
-        enemy_list *prossimo=temp->next;
-
-        if (mappa->pos(temp->nemico->get_x(),temp->nemico->get_y())==bomb_exp || mappa->pos(temp->nemico->get_x(),temp->nemico->get_y())==bomb_skin) {
+        int x_ax=el->nemico->get_x(), y_ax=el->nemico->get_y();
+        if (mappa->pos(x_ax,y_ax)==bomb_exp) {
             temp->nemico->punteggio(score);
             (lv->enemy)--;
-            el=rimuovi_nemico(el,temp->nemico->get_x(),temp->nemico->get_y());
-        }
 
-        temp=prossimo;
+            enemy_list *da_eliminare=temp;
+            if (prev==nullptr) {
+                el=temp->next;
+                temp=el;
+            }
+            else {
+                prev->next=temp->next;
+                temp=temp->next;
+            }
+            delete da_eliminare->nemico;
+            delete da_eliminare;
+        }
+        else {
+            prev=temp;
+            temp=temp->next;
+        }
     }
     return(el);
 }
