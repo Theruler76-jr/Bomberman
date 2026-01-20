@@ -21,7 +21,7 @@ const int inizio_mappa_x = 32;
 const int inizio_mappa_y = 4;
 const int player_speed = 3; // ogni quanti fps il player si puó muovere
 const int frame_per_animation = 20;
-const char skin_bomb_animation = bomb_skin;
+const char skin_bomb_animation = bomb_exp;
 
 //lista di nemici
 struct enemy_list;

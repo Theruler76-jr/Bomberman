@@ -1,4 +1,7 @@
 #include "enemy.h"
+
+#include "Bomb.h"
+#include "game.h"
 #include "Map.h"
 #include "Player.h"
 
@@ -46,20 +49,22 @@ base_enemy::base_enemy(Map *_mappa) : enemy (_mappa){
 
 void base_enemy::move(Player *pl) {
     if (tick>=velocita) {
-        if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v' || mappa->pos(x-1,y)=='@' || mappa->pos(x,y-1)=='@' || mappa->pos(x+1,y)=='@' || mappa->pos(x,y+1)=='@') {
+        if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v' || mappa->pos(x-1,y)=='@' || mappa->pos(x,y-1)=='@' || mappa->pos(x+1,y)=='@' || mappa->pos(x,y+1)=='@' || mappa->pos(x-1,y)==bomb_exp || mappa->pos(x,y-1)==bomb_exp|| mappa->pos(x+1,y)==bomb_exp || mappa->pos(x,y+1)==bomb_exp) {
 
-            //rimetto il vuoto o il player sotto
+            //rimetto il player sotto
             if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
                 mappa->cambia(x,y,'@');
             }
-            else if (mappa->pos(x,y)=='$') {
-                mappa->cambia(x,y,'$');
+            //caso bomba
+            else if (mappa->pos(x,y)==bomb_exp) {
+                mappa->cambia(x,y,bomb_exp);
             }
+            //caso vuoto
             else{
                 mappa->cambia(x,y,'v');
             }
 
-            while ((dir==0 && (x==1 || (mappa->pos(x-1,y)!='v' && mappa->pos(x-1,y)!='@') )) || (dir==1 && (y==1 || (mappa->pos(x,y-1)!='v' && mappa->pos(x,y-1)!='@'))) || (dir==2 && (x==39 || (mappa->pos(x+1,y)!='v' && mappa->pos(x+1,y)!='@') )) || (dir==3 && (y==19 || (mappa->pos(x,y+1)!='v' && mappa->pos(x,y+1)!='@') )) || dir==-1) {
+            while ((dir==0 && (x==1 || (mappa->pos(x-1,y)!='v' && mappa->pos(x-1,y)!='@' && mappa->pos(x-1,y)!=bomb_exp) )) || (dir==1 && (y==1 || (mappa->pos(x,y-1)!='v' && mappa->pos(x,y-1)!='@' && mappa->pos(x,y-1)!=bomb_exp))) || (dir==2 && (x==39 || (mappa->pos(x+1,y)!='v' && mappa->pos(x+1,y)!='@' && mappa->pos(x+1,y)!=bomb_exp) )) || (dir==3 && (y==19 || (mappa->pos(x,y+1)!='v' && mappa->pos(x,y+1)!='@' && mappa->pos(x,y+1)!=bomb_exp) )) || dir==-1) {
                 dir=rand()%4;
             }
             if (dir==0) {
@@ -77,7 +82,12 @@ void base_enemy::move(Player *pl) {
             tick=0;
 
             //nuova posizione del nemico
-            mappa->cambia(x,y,'#');
+            if (mappa->pos(x,y)==bomb_exp) {
+                mappa->cambia(x,y,bomb_exp);
+            }
+            else {
+                mappa->cambia(x,y,'#');
+            }
         }
     }
     else tick++;
@@ -122,13 +132,13 @@ void advanced_enemy::move(Player *pl) {
             else if (mappa->pos(x,y)=='z') {
                 mappa->cambia(x,y,'I');
             }
-
+            //se era sul player
             else if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
                 mappa->cambia(x,y,'@');
             }
-
-            else if (mappa->pos(x,y)=='$') {
-                mappa->cambia(x,y,'$');
+            //se era su una bomba
+            else if (mappa->pos(x,y)==bomb_exp) {
+                mappa->cambia(x,y,bomb_exp);
             }
 
             if (pl->get_coordinata_x()==x) {
@@ -171,13 +181,23 @@ void advanced_enemy::move(Player *pl) {
             }
 
             //se è su un muro distruttibile
-            if (mappa->pos(x,y)=='m') {
+            else if (mappa->pos(x,y)=='m') {
                 mappa->cambia(x,y,'x');
             }
 
             //se è su un muro indistruttibile
-            if (mappa->pos(x,y)=='I') {
+            else if (mappa->pos(x,y)=='I') {
                 mappa->cambia(x,y,'z');
+            }
+
+            //se è su una bomba
+            else if (mappa->pos(x,y)==bomb_exp) {
+                mappa->cambia(x,y,bomb_exp);
+            }
+
+            //se è sul player
+            else if (mappa->pos(x,y)==player_skin) {
+                mappa->cambia(x,y,'%');
             }
         }
     }

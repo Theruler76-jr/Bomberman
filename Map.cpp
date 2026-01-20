@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 
+#include "Bomb.h"
+
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
 #else
@@ -101,7 +103,7 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
                 mvwaddch(win,i+y_start,j+x_start,'@');
                 wattroff(win,COLOR_PAIR(4));
             }
-            else if (map[i][j]=='$') { //bomba
+            else if (map[i][j]==bomb_skin || map[i][j]==bomb_exp) { //bomba
                 wattron(win,COLOR_PAIR(4));
                 mvwaddch(win,i+y_start,j+x_start,ACS_LANTERN);
                 wattroff(win,COLOR_PAIR(4));
