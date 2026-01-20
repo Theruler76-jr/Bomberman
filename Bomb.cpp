@@ -56,27 +56,27 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
                 enemy_killed++;
                 break;
             case '%':
-                score += score_per_enemy + 5;
-                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
-                mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
-                enemy_killed++;
-                break;
-            case 'x':
                 score += score_per_enemy + 10;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
                 enemy_killed++;
                 break;
+            case 'x':
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
+                mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
+                enemy_killed++;
+                break;
             case 'z':
-                score += score_per_enemy + 15;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x + x_off, coordinata_y);
                 mappa.cambia(coordinata_x + x_off, coordinata_y,'v');
                 enemy_killed++;
                 break;
         }
 
-        if (Giocatore.get_coordinata_x() == coordinata_x + x_off && Giocatore.get_coordinata_y() == coordinata_y)
+        if (Giocatore.get_coordinata_x() == coordinata_x + x_off && Giocatore.get_coordinata_y() == coordinata_y) {
             Giocatore.cambia_numero_vite(-1);
+            Giocatore.immunity();
+        }
     }
 
     for (int y_off = -moltiplicatore_esplosione; y_off <= moltiplicatore_esplosione; y_off++) {
@@ -106,28 +106,29 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
                 enemy_killed++;
                 break;
             case '%':
-                score += score_per_enemy + 5;
-                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
-                mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
-                enemy_killed++;
-                break;
-            case 'x':
                 score += score_per_enemy + 10;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
                 enemy_killed++;
                 break;
+            case 'x':
+                lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
+                mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
+                enemy_killed++;
+                break;
             case 'z':
-                score += score_per_enemy + 15;
                 lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coordinata_y + y_off);
                 mappa.cambia(coordinata_x, coordinata_y + y_off,'v');
                 enemy_killed++;
                 break;
         }
 
-        if (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() + y_off == coordinata_y)
+        if (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() + y_off == coordinata_y) {
             Giocatore.cambia_numero_vite(-1);
+            Giocatore.immunity();
+        }
     }
+
     //per come è stata impostata la funzione tocca fare un controllo aggiuntivo:
     if (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() == coordinata_y)
         Giocatore.cambia_numero_vite(1);

@@ -8,6 +8,8 @@ protected:
     int numero_bombe;
     int bombe_schierate;
     int moltiplicatore_bombe;
+    bool hittable;
+
 public:
     Player (int c_x = 1, int c_y = 1, int n_v = 3, int m_b = 1); //da decidere il numero di vite con cui partire
     int get_coordinata_x ();
@@ -22,4 +24,6 @@ public:
     int get_numero_bombe ();
     int get_bombe_schierate ();
     void cambia_numero_bombe_schierate (int x);
+    void immunity ();
+    void vulnerable ();
 };

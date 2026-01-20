@@ -7,6 +7,7 @@
      numero_vite = n_v;
      numero_bombe = 1;
      bombe_schierate = 0;
+     hittable = true;
      moltiplicatore_bombe = m_b;
 }
 
@@ -20,7 +21,7 @@ int Player :: get_coordinata_y () {
 }
 
 bool Player :: cambia_numero_vite (int x) {
-    if (numero_vite + x >= 0) {
+    if (numero_vite + x >= 0 && hittable) {
         numero_vite += x;
         return true;
     }
@@ -62,4 +63,12 @@ int Player :: get_bombe_schierate () {
 
 void Player :: cambia_numero_bombe_schierate (int x) {
      bombe_schierate += x;
+ }
+
+void Player :: immunity () {
+      hittable = false;
+ }
+
+void Player :: vulnerable () {
+     hittable = true;
  }

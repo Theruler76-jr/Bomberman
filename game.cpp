@@ -468,6 +468,12 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
             if (direction == 'a')
                 Giocatore.move_x(-1);
 
+            if (current_level -> map.pos(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) == skin_bomb_animation) {
+                Giocatore.cambia_numero_vite(-1);
+                Giocatore.immunity();
+            } else
+                Giocatore.vulnerable();
+
             modified = true;
         }
     }
@@ -512,47 +518,26 @@ bomb_animation* push_animation (int c_x, int c_y, int molt, bomb_animation* head
         head_list = to_add;
         return head_list;
     }
+
     bomb_animation *last = get_last_bomb_animation (head_list);
     last -> next = to_add;
     return head_list;
 }
 
-void write_animation (bomb_animation* head_list, Map &mappa, enemy_list *lista_nemici, int &enemy, Player &Giocatore) {
+void write_animation (bomb_animation *&head_list, Map &mappa, enemy_list *&lista_nemici) {
     if (head_list != nullptr) {
         for (int x_offs = - head_list -> moltiplicatore; x_offs <= head_list -> moltiplicatore; x_offs ++) {
-            //controllo eventuali nemici da eliminare durante l'animazione
-            if (mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) == '#' ||
-                mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) == '%' ||
-                mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) == 'x' ||
-                mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) == 'z') {
-                lista_nemici = rimuovi_nemico(lista_nemici, head_list -> coord_x + x_offs, head_list ->coord_y);
-                enemy--;
-                }
-
             if (mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) != 'I') {
-                if (head_list -> coord_x + x_offs == Giocatore.get_coordinata_x() && head_list ->coord_y == Giocatore.get_coordinata_y())
-                    Giocatore.cambia_numero_vite(-1);
                 mappa.cambia(head_list -> coord_x + x_offs, head_list ->coord_y, skin_bomb_animation);
             }
         }
 
         for (int y_offs = - head_list -> moltiplicatore; y_offs <= head_list -> moltiplicatore; y_offs ++) {
-            //controllo eventuali nemici da eliminare durante l'animazione
-            if (mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) == '#' ||
-                mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) == '%' ||
-                mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) == 'x' ||
-                mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) == 'z') {
-                lista_nemici = rimuovi_nemico(lista_nemici, head_list -> coord_x, head_list ->coord_y + y_offs);
-                enemy--;
-                }
-
             if (mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) != 'I') {
-                if (head_list -> coord_x == Giocatore.get_coordinata_x() && head_list ->coord_y + y_offs == Giocatore.get_coordinata_y())
-                    Giocatore.cambia_numero_vite(-1);
                 mappa.cambia(head_list -> coord_x, head_list ->coord_y + y_offs, skin_bomb_animation);
             }
         }
-        write_animation(head_list -> next, mappa, lista_nemici, enemy, Giocatore);
+        write_animation(head_list -> next, mappa, lista_nemici);
     }
 
 }
@@ -576,7 +561,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
     }
 }
 
-bomb_animation* update_list (bomb_animation* head_list, Map &mappa, Player Giocatore, Level *current_level) {
+bomb_animation* update_list (bomb_animation* head_list, Map &mappa, Player &Giocatore, Level *&current_level) {
     if (head_list != nullptr) {
         head_list -> ticks --;
         if (head_list -> ticks == 0) {
@@ -621,6 +606,7 @@ bomb_list* add_bomb (bomb_list *head, int coord_x, int coord_y, unsigned int tim
 
 bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocatore, Map &map, Level *&current_level, int &score, bomb_animation* &queue_bomb_animation) {
     if (head != nullptr && (time - head -> bomba.get_activation_time() >= 3)) {
+
         int bomb_x = head -> bomba.get_coordinata_x(), bomb_y = head -> bomba.get_coordinata_y();
 
         //faccio esplodere la bomba e controllo se ho ucciso un nemico
@@ -628,7 +614,7 @@ bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocat
 
         // gestisco l'animazione della bomba che esplode
         queue_bomb_animation = push_animation (bomb_x, bomb_y, Giocatore.get_moltiplicatore_bombe(), queue_bomb_animation);
-        write_animation(queue_bomb_animation, map, current_level -> el, current_level -> enemy, Giocatore);
+        write_animation(queue_bomb_animation, map, current_level -> el);
 
         current_level -> enemy -= enemy_killed;
 
@@ -639,7 +625,7 @@ bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocat
     return head;
 }
 
-void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map, Level *current_level, int &score, bomb_animation*& queue_bomb_animation) {
+void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map, Level *&current_level, int &score, bomb_animation*& queue_bomb_animation) {
     head = check_bomb_status(head, time_occurred, Giocatore, map, current_level, score, queue_bomb_animation);
 }
 
@@ -654,7 +640,7 @@ char game_loop(WINDOW *win) {
     bool end_game = false, time_exipired = false;
     char input;
     int score = 0, ticks_player = 0;
-    unsigned long int frame = 0, seconds_occurred = clock()/CLOCKS_PER_SEC; //cosí se il game_loop parte dopo non ci sono problemi
+    unsigned long int frame = 0, seconds_occurred = clock()/CLOCKS_PER_SEC, clock_start = clock(); //cosí se il game_loop parte dopo non ci sono problemi
 
     Player Giocatore = Player();
     Player *plptr=&Giocatore;
@@ -711,7 +697,7 @@ char game_loop(WINDOW *win) {
 
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
         //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
-        while (frame == int (clock()/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
+        while (frame == int ((clock() - clock_start)/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
         frame++;
     }
 
