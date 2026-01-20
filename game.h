@@ -1,23 +1,50 @@
 #pragma once
 #include "Player.h"
+#include "enemy.h"
+#include "utility.h"
+#include "Map.h"
+
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
 #else
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
 
-#include "Map.h"
-#include "Player.h"
 #include <ctime>
 
 const int numero_livelli = 5; //questa dichiarazione é temporanea se si vuole rimuovere bisogna accordarsi su un numero
 const char player_skin = '@'; //così se vogliamo cambiare la skin lo si può fare nel chill
 const int time_per_level = 200;
 const int score_per_enemy = 10;
+//lista di nemici
+struct enemy_list {
+    enemy *nemico;
+    enemy_list *next;
+};
 
+//lista di item
+
+class Item; //sennò non compila
+
+struct item_list {
+    Item *utility;
+    item_list *next;
+};
 char game_loop(WINDOW *win);
 struct  bomb_list;
-struct Level;
+struct Level {
+    Map map = Map();
+    int time = 60 * 5;
+    int level_number;
+    int enemy;
+    int time_left = time_per_level;
+    bomb_list *bomb_queue = nullptr;
+    item_list *il = nullptr;
+    enemy_list *el = nullptr;
+
+    Level *previous = nullptr;
+    Level *next = nullptr;
+};
 
 void write_score (int score, WINDOW* win); //scrive il punteggio attuale del giocatore
 void write_lives (Player giocatore, WINDOW *win); //scrive il numero di vite rimanenti al giocatore

@@ -1,4 +1,5 @@
 #include "utility.h"
+#include "game.h"
 
 #include <iostream>
 
@@ -29,6 +30,12 @@ char Item::get_aspetto() { //restituisce lettera piccola
     if (aspetto=='N') {
         return('n');
     }
+    if (aspetto=='P') {
+        return('p');
+    }
+    if (aspetto=='T') {
+        return('t');
+    }
     return('k'); //caso base mai usato
 }
 
@@ -41,7 +48,7 @@ raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     mappa->cambia(x,y,'R');
 }
 
-void raggio_bomba::applica_effetto() {
+void raggio_bomba::applica_effetto(Level *lv, int &score) {
    pl->cambia_moltiplicatore_bombe(1);
 }
 
@@ -50,7 +57,7 @@ nuova_vita::nuova_vita(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     mappa->cambia(x,y,'L');
 }
 
-void nuova_vita::applica_effetto() {
+void nuova_vita::applica_effetto(Level *lv, int &score) {
     pl->cambia_numero_vite(1);
 }
 
@@ -59,7 +66,26 @@ num_bombe::num_bombe(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
     mappa->cambia(x,y,'N');
 }
 
-void num_bombe::applica_effetto() {
+void num_bombe::applica_effetto(Level *lv, int &score) {
     pl->cambia_numero_bombe(1);
 }
+
+add_tempo::add_tempo(Map *_mappa, Player *_pl) : Item(_mappa,_pl){
+    aspetto='T';
+    mappa->cambia(x,y,'T');
+}
+
+void add_tempo::applica_effetto(Level *lv, int &score) {
+    (lv->time_left)+=60;
+}
+
+add_punti::add_punti(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
+    aspetto='P';
+    mappa->cambia(x,y,'P');
+}
+
+void add_punti::applica_effetto(Level *lv, int &score) {
+    score+=50;
+}
+
 

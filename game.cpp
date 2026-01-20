@@ -23,16 +23,10 @@ const int player_speed = 3; // ogni quanti fps il player si puó muovere
 const int frame_per_animation = 20;
 
 //lista di nemici
-struct enemy_list {
-    enemy *nemico;
-    enemy_list *next;
-};
+struct enemy_list;
 
 //lista di item
-struct item_list {
-    Item *utility;
-    item_list *next;
-};
+struct item_list;
 
 //ti metto le funzioni che creano la lista di nemici e item in base al livello
 
@@ -51,6 +45,7 @@ enemy_list* crea_nemici(int livello, Map *_mappa) {
         en=push_nemici(en,new base_enemy(_mappa));
     }
     else if (livello==2) {
+        en=push_nemici(en,new base_enemy(_mappa));
         en=push_nemici(en,new base_enemy(_mappa));
         en=push_nemici(en,new base_enemy(_mappa));
         en=push_nemici(en,new base_enemy(_mappa));
@@ -111,22 +106,33 @@ item_list* crea_item(int livello, Map *_mappa, Player *pl) {
     if (livello==1) {
         il=push_item(il,new raggio_bomba(_mappa, pl));
         il=push_item(il,new num_bombe(_mappa, pl));
+        il=push_item(il,new nuova_vita(_mappa, pl));
+        il=push_item(il,new add_punti(_mappa, pl));
     }
     else if (livello==2) {
         il=push_item(il,new nuova_vita(_mappa,pl));
         il=push_item(il,new num_bombe(_mappa, pl));
+        il=push_item(il,new add_punti(_mappa, pl));
+        il=push_item(il,new add_punti(_mappa, pl));
+
     }
     else if (livello==3) {
         il=push_item(il,new nuova_vita(_mappa,pl));
         il=push_item(il,new raggio_bomba(_mappa, pl));
+        il=push_item(il,new add_punti(_mappa, pl));
+        il=push_item(il,new nuova_vita(_mappa,pl));
     }
     else if (livello==4) {
         il=push_item(il,new raggio_bomba(_mappa, pl));
         il=push_item(il,new nuova_vita(_mappa,pl));
+        il=push_item(il,new add_tempo(_mappa, pl));
+        il=push_item(il,new add_tempo(_mappa, pl));
     }
     else if (livello==5) {
         il=push_item(il,new nuova_vita(_mappa,pl));
         il=push_item(il,new num_bombe(_mappa, pl));
+        il=push_item(il,new add_tempo(_mappa, pl));
+        il=push_item(il,new add_tempo(_mappa, pl));
     }
     return(il);
 }
@@ -139,11 +145,11 @@ void move_enemies(enemy_list* el, Player *pl) {
     }
 }
 
-item_list* controlla_item(Player *pl, item_list *il){
+item_list* controlla_item(Level *lv, Player *pl, item_list *il, int &score){
     item_list *temp=il, *prev=NULL;
     while (temp!=nullptr) {
         if (temp->utility->get_x()==pl->get_coordinata_x() && temp->utility->get_y()==pl->get_coordinata_y()) {
-            temp->utility->applica_effetto();
+            temp->utility->applica_effetto(lv,score);
             if (prev==NULL) {
                 il=il->next;
                 delete temp->utility;
@@ -179,19 +185,7 @@ struct bomb_list {
     bomb_list *next;
 };
 
-struct Level {
-    Map map = Map();
-    int time = 60 * 5;
-    int level_number;
-    int enemy;
-    int time_left = time_per_level;
-    bomb_list *bomb_queue = nullptr;
-    item_list *il = nullptr;
-    enemy_list *el = nullptr;
-
-    Level *previous = nullptr;
-    Level *next = nullptr;
-};
+struct Level;
 
 Level* find_last (Level* current) {
     if (current -> next == nullptr)
@@ -391,7 +385,9 @@ bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
         && mappa.pos(coordinata_x, coordinata_y) != bomb_skin
         && mappa.pos(coordinata_x, coordinata_y) != 'R'
         && mappa.pos(coordinata_x, coordinata_y) != 'L'
-        && mappa.pos(coordinata_x, coordinata_y) != 'N')
+        && mappa.pos(coordinata_x, coordinata_y) != 'N'
+        && mappa.pos(coordinata_x, coordinata_y) != 'P'
+        && mappa.pos(coordinata_x, coordinata_y) != 'T')
         return true;
 
     return false;
@@ -670,7 +666,7 @@ char game_loop(WINDOW *win) {
 
         queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore, current_level);
 
-        current_level->il=controlla_item(plptr,current_level->il);
+        current_level->il=controlla_item(current_level,plptr,current_level->il,score);
         print_routine(current_level, Giocatore, score, win);
         move_enemies(current_level->el,plptr);
 

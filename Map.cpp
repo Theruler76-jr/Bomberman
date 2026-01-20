@@ -3,8 +3,6 @@
 #include <iostream>
 #include <cmath>
 
-#include "utility.h"
-
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
 #else
@@ -88,7 +86,7 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
                 mvwaddch(win,i+y_start,j+x_start,ACS_BLOCK);
                 wattroff(win,COLOR_PAIR(1));
             }
-            else if (map[i][j]=='m' || map[i][j]=='R' || map[i][j]=='L' || map[i][j]=='N') { //muro distruttibile (grigio)
+            else if (map[i][j]=='m' || map[i][j]=='R' || map[i][j]=='L' || map[i][j]=='N' || map[i][j]=='P' || map[i][j]=='T') { //muro distruttibile (grigio)
                 wattron(win,COLOR_PAIR(2));
                 mvwaddch(win,i+y_start,j+x_start,ACS_CKBOARD);
                 wattroff(win,COLOR_PAIR(2));
@@ -121,6 +119,16 @@ void Map::stamp(WINDOW *win, int x_start, int y_start) {
             else if (map[i][j]=='n') { //item con muro distrutto
                 wattron(win,COLOR_PAIR(4));
                 mvwaddch(win,i+y_start,j+x_start,'N');
+                wattroff(win,COLOR_PAIR(4));
+            }
+            else if (map[i][j]=='t') { //item con muro distrutto
+                wattron(win,COLOR_PAIR(4));
+                mvwaddch(win,i+y_start,j+x_start,'T');
+                wattroff(win,COLOR_PAIR(4));
+            }
+            else if (map[i][j]=='p') { //item con muro distrutto
+                wattron(win,COLOR_PAIR(4));
+                mvwaddch(win,i+y_start,j+x_start,'P');
                 wattroff(win,COLOR_PAIR(4));
             }
             else if (map[i][j]=='#') { //nemico base
