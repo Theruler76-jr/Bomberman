@@ -77,6 +77,8 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
                 case 'I':
                     muro_sx = true;
                     break;
+                default:
+                    break;
             }
 
             if (Giocatore.get_coordinata_x() == coord_x_sinistra && Giocatore.get_coordinata_y() == coordinata_y) {
@@ -131,6 +133,8 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
                 case 'I':
                     muro_dx = true;
                     break;
+                default:
+                    break;
             }
 
             if (Giocatore.get_coordinata_x() == coord_x_destra && Giocatore.get_coordinata_y() == coordinata_y) {
@@ -184,6 +188,8 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
                 case 'I':
                     muro_up = true;
                     break;
+                default:
+                    break;
         }
 
             if (Giocatore.get_coordinata_x() == coordinata_x && Giocatore.get_coordinata_y() == coord_y_sopra) {
@@ -236,6 +242,8 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
                     break;
                 case 'I':
                     muro_dw = true;
+                    break;
+                default:
                     break;
         }
 

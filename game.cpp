@@ -585,23 +585,54 @@ void write_animation (bomb_animation *&head_list, Map &mappa, enemy_list *&lista
 }
 
 void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, Player Giocatore, Level* current_level) {
-    for (int x_offs = -moltiplicatore; x_offs <= moltiplicatore; x_offs ++) {
-        if (mappa.pos(coord_x + x_offs, coord_y) != 'I'){
-            if (coord_x + x_offs == Giocatore.get_coordinata_x() && coord_y == Giocatore.get_coordinata_y())
-                mappa.cambia(coord_x + x_offs, coord_y, player_skin);
+    int coord_x_destra = coord_x, coord_x_sinistra = coord_x, coord_y_sopra = coord_y, coord_y_sotto = coord_y;
+    bool muro_dx = false, muro_sx = false, muro_up = false, muro_dw = false;
+    for (int shift = 0; shift <= moltiplicatore; shift++) {
+
+        if (!muro_up) {
+            if (mappa.pos(coord_x, coord_y_sopra) == 'I')
+                muro_up = true;
+            else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sopra)
+                mappa.cambia(coord_x, coord_y_sopra, player_skin);
             else
-                mappa.cambia(coord_x + x_offs, coord_y, controlla_pos(current_level -> il,coord_x + x_offs, coord_y));
+                mappa.cambia (coord_x, coord_y_sopra, controlla_pos(current_level -> il, coord_x, coord_y_sopra));
         }
-    }
-    for (int y_offs = - moltiplicatore; y_offs <= moltiplicatore; y_offs ++) {
-        if (mappa.pos(coord_x, coord_y + y_offs) != 'I') {
-            if (coord_x == Giocatore.get_coordinata_x() && coord_y + y_offs == Giocatore.get_coordinata_y())
-                mappa.cambia(coord_x, coord_y + y_offs, player_skin);
+
+        if (!muro_dw) {
+            if (mappa.pos(coord_x, coord_y_sotto) == 'I')
+                muro_dw = true;
+            else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sotto)
+                mappa.cambia(coord_x, coord_y_sotto, player_skin);
             else
-            mappa.cambia(coord_x, coord_y + y_offs, controlla_pos(current_level -> il,coord_x, coord_y + y_offs));
+                mappa.cambia (coord_x, coord_y_sotto, controlla_pos(current_level -> il, coord_x, coord_y_sopra));
         }
+
+        if (!muro_dx) {
+            if (mappa.pos(coord_x_destra, coord_y) == 'I')
+                muro_dx = true;
+            else if (Giocatore.get_coordinata_x() == coord_x_destra && Giocatore.get_coordinata_y() == coord_y)
+                mappa.cambia(coord_x_destra, coord_y, player_skin);
+            else
+                mappa.cambia (coord_x_destra, coord_y, controlla_pos(current_level -> il, coord_x_destra, coord_y));
+        }
+
+        if (!muro_sx) {
+            if (mappa.pos(coord_x_sinistra, coord_y) == 'I')
+                muro_sx = true;
+            else if (Giocatore.get_coordinata_x() == coord_x_sinistra && Giocatore.get_coordinata_y() == coord_y)
+                mappa.cambia(coord_x_sinistra, coord_y, player_skin);
+            else
+                mappa.cambia (coord_x_sinistra, coord_y, controlla_pos(current_level -> il, coord_x_sinistra, coord_y));
+        }
+
+        //aggiorno le coordinate
+        coord_x_destra ++;
+        coord_x_sinistra --;
+        coord_y_sopra ++;
+        coord_y_sotto --;
     }
 }
+
 
 bomb_animation* update_list (bomb_animation* head_list, Map &mappa, Player &Giocatore, Level *&current_level) {
     if (head_list != nullptr) {
