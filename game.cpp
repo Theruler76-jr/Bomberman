@@ -603,7 +603,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
             else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sotto)
                 mappa.cambia(coord_x, coord_y_sotto, player_skin);
             else
-                mappa.cambia (coord_x, coord_y_sotto, controlla_pos(current_level -> il, coord_x, coord_y_sopra));
+                mappa.cambia (coord_x, coord_y_sotto, controlla_pos(current_level -> il, coord_x, coord_y_sotto));
         }
 
         if (!muro_dx) {
