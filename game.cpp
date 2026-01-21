@@ -21,7 +21,6 @@ const int inizio_mappa_x = 32;
 const int inizio_mappa_y = 4;
 const int player_speed = 3; // ogni quanti fps il player si puó muovere
 const int frame_per_animation = 20;
-const char skin_bomb_animation = bomb_exp;
 
 //lista di nemici
 struct enemy_list;
@@ -99,7 +98,7 @@ enemy_list* rimuovi_nemico(enemy_list *el, int x, int y) {
 enemy_list* elimina_enemy_exp(enemy_list *el, int &score, Map *mappa, Level *lv) {
     enemy_list *temp=el, *prev=nullptr;
     while (temp!=nullptr) {
-        int x_ax=el->nemico->get_x(), y_ax=el->nemico->get_y();
+        int x_ax=temp->nemico->get_x(), y_ax=temp->nemico->get_y();
         if (mappa->pos(x_ax,y_ax)==bomb_exp) {
             temp->nemico->punteggio(score);
             (lv->enemy)--;
@@ -482,7 +481,7 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
             if (direction == 'a')
                 Giocatore.move_x(-1);
 
-            if (current_level -> map.pos(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) == skin_bomb_animation) {
+            if (current_level -> map.pos(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) == bomb_exp) {
                 Giocatore.cambia_numero_vite(-1);
                 Giocatore.immunity();
             } else
@@ -548,28 +547,28 @@ void write_animation (bomb_animation *&head_list, Map &mappa, enemy_list *&lista
                 if (mappa.pos(head_list -> coord_x, coord_y_sopra) == 'I')
                     muro_up = true;
                 else
-                    mappa.cambia (head_list -> coord_x, coord_y_sopra, skin_bomb_animation);
+                    mappa.cambia (head_list -> coord_x, coord_y_sopra, bomb_exp);
             }
 
             if (!muro_dw) {
                 if (mappa.pos(head_list -> coord_x, coord_y_sotto) == 'I')
                     muro_dw = true;
                 else
-                    mappa.cambia (head_list -> coord_x, coord_y_sotto, skin_bomb_animation);
+                    mappa.cambia (head_list -> coord_x, coord_y_sotto, bomb_exp);
             }
 
             if (!muro_dx) {
                 if (mappa.pos(coord_x_destra, head_list -> coord_y) == 'I')
                     muro_dx = true;
                 else
-                    mappa.cambia (coord_x_destra, head_list -> coord_y, skin_bomb_animation);
+                    mappa.cambia (coord_x_destra, head_list -> coord_y, bomb_exp);
             }
 
             if (!muro_sx) {
                 if (mappa.pos(coord_x_sinistra, head_list -> coord_y) == 'I')
                     muro_sx = true;
                 else
-                    mappa.cambia (coord_x_sinistra, head_list -> coord_y, skin_bomb_animation);
+                    mappa.cambia (coord_x_sinistra, head_list -> coord_y, bomb_exp);
             }
 
             //aggiorno le coordinate
@@ -766,6 +765,7 @@ char game_loop(WINDOW *win) {
         current_level->il=controlla_item(current_level,plptr,current_level->il,score);
         current_level->el=elimina_enemy_exp(current_level->el,score,mapptr,current_level);
         move_enemies(current_level->el,plptr);
+        current_level->el=elimina_enemy_exp(current_level->el,score,mapptr,current_level);
         print_routine(current_level, Giocatore, score, win);
 
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
