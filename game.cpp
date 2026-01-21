@@ -539,7 +539,7 @@ bomb_animation* push_animation (int c_x, int c_y, int molt, bomb_animation* head
 
 void write_animation (bomb_animation *&head_list, Map &mappa, enemy_list *&lista_nemici) {
     if (head_list != nullptr) {
-        int enemy_killed = 0, coord_x_destra = head_list -> coord_x, coord_x_sinistra = head_list -> coord_x, coord_y_sopra = head_list -> coord_y, coord_y_sotto = head_list -> coord_y;
+        int coord_x_destra = head_list -> coord_x, coord_x_sinistra = head_list -> coord_x, coord_y_sopra = head_list -> coord_y, coord_y_sotto = head_list -> coord_y;
         bool muro_dx = false, muro_sx = false, muro_up = false, muro_dw = false;
         for (int shift = 0; shift <= head_list -> moltiplicatore; shift++) {
 
@@ -735,20 +735,13 @@ char game_loop(WINDOW *win) {
 
         if (input == 'q')
             end_game = true;
-        else if (input == 'p')
-            current_level = next_level(current_level);
-        else if (input == 'o')
-            current_level = previous_level(current_level);
         else if ((input == 'w' || input == 'a' || input == 's' || input == 'd') && ticks_player == 0) {
             current_level = move_player(input,current_level,Giocatore,score);
             ticks_player = player_speed;
         }
-        else if (input == 'z')
-            end_game = !Giocatore.cambia_numero_vite(-1);
         else if (input == ' ')
             current_level -> bomb_queue = add_bomb(current_level -> bomb_queue, Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), seconds_occurred,Giocatore.get_moltiplicatore_bombe(), current_level -> map, Giocatore);
-        else if (input == 'e')
-            current_level -> enemy --;
+
 
 
         //parte degli update
