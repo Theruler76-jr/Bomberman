@@ -760,12 +760,13 @@ char game_loop(WINDOW *win) {
         if (ticks_player > 0)
             ticks_player--;
 
-        queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore, current_level);
-
         current_level->il=controlla_item(current_level,plptr,current_level->il,score);
         current_level->el=elimina_enemy_exp(current_level->el,score,mapptr,current_level);
         move_enemies(current_level->el,plptr);
+
         current_level->el=elimina_enemy_exp(current_level->el,score,mapptr,current_level);
+
+        queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore, current_level);
         print_routine(current_level, Giocatore, score, win);
 
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I

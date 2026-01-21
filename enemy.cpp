@@ -51,8 +51,12 @@ void base_enemy::move(Player *pl) {
     if (tick>=velocita) {
         if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v' || mappa->pos(x-1,y)=='@' || mappa->pos(x,y-1)=='@' || mappa->pos(x+1,y)=='@' || mappa->pos(x,y+1)=='@' || mappa->pos(x-1,y)==bomb_exp || mappa->pos(x,y-1)==bomb_exp|| mappa->pos(x+1,y)==bomb_exp || mappa->pos(x,y+1)==bomb_exp) {
 
+            //caso bomba
+            if (mappa->pos(x,y)==bomb_exp) {
+                mappa->cambia(x,y,bomb_exp);
+            }
             //rimetto il player sotto
-            if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
+            else if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
                 mappa->cambia(x,y,'@');
             }
             //caso bomba
@@ -121,8 +125,12 @@ advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
 void advanced_enemy::move(Player *pl) {
     if (tick>=velocita) {
         if (pl->get_coordinata_x()!=x || pl->get_coordinata_y()!=y) {
+            //se era su una bomba esplosa
+            if (mappa->pos(x,y)==bomb_exp) {
+                mappa->cambia(x,y,bomb_exp);
+            }
             //se è sul vuoto
-            if (mappa->pos(x,y)=='%') {
+            else if (mappa->pos(x,y)=='%') {
                 mappa->cambia(x,y,'v');
             }
 
@@ -139,11 +147,6 @@ void advanced_enemy::move(Player *pl) {
             else if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
                 mappa->cambia(x,y,'@');
             }
-            //se era su una bomba
-            else if (mappa->pos(x,y)==bomb_exp) {
-                mappa->cambia(x,y,bomb_exp);
-            }
-
             if (pl->get_coordinata_x()==x) {
                 if (pl->get_coordinata_y()>y) {
                     y+=1;
@@ -178,8 +181,13 @@ void advanced_enemy::move(Player *pl) {
             }
             tick=0;
 
+            //se è su una bomba
+            if (mappa->pos(x,y)==bomb_exp) {
+                mappa->cambia(x,y,bomb_exp);
+            }
+
             //se è sul vuoto
-            if (mappa->pos(x,y)=='v') {
+            else if (mappa->pos(x,y)=='v') {
                 mappa->cambia(x,y,'%');
             }
 
@@ -191,11 +199,6 @@ void advanced_enemy::move(Player *pl) {
             //se è su un muro indistruttibile
             else if (mappa->pos(x,y)=='I') {
                 mappa->cambia(x,y,'z');
-            }
-
-            //se è su una bomba
-            else if (mappa->pos(x,y)==bomb_exp) {
-                mappa->cambia(x,y,bomb_exp);
             }
 
             //se è sul player
