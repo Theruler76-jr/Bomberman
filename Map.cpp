@@ -20,8 +20,8 @@
  v -> vuoto
  @ -> player
  $ -> bomba
- R/L/N -> item sotto un muro
- r/l/n -> item nel vuoto
+ R/L/N/T/P -> item sotto un muro
+ r/l/n/t/p -> item nel vuoto
  # -> nemico base
  % -> nemico forte (sul vuoto)
  x -> nemico forte (sul muro distruttibile)

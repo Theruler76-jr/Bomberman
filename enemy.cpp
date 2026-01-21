@@ -49,19 +49,26 @@ base_enemy::base_enemy(Map *_mappa) : enemy (_mappa){
 
 void base_enemy::move(Player *pl) {
     if (tick>=velocita) {
-        if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v' || mappa->pos(x-1,y)=='@' || mappa->pos(x,y-1)=='@' || mappa->pos(x+1,y)=='@' || mappa->pos(x,y+1)=='@' || mappa->pos(x-1,y)==bomb_exp || mappa->pos(x,y-1)==bomb_exp|| mappa->pos(x+1,y)==bomb_exp || mappa->pos(x,y+1)==bomb_exp) {
+        if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v'
+            || mappa->pos(x-1,y)=='@' || mappa->pos(x,y-1)=='@' || mappa->pos(x+1,y)=='@' || mappa->pos(x,y+1)=='@'
+            || mappa->pos(x-1,y)==bomb_exp || mappa->pos(x,y-1)==bomb_exp|| mappa->pos(x+1,y)==bomb_exp || mappa->pos(x,y+1)==bomb_exp
+            || mappa->pos(x-1,y)=='l' || mappa->pos(x,y-1)=='l'|| mappa->pos(x+1,y)=='l' || mappa->pos(x,y+1)=='l'
+            || mappa->pos(x-1,y)=='r' || mappa->pos(x,y-1)=='r'|| mappa->pos(x+1,y)=='r' || mappa->pos(x,y+1)=='r'
+            || mappa->pos(x-1,y)=='n' || mappa->pos(x,y-1)=='n'|| mappa->pos(x+1,y)=='n' || mappa->pos(x,y+1)=='n'
+            || mappa->pos(x-1,y)=='t' || mappa->pos(x,y-1)=='t'|| mappa->pos(x+1,y)=='t' || mappa->pos(x,y+1)=='t'
+            || mappa->pos(x-1,y)=='p' || mappa->pos(x,y-1)=='p'|| mappa->pos(x+1,y)=='p' || mappa->pos(x,y+1)=='p') {
 
-            //caso bomba
-            if (mappa->pos(x,y)==bomb_exp) {
-                mappa->cambia(x,y,bomb_exp);
+            //caso bomba/item
+            if (mappa->pos(x,y)==bomb_exp
+                || mappa->pos(x,y)=='l'
+                || mappa->pos(x,y)=='r'
+                || mappa->pos(x,y)=='n'
+                || mappa->pos(x,y)=='t'
+                || mappa->pos(x,y)=='p') {
             }
             //rimetto il player sotto
             else if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
                 mappa->cambia(x,y,'@');
-            }
-            //caso bomba
-            else if (mappa->pos(x,y)==bomb_exp) {
-                mappa->cambia(x,y,bomb_exp);
             }
             //caso vuoto
             else{
@@ -86,9 +93,13 @@ void base_enemy::move(Player *pl) {
             tick=0;
 
             //nuova posizione del nemico
-            if (mappa->pos(x,y)==bomb_exp) {
-                mappa->cambia(x,y,bomb_exp);
-            }
+            if (mappa->pos(x,y)==bomb_exp
+                || mappa->pos(x,y)=='l'
+                || mappa->pos(x,y)=='r'
+                || mappa->pos(x,y)=='n'
+                || mappa->pos(x,y)=='t'
+                || mappa->pos(x,y)=='p') {
+                }
             else {
                 mappa->cambia(x,y,'#');
             }
@@ -125,10 +136,14 @@ advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
 void advanced_enemy::move(Player *pl) {
     if (tick>=velocita) {
         if (pl->get_coordinata_x()!=x || pl->get_coordinata_y()!=y) {
-            //se era su una bomba esplosa
-            if (mappa->pos(x,y)==bomb_exp) {
-                mappa->cambia(x,y,bomb_exp);
-            }
+            //se era su una bomba/item
+            if (mappa->pos(x,y)==bomb_exp
+                || mappa->pos(x,y)=='l'
+                || mappa->pos(x,y)=='r'
+                || mappa->pos(x,y)=='n'
+                || mappa->pos(x,y)=='t'
+                || mappa->pos(x,y)=='p') {
+                }
             //se è sul vuoto
             else if (mappa->pos(x,y)=='%') {
                 mappa->cambia(x,y,'v');
@@ -181,10 +196,14 @@ void advanced_enemy::move(Player *pl) {
             }
             tick=0;
 
-            //se è su una bomba
-            if (mappa->pos(x,y)==bomb_exp) {
-                mappa->cambia(x,y,bomb_exp);
-            }
+            //se è su una bomba/item
+            if (mappa->pos(x,y)==bomb_exp
+                || mappa->pos(x,y)=='l'
+                || mappa->pos(x,y)=='r'
+                || mappa->pos(x,y)=='n'
+                || mappa->pos(x,y)=='t'
+                || mappa->pos(x,y)=='p') {
+                }
 
             //se è sul vuoto
             else if (mappa->pos(x,y)=='v') {
