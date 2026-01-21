@@ -526,17 +526,45 @@ bomb_animation* push_animation (int c_x, int c_y, int molt, bomb_animation* head
 
 void write_animation (bomb_animation *&head_list, Map &mappa, enemy_list *&lista_nemici) {
     if (head_list != nullptr) {
-        for (int x_offs = - head_list -> moltiplicatore; x_offs <= head_list -> moltiplicatore; x_offs ++) {
-            if (mappa.pos(head_list -> coord_x + x_offs, head_list ->coord_y) != 'I') {
-                mappa.cambia(head_list -> coord_x + x_offs, head_list ->coord_y, skin_bomb_animation);
+        int enemy_killed = 0, coord_x_destra = head_list -> coord_x, coord_x_sinistra = head_list -> coord_x, coord_y_sopra = head_list -> coord_y, coord_y_sotto = head_list -> coord_y;
+        bool muro_dx = false, muro_sx = false, muro_up = false, muro_dw = false;
+        for (int shift = 0; shift <= head_list -> moltiplicatore; shift++) {
+
+            if (!muro_up) {
+                if (mappa.pos(head_list -> coord_x, coord_y_sopra) == 'I')
+                    muro_up = true;
+                else
+                    mappa.cambia (head_list -> coord_x, coord_y_sopra, skin_bomb_animation);
             }
+
+            if (!muro_dw) {
+                if (mappa.pos(head_list -> coord_x, coord_y_sotto) == 'I')
+                    muro_dw = true;
+                else
+                    mappa.cambia (head_list -> coord_x, coord_y_sotto, skin_bomb_animation);
+            }
+
+            if (!muro_dx) {
+                if (mappa.pos(coord_x_destra, head_list -> coord_y) == 'I')
+                    muro_dx = true;
+                else
+                    mappa.cambia (coord_x_destra, head_list -> coord_y, skin_bomb_animation);
+            }
+
+            if (!muro_sx) {
+                if (mappa.pos(coord_x_sinistra, head_list -> coord_y) == 'I')
+                    muro_sx = true;
+                else
+                    mappa.cambia (coord_x_sinistra, head_list -> coord_y, skin_bomb_animation);
+            }
+
+            //aggiorno le coordinate
+            coord_x_destra ++;
+            coord_x_sinistra --;
+            coord_y_sopra ++;
+            coord_y_sotto --;
         }
 
-        for (int y_offs = - head_list -> moltiplicatore; y_offs <= head_list -> moltiplicatore; y_offs ++) {
-            if (mappa.pos(head_list -> coord_x, head_list ->coord_y + y_offs) != 'I') {
-                mappa.cambia(head_list -> coord_x, head_list ->coord_y + y_offs, skin_bomb_animation);
-            }
-        }
         write_animation(head_list -> next, mappa, lista_nemici);
     }
 

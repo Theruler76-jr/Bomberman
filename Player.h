@@ -11,7 +11,7 @@ protected:
     bool hittable;
 
 public:
-    Player (int c_x = 1, int c_y = 1, int n_v = 3, int m_b = 1); //da decidere il numero di vite con cui partire
+    Player (int c_x = 1, int c_y = 1, int n_v = 3, int m_b = 2); //da decidere il numero di vite con cui partire
     int get_coordinata_x ();
     int get_coordinata_y ();
     bool cambia_numero_vite (int x); // Ritorna 1 se non é morto, 0 se ha finito le vite. Per decrementare bisogna passare un int negativo
