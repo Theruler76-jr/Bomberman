@@ -435,7 +435,7 @@ bool particular_positionmv (int coord_x, int coord_y, char direction) {
 }
 
 
-Level* move_player (char direction, Level* current_level, Player &Giocatore, int &score) {
+Level* move_player (char direction, Level* current_level, Player &Giocatore, int &score, bool &endgame) {
 
     bool modified = false;
 
@@ -447,15 +447,18 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
             current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v');
 
         // controllo se deve essere eliminata la mappa
-        if (direction == 'd' && Giocatore.get_coordinata_x() == 40 && current_level -> next != nullptr) {
-            if (current_level -> enemy == 0) {
-                score += current_level -> time_left;
-                current_level = remove_level(current_level);
-            }
-            else
-                current_level = next_level(current_level);
+        if (direction == 'd' && Giocatore.get_coordinata_x() == 40) {
+            if ( current_level -> next != nullptr) {
+                if (current_level -> enemy == 0) {
+                    score += current_level -> time_left;
+                    current_level = remove_level(current_level);
+                }
+                else
+                    current_level = next_level(current_level);
 
-            Giocatore.move_x(-40);
+                Giocatore.move_x(-40);
+            } else
+                endgame = true;
         }
         else if (direction == 'a' && Giocatore.get_coordinata_x() == 0 && current_level -> previous != nullptr) {
             current_level = previous_level(current_level);
@@ -744,7 +747,7 @@ char game_loop(WINDOW *win) {
         if (input == 'q')
             end_game = true;
         else if ((input == 'w' || input == 'a' || input == 's' || input == 'd') && ticks_player == 0) {
-            current_level = move_player(input,current_level,Giocatore,score);
+            current_level = move_player(input,current_level,Giocatore,score, end_game);
             ticks_player = player_speed;
         }
         else if (input == ' ')
