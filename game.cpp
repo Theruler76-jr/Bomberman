@@ -583,7 +583,7 @@ void write_animation (bomb_animation *&head_list, Map &mappa, enemy_list *&lista
 
 }
 
-void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, Player Giocatore, Level* current_level) {
+void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, Player Giocatore, Level *&current_level) {
     int coord_x_destra = coord_x, coord_x_sinistra = coord_x, coord_y_sopra = coord_y, coord_y_sotto = coord_y;
     bool muro_dx = false, muro_sx = false, muro_up = false, muro_dw = false;
     for (int shift = 0; shift <= moltiplicatore; shift++) {
@@ -593,8 +593,10 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 muro_up = true;
             else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sopra)
                 mappa.cambia(coord_x, coord_y_sopra, player_skin);
-            else
+            else {
                 mappa.cambia (coord_x, coord_y_sopra, controlla_pos(current_level -> il, coord_x, coord_y_sopra));
+                current_level -> el = rimuovi_nemico(current_level -> el, coord_x, coord_y_sopra);
+            }
         }
 
         if (!muro_dw) {
@@ -602,8 +604,10 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 muro_dw = true;
             else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sotto)
                 mappa.cambia(coord_x, coord_y_sotto, player_skin);
-            else
+            else {
                 mappa.cambia (coord_x, coord_y_sotto, controlla_pos(current_level -> il, coord_x, coord_y_sotto));
+                current_level -> el = rimuovi_nemico(current_level -> el, coord_x, coord_y_sotto);
+            }
         }
 
         if (!muro_dx) {
@@ -611,8 +615,10 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 muro_dx = true;
             else if (Giocatore.get_coordinata_x() == coord_x_destra && Giocatore.get_coordinata_y() == coord_y)
                 mappa.cambia(coord_x_destra, coord_y, player_skin);
-            else
+            else {
                 mappa.cambia (coord_x_destra, coord_y, controlla_pos(current_level -> il, coord_x_destra, coord_y));
+                current_level -> el = rimuovi_nemico(current_level -> el, coord_x_destra, coord_y);
+            }
         }
 
         if (!muro_sx) {
@@ -620,8 +626,10 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 muro_sx = true;
             else if (Giocatore.get_coordinata_x() == coord_x_sinistra && Giocatore.get_coordinata_y() == coord_y)
                 mappa.cambia(coord_x_sinistra, coord_y, player_skin);
-            else
+            else {
                 mappa.cambia (coord_x_sinistra, coord_y, controlla_pos(current_level -> il, coord_x_sinistra, coord_y));
+                current_level -> el = rimuovi_nemico(current_level -> el, coord_x_sinistra, coord_y);
+            }
         }
 
         //aggiorno le coordinate
@@ -761,7 +769,6 @@ char game_loop(WINDOW *win) {
 
         queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore, current_level);
         print_routine(current_level, Giocatore, score, win);
-
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
         //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
         while (frame == int ((clock() - clock_start)/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
