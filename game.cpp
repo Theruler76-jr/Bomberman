@@ -94,6 +94,30 @@ enemy_list* rimuovi_nemico(enemy_list *el, int x, int y) {
     }
     return(el);
 }
+enemy_list* rimuovi_nemico(enemy_list *el, int x, int y, Level *lv) { //variante che toglie i nemici dal livello
+    enemy_list *temp=el, *prev=nullptr;
+    while (temp!=nullptr) {
+        if (temp->nemico->get_x()==x && temp->nemico->get_y()==y) {
+            (lv->enemy)--;
+            enemy_list *da_eliminare=temp;
+            if (prev==nullptr) {
+                el=el->next;
+                temp=el;
+            }
+            else {
+                prev->next=temp->next;
+                temp=temp->next;
+            }
+            delete da_eliminare->nemico;
+            delete da_eliminare;
+        }
+        else {
+            prev=temp;
+            temp=temp->next;
+        }
+    }
+    return(el);
+}
 
 enemy_list* elimina_enemy_exp(enemy_list *el, int &score, Map *mappa, Level *lv) {
     enemy_list *temp=el, *prev=nullptr;
@@ -595,7 +619,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 mappa.cambia(coord_x, coord_y_sopra, player_skin);
             else {
                 mappa.cambia (coord_x, coord_y_sopra, controlla_pos(current_level -> il, coord_x, coord_y_sopra));
-                current_level -> el = rimuovi_nemico(current_level -> el, coord_x, coord_y_sopra);
+                current_level -> el = rimuovi_nemico(current_level -> el, coord_x, coord_y_sopra,current_level);
             }
         }
 
@@ -606,7 +630,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 mappa.cambia(coord_x, coord_y_sotto, player_skin);
             else {
                 mappa.cambia (coord_x, coord_y_sotto, controlla_pos(current_level -> il, coord_x, coord_y_sotto));
-                current_level -> el = rimuovi_nemico(current_level -> el, coord_x, coord_y_sotto);
+                current_level -> el = rimuovi_nemico(current_level -> el, coord_x, coord_y_sotto,current_level);
             }
         }
 
@@ -617,7 +641,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 mappa.cambia(coord_x_destra, coord_y, player_skin);
             else {
                 mappa.cambia (coord_x_destra, coord_y, controlla_pos(current_level -> il, coord_x_destra, coord_y));
-                current_level -> el = rimuovi_nemico(current_level -> el, coord_x_destra, coord_y);
+                current_level -> el = rimuovi_nemico(current_level -> el, coord_x_destra, coord_y,current_level);
             }
         }
 
@@ -628,7 +652,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 mappa.cambia(coord_x_sinistra, coord_y, player_skin);
             else {
                 mappa.cambia (coord_x_sinistra, coord_y, controlla_pos(current_level -> il, coord_x_sinistra, coord_y));
-                current_level -> el = rimuovi_nemico(current_level -> el, coord_x_sinistra, coord_y);
+                current_level -> el = rimuovi_nemico(current_level -> el, coord_x_sinistra, coord_y,current_level);
             }
         }
 
