@@ -75,7 +75,11 @@ void base_enemy::move(Player *pl) {
                 mappa->cambia(x,y,'v');
             }
 
-            while ((dir==0 && (x==1 || (mappa->pos(x-1,y)!='v' && mappa->pos(x-1,y)!='@' && mappa->pos(x-1,y)!=bomb_exp) )) || (dir==1 && (y==1 || (mappa->pos(x,y-1)!='v' && mappa->pos(x,y-1)!='@' && mappa->pos(x,y-1)!=bomb_exp))) || (dir==2 && (x==39 || (mappa->pos(x+1,y)!='v' && mappa->pos(x+1,y)!='@' && mappa->pos(x+1,y)!=bomb_exp) )) || (dir==3 && (y==19 || (mappa->pos(x,y+1)!='v' && mappa->pos(x,y+1)!='@' && mappa->pos(x,y+1)!=bomb_exp) )) || dir==-1) {
+            while ((dir==0 && (x==1 || (mappa->pos(x-1,y)!='v' && mappa->pos(x-1,y)!='@' && mappa->pos(x-1,y)!=bomb_exp && mappa->pos(x-1,y)!='l' && mappa->pos(x-1,y)!='r' && mappa->pos(x-1,y)!='n' && mappa->pos(x-1,y)!='t' && mappa->pos(x-1,y)!='p') ))
+                || (dir==1 && (y==1 || (mappa->pos(x,y-1)!='v' && mappa->pos(x,y-1)!='@' && mappa->pos(x,y-1)!=bomb_exp && mappa->pos(x,y-1)!='l' && mappa->pos(x,y-1)!='r' && mappa->pos(x,y-1)!='n' && mappa->pos(x,y-1)!='t' && mappa->pos(x,y-1)!='p')))
+                || (dir==2 && (x==39 || (mappa->pos(x+1,y)!='v' && mappa->pos(x+1,y)!='@' && mappa->pos(x+1,y)!=bomb_exp && mappa->pos(x+1,y)!='l' && mappa->pos(x+1,y)!='r' && mappa->pos(x+1,y)!='n' && mappa->pos(x+1,y)!='t' && mappa->pos(x+1,y)!='p') ))
+                || (dir==3 && (y==19 || (mappa->pos(x,y+1)!='v' && mappa->pos(x,y+1)!='@' && mappa->pos(x,y+1)!=bomb_exp && mappa->pos(x,y+1)!='l' && mappa->pos(x,y+1)!='r' && mappa->pos(x,y+1)!='n' && mappa->pos(x,y+1)!='t' && mappa->pos(x,y+1)!='p') ))
+                || dir==-1) {
                 dir=rand()%4;
             }
             if (dir==0) {
@@ -130,7 +134,7 @@ advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
     }while (mappa->pos(x,y)!='v');
     aspetto='%';
     mappa->cambia(x,y,'%');
-    velocita=20;
+    velocita=15;
 }
 
 void advanced_enemy::move(Player *pl) {
