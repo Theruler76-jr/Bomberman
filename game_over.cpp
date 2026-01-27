@@ -121,6 +121,9 @@ void game_over_screen(WINDOW *win, int lives, int score, bool times_up) {
     if (name[0] != '\0') save_highscore(name, score);
     curs_set(0);
 
+    delwin(input_box);
+    delwin(dialog);
+
 }
 
 

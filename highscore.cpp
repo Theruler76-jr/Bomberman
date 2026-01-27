@@ -76,6 +76,8 @@ highscore* get_highscores() {
     char buffer[100];
     while (file.getline(buffer, 100)) {
 
+        if (buffer[0] == '\0' || buffer[0] == '\n') continue;
+
         char* name = strtok(buffer, "-");
         char* score = strtok(nullptr, "");
 
@@ -162,21 +164,7 @@ char highscore_loop(WINDOW *win) {
             if (scroll > -total_highscores * 2 + scoreboard_height - 2) scroll -= 2;
         }
 
-        if (input == 10 || input == ' ' || input == 'e' || input == 'E') {
-
-            free_memory(head);
-            nodelay(stdscr, TRUE);
-
-            switch (selection) {
-                case 0:
-                    return 'M';
-                case 1:
-                    return 'Q';
-                default:
-                    return 'E';
-            }
-
-        }
+        if (input == 10 || input == ' ' || input == 'e' || input == 'E') break;
 
 
         box(win, '|', '#');
@@ -260,4 +248,20 @@ char highscore_loop(WINDOW *win) {
         nodelay(stdscr, FALSE);
 
     }
+
+
+    free_memory(head);
+    delwin(scoreboard);
+
+    nodelay(stdscr, TRUE);
+
+    switch (selection) {
+        case 0:
+            return 'M';
+        case 1:
+            return 'Q';
+        default:
+            return 'E';
+    }
+
 }

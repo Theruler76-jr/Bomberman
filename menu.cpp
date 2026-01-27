@@ -116,18 +116,7 @@ char menu_loop(WINDOW *win) {
                 break;
         }
 
-        if (input == 10 || input == ' ' || input == 'e' || input == 'E') {
-            switch (selection) {
-            case 0:
-                return 'G';
-            case 1:
-                return 'H';
-            case 2:
-                return 'Q';
-            default:
-                return 'E';
-            }
-        }
+        if (input == 10 || input == ' ' || input == 'e' || input == 'E') break;
 
 
         box(win, '!', '=');
@@ -189,4 +178,17 @@ char menu_loop(WINDOW *win) {
         frame = frame % total_frames;
 
     }
+
+
+    switch (selection) {
+        case 0:
+            return 'G';
+        case 1:
+            return 'H';
+        case 2:
+            return 'Q';
+        default:
+            return 'E';
+    }
+    
 }
