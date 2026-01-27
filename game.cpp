@@ -282,18 +282,28 @@ Level* levels_initializer (Level *head_level, Player *pl) {
 
 
 Level* remove_level (Level* current_level) {
-    if (current_level -> next == nullptr && current_level -> previous == nullptr) //Significa che era l'ultimo livello quindi la partita é terminata
-        return nullptr;
     Level *to_delete = current_level;
-    to_delete -> next -> previous = to_delete -> previous;
-    if (to_delete -> previous != nullptr)
-        to_delete -> previous -> next = to_delete -> next;
-    if (current_level -> next == nullptr) //In questo modo se é stato completato l'ultimo livello ma ne restano altri incompleti viene riportato al livello incompleto piú vicino
-        current_level = current_level -> previous;       //se invece si volesse far ripartire dal primo basta fare una funzione ricorsiva ausiliaria
-    else
+    //gestisco il caso in cui sia l'ultimo livello a essere eliminato
+    if (current_level -> next == nullptr) {
+        current_level = current_level -> previous;
+        delete to_delete;
+        return current_level;
+    } else { // caso standard
+        current_level -> next -> previous = current_level -> previous;
         current_level = current_level -> next;
-    delete to_delete;
-    return current_level;
+        delete to_delete;
+        return current_level;
+    }
+}
+
+Level* clean_heap (Level *current_level) {
+    if (current_level == nullptr)
+        return nullptr;
+    current_level -> previous = clean_heap(current_level -> previous);
+    current_level -> next = clean_heap(current_level -> next);
+    delete current_level;
+    return nullptr;
+
 }
 
 void write_score (int score, WINDOW *win) {
@@ -459,7 +469,7 @@ bool particular_positionmv (int coord_x, int coord_y, char direction) {
 }
 
 
-Level* move_player (char direction, Level* current_level, Player &Giocatore, int &score, bool &endgame) {
+Level* move_player (char direction, Level* current_level, Player &Giocatore, int &score) {
 
     bool modified = false;
 
@@ -475,17 +485,19 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
             if ( current_level -> next != nullptr) {
                 if (current_level -> enemy == 0) {
                     score += current_level -> time_left;
-                    current_level = remove_level(current_level);
+                    current_level = remove_level (current_level);
                 }
                 else
                     current_level = next_level(current_level);
 
                 Giocatore.move_x(-40);
-            } else
-                endgame = true;
+            }
         }
         else if (direction == 'a' && Giocatore.get_coordinata_x() == 0 && current_level -> previous != nullptr) {
-            current_level = previous_level(current_level);
+            if (current_level -> enemy == 0)
+                current_level = remove_level(current_level);
+            else
+                current_level = previous_level(current_level);
             Giocatore.move_x(40);
         }
 
@@ -768,10 +780,8 @@ char game_loop(WINDOW *win) {
 
         input = getch();
 
-        if (input == 'q')
-            end_game = true;
-        else if ((input == 'w' || input == 'a' || input == 's' || input == 'd') && ticks_player == 0) {
-            current_level = move_player(input,current_level,Giocatore,score, end_game);
+        if ((input == 'w' || input == 'a' || input == 's' || input == 'd') && ticks_player == 0) {
+            current_level = move_player(input,current_level,Giocatore,score);
             ticks_player = player_speed;
         }
         else if (input == ' ')
@@ -788,6 +798,10 @@ char game_loop(WINDOW *win) {
         if (ticks_player > 0)
             ticks_player--;
 
+        //controllo se la partita sia finita
+        if (current_level -> enemy == 0 && current_level -> next == nullptr && current_level -> previous == nullptr)
+            end_game = true;
+
         current_level->il=controlla_item(current_level,plptr,current_level->il,score);
         queue_bomb_animation = update_list(queue_bomb_animation, current_level -> map, Giocatore, current_level);
 
@@ -801,6 +815,7 @@ char game_loop(WINDOW *win) {
         while (frame == int ((clock() - clock_start)/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
         frame++;
     }
+    current_level = clean_heap(current_level);
 
     //per crespi: la boolena che volevi è: time_expired
     game_over_screen(win, Giocatore.get_numero_vite(), score, time_exipired);
