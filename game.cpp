@@ -299,9 +299,11 @@ Level* remove_level (Level* current_level) {
 Level* clean_heap (Level *current_level) {
     if (current_level == nullptr)
         return nullptr;
-    current_level -> previous = clean_heap(current_level -> previous);
-    current_level -> next = clean_heap(current_level -> next);
-    delete current_level;
+    if (current_level -> next != nullptr) {
+        current_level -> next = clean_heap (current_level -> next);
+        delete current_level;
+        return nullptr;
+    }
     return nullptr;
 
 }
@@ -576,6 +578,14 @@ bomb_animation* push_animation (int c_x, int c_y, int molt, bomb_animation* head
     return head_list;
 }
 
+bool bomb_presence (bomb_list *list, int coord_x, int coord_y) {
+    if (list == nullptr)
+        return false;
+    if (list -> bomba.get_coordinata_x() == coord_x && list -> bomba.get_coordinata_y() == coord_y)
+        return true;
+    return bomb_presence(list -> next, coord_x, coord_y);
+}
+
 void write_animation (bomb_animation *&head_list, Map &mappa, enemy_list *&lista_nemici) {
     if (head_list != nullptr) {
         int coord_x_destra = head_list -> coord_x, coord_x_sinistra = head_list -> coord_x, coord_y_sopra = head_list -> coord_y, coord_y_sotto = head_list -> coord_y;
@@ -632,6 +642,8 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 muro_up = true;
             else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sopra)
                 mappa.cambia(coord_x, coord_y_sopra, player_skin);
+            else if (bomb_presence(current_level -> bomb_queue, coord_x, coord_y_sopra))
+                mappa.cambia (coord_x, coord_y_sopra, bomb_skin);
             else {
                 mappa.cambia (coord_x, coord_y_sopra, controlla_pos(current_level -> il, coord_x, coord_y_sopra));
                 current_level -> el = rimuovi_nemico(current_level -> el, coord_x, coord_y_sopra,current_level);
@@ -643,6 +655,8 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 muro_dw = true;
             else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sotto)
                 mappa.cambia(coord_x, coord_y_sotto, player_skin);
+            else if (bomb_presence(current_level -> bomb_queue, coord_x, coord_y_sotto))
+                mappa.cambia (coord_x, coord_y_sotto, bomb_skin);
             else {
                 mappa.cambia (coord_x, coord_y_sotto, controlla_pos(current_level -> il, coord_x, coord_y_sotto));
                 current_level -> el = rimuovi_nemico(current_level -> el, coord_x, coord_y_sotto,current_level);
@@ -654,6 +668,8 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 muro_dx = true;
             else if (Giocatore.get_coordinata_x() == coord_x_destra && Giocatore.get_coordinata_y() == coord_y)
                 mappa.cambia(coord_x_destra, coord_y, player_skin);
+            else if (bomb_presence(current_level -> bomb_queue, coord_x_destra, coord_y))
+                mappa.cambia (coord_x_destra, coord_y, bomb_skin);
             else {
                 mappa.cambia (coord_x_destra, coord_y, controlla_pos(current_level -> il, coord_x_destra, coord_y));
                 current_level -> el = rimuovi_nemico(current_level -> el, coord_x_destra, coord_y,current_level);
@@ -665,6 +681,8 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
                 muro_sx = true;
             else if (Giocatore.get_coordinata_x() == coord_x_sinistra && Giocatore.get_coordinata_y() == coord_y)
                 mappa.cambia(coord_x_sinistra, coord_y, player_skin);
+            else if (bomb_presence(current_level -> bomb_queue, coord_x_sinistra, coord_y))
+                mappa.cambia (coord_x_sinistra, coord_y, bomb_skin);
             else {
                 mappa.cambia (coord_x_sinistra, coord_y, controlla_pos(current_level -> il, coord_x_sinistra, coord_y));
                 current_level -> el = rimuovi_nemico(current_level -> el, coord_x_sinistra, coord_y,current_level);
@@ -740,6 +758,8 @@ bomb_list* check_bomb_status (bomb_list *head, unsigned int time, Player &Giocat
         bomb_list* tmp = head;
         head = head -> next;
         delete tmp; //garbage eliminato
+
+        //head -> next = check_bomb_status(head, time, Giocatore, map, current_level, score, queue_bomb_animation);
     }
     return head;
 }
@@ -815,6 +835,10 @@ char game_loop(WINDOW *win) {
         while (frame == int ((clock() - clock_start)/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
         frame++;
     }
+
+    // libero la memoria allocata nell'heap
+    while (current_level -> previous != nullptr)
+        current_level = current_level -> previous;
     current_level = clean_heap(current_level);
 
     //per crespi: la boolena che volevi è: time_expired
