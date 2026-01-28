@@ -251,7 +251,7 @@ Level* push_level (Level* head_level, int level_number, Player *pl) {
     Level *to_add = new Level;
     to_add -> map.livello(level_number);
     to_add -> level_number = level_number;
-    if (level_number == 0) {
+    if (level_number == 1) {
         to_add -> enemy = 3;
     }
     else {
