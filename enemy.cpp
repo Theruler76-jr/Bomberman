@@ -129,12 +129,12 @@ void base_enemy::punteggio(int &score) {
 //NEMICO FORTE (si muove sopra i muri e insegue il player)
 advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
     do {
-        x=rand()%20+20;
+        x=rand()%30+10;
         y=rand()%19+1;
     }while (mappa->pos(x,y)!='v');
     aspetto='%';
     mappa->cambia(x,y,'%');
-    velocita=15;
+    velocita=12;
 }
 
 void advanced_enemy::move(Player *pl) {
