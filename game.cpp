@@ -28,7 +28,7 @@ struct enemy_list;
 //lista di item
 struct item_list;
 
-//ti metto le funzioni che creano la lista di nemici e item in base al livello
+//FUNZIONI DI GESTIONE NEMICI E ITEM
 
 enemy_list* push_nemici(enemy_list* el, enemy *_nemico) {
     enemy_list *temp=new enemy_list;
@@ -233,6 +233,32 @@ char controlla_pos(item_list *il, int x, int y) {
     return('v');
 }
 
+//LIBERA MEMORIA
+enemy_list* free_enemy(enemy_list *el) {
+    if (el==nullptr) {
+        return(nullptr);
+    }
+    else{
+        enemy_list *temp=el;
+        el=free_enemy(el->next);
+        delete temp->nemico;
+        delete temp;
+    }
+    return(el);
+}
+item_list* free_item(item_list *il) {
+    if (il==nullptr) {
+        return(nullptr);
+    }
+    else{
+        item_list *temp=il;
+        il=free_item(il->next);
+        delete temp->utility;
+        delete temp;
+    }
+    return(il);
+}
+
 struct bomb_list {
     Bomb bomba;
     bomb_list *next;
@@ -302,6 +328,8 @@ Level* clean_heap (Level *current_level) {
         return nullptr;
     if (current_level -> next != nullptr) {
         current_level -> next = clean_heap (current_level -> next);
+        current_level->el=free_enemy(current_level->el);
+        current_level->il=free_item(current_level->il);
         delete current_level;
         return nullptr;
     }
