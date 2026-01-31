@@ -323,20 +323,8 @@ Level* remove_level (Level* current_level) {
     }
 }
 
-Level* clean_heap (Level *current_level) {
-    if (current_level == nullptr)
-        return nullptr;
-    if (current_level -> next != nullptr) {
-        current_level -> next = clean_heap (current_level -> next);
-        current_level->el=free_enemy(current_level->el);
-        current_level->il=free_item(current_level->il);
-        delete current_level;
-        return nullptr;
-    }
-    delete current_level;
-    return nullptr;
 
-}
+
 
 void write_score (int score, WINDOW *win) {
     const char *score_title[4] = {
@@ -799,6 +787,41 @@ void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocat
     head = check_bomb_status(head, time_occurred, Giocatore, map, current_level, score, queue_bomb_animation);
 }
 
+bomb_list* clean_queue (bomb_list* head) {
+    if (head == nullptr)
+        return nullptr;
+    if (head -> next != nullptr)
+        head -> next = clean_queue(head -> next);
+
+    delete head;
+    return nullptr;
+}
+
+bomb_animation* clean_queue (bomb_animation* head) {
+    if (head == nullptr)
+        return nullptr;
+    if (head -> next != nullptr)
+        head -> next = clean_queue (head -> next);
+
+    delete head;
+    return nullptr;
+}
+
+Level* clean_heap (Level *current_level) {
+    if (current_level == nullptr)
+        return nullptr;
+    if (current_level -> next != nullptr) {
+        current_level -> next = clean_heap (current_level -> next);
+        current_level->el=free_enemy(current_level->el);
+        current_level->il=free_item(current_level->il);
+        current_level -> bomb_queue = clean_queue(current_level -> bomb_queue);
+        delete current_level;
+        return nullptr;
+    }
+    delete current_level;
+    return nullptr;
+
+}
 
 char game_loop(WINDOW *win) {
 
@@ -873,6 +896,8 @@ char game_loop(WINDOW *win) {
     while (current_level -> previous != nullptr)
         current_level = current_level -> previous;
     current_level = clean_heap(current_level);
+
+    queue_bomb_animation = clean_queue(queue_bomb_animation);
 
     //per crespi: la boolena che volevi è: time_expired
     game_over_screen(win, Giocatore.get_numero_vite(), score, time_exipired);
