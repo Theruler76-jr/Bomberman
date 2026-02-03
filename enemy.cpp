@@ -23,7 +23,7 @@ enemy :: enemy(Map *_mappa) {
     do {
         x=rand()%35+5;
         y=rand()%19+1;
-    }while (mappa->pos(x,y)!='v');
+    }while (mappa->pos(x,y)!=vuoto);
     tick=0;
     count_down_danno=0;
 }
@@ -42,43 +42,43 @@ enemy::~enemy() {
 
 //NEMICO BASE (si muove nella stessa direzione finchè non trova un ostacolo)
 base_enemy::base_enemy(Map *_mappa) : enemy (_mappa){
-    aspetto='#';
+    aspetto=base_en;
     dir=-1;
-    mappa->cambia(x,y,'#');
+    mappa->cambia(x,y,base_en);
 }
 
 void base_enemy::move(Player *pl) {
     if (tick>=velocita) {
-        if (mappa->pos(x-1,y)=='v' || mappa->pos(x,y-1)=='v' || mappa->pos(x+1,y)=='v' || mappa->pos(x,y+1)=='v'
-            || mappa->pos(x-1,y)=='@' || mappa->pos(x,y-1)=='@' || mappa->pos(x+1,y)=='@' || mappa->pos(x,y+1)=='@'
+        if (mappa->pos(x-1,y)==vuoto || mappa->pos(x,y-1)==vuoto || mappa->pos(x+1,y)==vuoto || mappa->pos(x,y+1)==vuoto
+            || mappa->pos(x-1,y)==player_skin || mappa->pos(x,y-1)==player_skin || mappa->pos(x+1,y)==player_skin || mappa->pos(x,y+1)==player_skin
             || mappa->pos(x-1,y)==bomb_exp || mappa->pos(x,y-1)==bomb_exp|| mappa->pos(x+1,y)==bomb_exp || mappa->pos(x,y+1)==bomb_exp
-            || mappa->pos(x-1,y)=='l' || mappa->pos(x,y-1)=='l'|| mappa->pos(x+1,y)=='l' || mappa->pos(x,y+1)=='l'
-            || mappa->pos(x-1,y)=='r' || mappa->pos(x,y-1)=='r'|| mappa->pos(x+1,y)=='r' || mappa->pos(x,y+1)=='r'
-            || mappa->pos(x-1,y)=='n' || mappa->pos(x,y-1)=='n'|| mappa->pos(x+1,y)=='n' || mappa->pos(x,y+1)=='n'
-            || mappa->pos(x-1,y)=='t' || mappa->pos(x,y-1)=='t'|| mappa->pos(x+1,y)=='t' || mappa->pos(x,y+1)=='t'
-            || mappa->pos(x-1,y)=='p' || mappa->pos(x,y-1)=='p'|| mappa->pos(x+1,y)=='p' || mappa->pos(x,y+1)=='p') {
+            || mappa->pos(x-1,y)==item_l || mappa->pos(x,y-1)==item_l|| mappa->pos(x+1,y)==item_l || mappa->pos(x,y+1)==item_l
+            || mappa->pos(x-1,y)==item_r || mappa->pos(x,y-1)==item_r|| mappa->pos(x+1,y)==item_r || mappa->pos(x,y+1)==item_r
+            || mappa->pos(x-1,y)==item_n || mappa->pos(x,y-1)==item_n|| mappa->pos(x+1,y)==item_n || mappa->pos(x,y+1)==item_n
+            || mappa->pos(x-1,y)==item_t || mappa->pos(x,y-1)==item_t|| mappa->pos(x+1,y)==item_t || mappa->pos(x,y+1)==item_t
+            || mappa->pos(x-1,y)==item_p || mappa->pos(x,y-1)==item_p|| mappa->pos(x+1,y)==item_p || mappa->pos(x,y+1)==item_p) {
 
             //caso bomba/item
             if (mappa->pos(x,y)==bomb_exp
-                || mappa->pos(x,y)=='l'
-                || mappa->pos(x,y)=='r'
-                || mappa->pos(x,y)=='n'
-                || mappa->pos(x,y)=='t'
-                || mappa->pos(x,y)=='p') {
+                || mappa->pos(x,y)==item_l
+                || mappa->pos(x,y)==item_r
+                || mappa->pos(x,y)==item_n
+                || mappa->pos(x,y)==item_t
+                || mappa->pos(x,y)==item_p) {
             }
             //rimetto il player sotto
             else if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
-                mappa->cambia(x,y,'@');
+                mappa->cambia(x,y,player_skin);
             }
             //caso vuoto
             else{
-                mappa->cambia(x,y,'v');
+                mappa->cambia(x,y,vuoto);
             }
 
-            while ((dir==0 && (x==1 || (mappa->pos(x-1,y)!='v' && mappa->pos(x-1,y)!='@' && mappa->pos(x-1,y)!=bomb_exp && mappa->pos(x-1,y)!='l' && mappa->pos(x-1,y)!='r' && mappa->pos(x-1,y)!='n' && mappa->pos(x-1,y)!='t' && mappa->pos(x-1,y)!='p') ))
-                || (dir==1 && (y==1 || (mappa->pos(x,y-1)!='v' && mappa->pos(x,y-1)!='@' && mappa->pos(x,y-1)!=bomb_exp && mappa->pos(x,y-1)!='l' && mappa->pos(x,y-1)!='r' && mappa->pos(x,y-1)!='n' && mappa->pos(x,y-1)!='t' && mappa->pos(x,y-1)!='p')))
-                || (dir==2 && (x==39 || (mappa->pos(x+1,y)!='v' && mappa->pos(x+1,y)!='@' && mappa->pos(x+1,y)!=bomb_exp && mappa->pos(x+1,y)!='l' && mappa->pos(x+1,y)!='r' && mappa->pos(x+1,y)!='n' && mappa->pos(x+1,y)!='t' && mappa->pos(x+1,y)!='p') ))
-                || (dir==3 && (y==19 || (mappa->pos(x,y+1)!='v' && mappa->pos(x,y+1)!='@' && mappa->pos(x,y+1)!=bomb_exp && mappa->pos(x,y+1)!='l' && mappa->pos(x,y+1)!='r' && mappa->pos(x,y+1)!='n' && mappa->pos(x,y+1)!='t' && mappa->pos(x,y+1)!='p') ))
+            while ((dir==0 && (x==1 || (mappa->pos(x-1,y)!=vuoto && mappa->pos(x-1,y)!=player_skin && mappa->pos(x-1,y)!=bomb_exp && mappa->pos(x-1,y)!=item_l && mappa->pos(x-1,y)!=item_r && mappa->pos(x-1,y)!=item_n && mappa->pos(x-1,y)!=item_t && mappa->pos(x-1,y)!=item_p) ))
+                || (dir==1 && (y==1 || (mappa->pos(x,y-1)!=vuoto && mappa->pos(x,y-1)!=player_skin && mappa->pos(x,y-1)!=bomb_exp && mappa->pos(x,y-1)!=item_l && mappa->pos(x,y-1)!=item_r && mappa->pos(x,y-1)!=item_n && mappa->pos(x,y-1)!=item_t && mappa->pos(x,y-1)!=item_p)))
+                || (dir==2 && (x==39 || (mappa->pos(x+1,y)!=vuoto && mappa->pos(x+1,y)!=player_skin && mappa->pos(x+1,y)!=bomb_exp && mappa->pos(x+1,y)!=item_l && mappa->pos(x+1,y)!=item_r && mappa->pos(x+1,y)!=item_n && mappa->pos(x+1,y)!=item_t && mappa->pos(x+1,y)!=item_p) ))
+                || (dir==3 && (y==19 || (mappa->pos(x,y+1)!=vuoto && mappa->pos(x,y+1)!=player_skin && mappa->pos(x,y+1)!=bomb_exp && mappa->pos(x,y+1)!=item_l && mappa->pos(x,y+1)!=item_r && mappa->pos(x,y+1)!=item_n && mappa->pos(x,y+1)!=item_t && mappa->pos(x,y+1)!=item_p) ))
                 || dir==-1) {
                 dir=rand()%4;
             }
@@ -98,14 +98,14 @@ void base_enemy::move(Player *pl) {
 
             //nuova posizione del nemico
             if (mappa->pos(x,y)==bomb_exp
-                || mappa->pos(x,y)=='l'
-                || mappa->pos(x,y)=='r'
-                || mappa->pos(x,y)=='n'
-                || mappa->pos(x,y)=='t'
-                || mappa->pos(x,y)=='p') {
+                || mappa->pos(x,y)==item_l
+                || mappa->pos(x,y)==item_r
+                || mappa->pos(x,y)==item_n
+                || mappa->pos(x,y)==item_t
+                || mappa->pos(x,y)==item_p) {
                 }
             else {
-                mappa->cambia(x,y,'#');
+                mappa->cambia(x,y,base_en);
             }
         }
     }
@@ -131,9 +131,9 @@ advanced_enemy::advanced_enemy(Map *_mappa) :enemy (_mappa){
     do {
         x=rand()%30+10;
         y=rand()%19+1;
-    }while (mappa->pos(x,y)!='v');
-    aspetto='%';
-    mappa->cambia(x,y,'%');
+    }while (mappa->pos(x,y)!=vuoto);
+    aspetto=adv_enemy_vuoto;
+    mappa->cambia(x,y,adv_enemy_vuoto);
     velocita=12;
 }
 
@@ -142,29 +142,29 @@ void advanced_enemy::move(Player *pl) {
         if (pl->get_coordinata_x()!=x || pl->get_coordinata_y()!=y) {
             //se era su una bomba/item
             if (mappa->pos(x,y)==bomb_exp
-                || mappa->pos(x,y)=='l'
-                || mappa->pos(x,y)=='r'
-                || mappa->pos(x,y)=='n'
-                || mappa->pos(x,y)=='t'
-                || mappa->pos(x,y)=='p') {
+                || mappa->pos(x,y)==item_l
+                || mappa->pos(x,y)==item_r
+                || mappa->pos(x,y)==item_n
+                || mappa->pos(x,y)==item_t
+                || mappa->pos(x,y)==item_p) {
                 }
             //se è sul vuoto
-            else if (mappa->pos(x,y)=='%') {
-                mappa->cambia(x,y,'v');
+            else if (mappa->pos(x,y)==adv_enemy_vuoto) {
+                mappa->cambia(x,y,vuoto);
             }
 
             //se è su un muro distruttibile
-            else if (mappa->pos(x,y)=='x') {
-                mappa->cambia(x,y,'m');
+            else if (mappa->pos(x,y)==adv_enemy_muro) {
+                mappa->cambia(x,y,muro);
             }
 
             //se è su un muro indistruttibile
-            else if (mappa->pos(x,y)=='z') {
-                mappa->cambia(x,y,'I');
+            else if (mappa->pos(x,y)==adv_enemy_muro_ind) {
+                mappa->cambia(x,y,muro_ind);
             }
             //se era sul player
             else if (pl->get_coordinata_x()==x && pl->get_coordinata_y()==y) {
-                mappa->cambia(x,y,'@');
+                mappa->cambia(x,y,player_skin);
             }
             if (pl->get_coordinata_x()==x) {
                 if (pl->get_coordinata_y()>y) {
@@ -202,31 +202,31 @@ void advanced_enemy::move(Player *pl) {
 
             //se è su una bomba/item
             if (mappa->pos(x,y)==bomb_exp
-                || mappa->pos(x,y)=='l'
-                || mappa->pos(x,y)=='r'
-                || mappa->pos(x,y)=='n'
-                || mappa->pos(x,y)=='t'
-                || mappa->pos(x,y)=='p') {
+                || mappa->pos(x,y)==item_l
+                || mappa->pos(x,y)==item_r
+                || mappa->pos(x,y)==item_n
+                || mappa->pos(x,y)==item_t
+                || mappa->pos(x,y)==item_p) {
                 }
 
             //se è sul vuoto
-            else if (mappa->pos(x,y)=='v') {
-                mappa->cambia(x,y,'%');
+            else if (mappa->pos(x,y)==vuoto) {
+                mappa->cambia(x,y,adv_enemy_vuoto);
             }
 
             //se è su un muro distruttibile
-            else if (mappa->pos(x,y)=='m') {
-                mappa->cambia(x,y,'x');
+            else if (mappa->pos(x,y)==muro) {
+                mappa->cambia(x,y,adv_enemy_muro);
             }
 
             //se è su un muro indistruttibile
-            else if (mappa->pos(x,y)=='I') {
-                mappa->cambia(x,y,'z');
+            else if (mappa->pos(x,y)==muro_ind) {
+                mappa->cambia(x,y,adv_enemy_muro_ind);
             }
 
             //se è sul player
             else if (mappa->pos(x,y)==player_skin) {
-                mappa->cambia(x,y,'%');
+                mappa->cambia(x,y,adv_enemy_vuoto);
             }
         }
     }

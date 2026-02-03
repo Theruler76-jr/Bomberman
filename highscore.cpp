@@ -1,4 +1,5 @@
 #include "highscore.h"
+#include "Map.h"
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -167,7 +168,7 @@ char highscore_loop(WINDOW *win) {
         if (input == 10 || input == ' ' || input == 'e' || input == 'E') break;
 
 
-        box(win, '|', '#');
+        box(win, '|', base_en);
 
         for (int i = 0; i < 5; i++) {   // prints ASCII title
 

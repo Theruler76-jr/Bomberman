@@ -9,7 +9,7 @@ Item::Item(Map *_mappa, Player *_pl) {
     do {
         x=rand()%39+1;
         y=rand()%19+1;
-    }while (mappa->pos(x,y)!='m');
+    }while (mappa->pos(x,y)!=muro);
 }
 
 int Item::get_x() {
@@ -21,20 +21,20 @@ int Item::get_y() {
 }
 
 char Item::get_aspetto() { //restituisce lettera piccola
-    if (aspetto=='R') {
-        return('r');
+    if (aspetto==item_wall_R) {
+        return(item_r);
     }
-    if (aspetto=='L') {
-        return('l');
+    if (aspetto==item_wall_L) {
+        return(item_l);
     }
-    if (aspetto=='N') {
-        return('n');
+    if (aspetto==item_wall_N) {
+        return(item_n);
     }
-    if (aspetto=='P') {
-        return('p');
+    if (aspetto==item_wall_P) {
+        return(item_p);
     }
-    if (aspetto=='T') {
-        return('t');
+    if (aspetto==item_wall_T) {
+        return(item_t);
     }
     return('k'); //caso base mai usato
 }
@@ -44,8 +44,8 @@ Item::~Item() {
 }
 
 raggio_bomba::raggio_bomba(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
-    aspetto='R';
-    mappa->cambia(x,y,'R');
+    aspetto=item_wall_R;
+    mappa->cambia(x,y,item_wall_R);
 }
 
 void raggio_bomba::applica_effetto(Level *lv, int &score) {
@@ -53,8 +53,8 @@ void raggio_bomba::applica_effetto(Level *lv, int &score) {
 }
 
 nuova_vita::nuova_vita(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
-    aspetto='L';
-    mappa->cambia(x,y,'L');
+    aspetto=item_wall_L;
+    mappa->cambia(x,y,item_wall_L);
 }
 
 void nuova_vita::applica_effetto(Level *lv, int &score) {
@@ -62,8 +62,8 @@ void nuova_vita::applica_effetto(Level *lv, int &score) {
 }
 
 num_bombe::num_bombe(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
-    aspetto='N';
-    mappa->cambia(x,y,'N');
+    aspetto=item_wall_N;
+    mappa->cambia(x,y,item_wall_N);
 }
 
 void num_bombe::applica_effetto(Level *lv, int &score) {
@@ -71,8 +71,8 @@ void num_bombe::applica_effetto(Level *lv, int &score) {
 }
 
 add_tempo::add_tempo(Map *_mappa, Player *_pl) : Item(_mappa,_pl){
-    aspetto='T';
-    mappa->cambia(x,y,'T');
+    aspetto=item_wall_T;
+    mappa->cambia(x,y,item_wall_T);
 }
 
 void add_tempo::applica_effetto(Level *lv, int &score) {
@@ -80,8 +80,8 @@ void add_tempo::applica_effetto(Level *lv, int &score) {
 }
 
 add_punti::add_punti(Map *_mappa, Player *_pl) : Item(_mappa, _pl){
-    aspetto='P';
-    mappa->cambia(x,y,'P');
+    aspetto=item_wall_P;
+    mappa->cambia(x,y,item_wall_P);
 }
 
 void add_punti::applica_effetto(Level *lv, int &score) {

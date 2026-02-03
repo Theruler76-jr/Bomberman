@@ -34,47 +34,47 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
         //casella a sinistra
         if (!muro_sx) {
             switch (mappa.pos(coord_x_sinistra, coordinata_y)) {
-                case 'm':
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'v');
+                case muro:
+                    mappa.cambia(coord_x_sinistra, coordinata_y,vuoto);
                     break;
-                case 'R':
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'r');
+                case item_wall_R:
+                    mappa.cambia(coord_x_sinistra, coordinata_y,item_r);
                     break;
-                case 'L':
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'l');
+                case item_wall_L:
+                    mappa.cambia(coord_x_sinistra, coordinata_y,item_l);
                     break;
-                case 'N':
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'n');
+                case item_wall_N:
+                    mappa.cambia(coord_x_sinistra, coordinata_y,item_n);
                     break;
-                case 'P':
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'p');
+                case item_wall_P:
+                    mappa.cambia(coord_x_sinistra, coordinata_y,item_p);
                     break;
-                case 'T':
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'t');
+                case item_wall_T:
+                    mappa.cambia(coord_x_sinistra, coordinata_y,item_t);
                     break;
-                case '#':
+                case base_en:
                     score += score_per_enemy;
                     lista_nemici = rimuovi_nemico(lista_nemici, coord_x_sinistra, coordinata_y);
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'v');
+                    mappa.cambia(coord_x_sinistra, coordinata_y,vuoto);
                     enemy_killed++;
                     break;
-                case '%':
+                case adv_enemy_vuoto:
                     score += score_per_enemy + 10;
                     lista_nemici = rimuovi_nemico(lista_nemici, coord_x_sinistra, coordinata_y);
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'v');
+                    mappa.cambia(coord_x_sinistra, coordinata_y,vuoto);
                     enemy_killed++;
                     break;
-                case 'x':
+                case adv_enemy_muro:
                     lista_nemici = rimuovi_nemico(lista_nemici, coord_x_sinistra, coordinata_y);
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'v');
+                    mappa.cambia(coord_x_sinistra, coordinata_y,vuoto);
                     enemy_killed++;
                     break;
-                case 'z':
+                case adv_enemy_muro_ind:
                     lista_nemici = rimuovi_nemico(lista_nemici, coord_x_sinistra, coordinata_y);
-                    mappa.cambia(coord_x_sinistra, coordinata_y,'v');
+                    mappa.cambia(coord_x_sinistra, coordinata_y,vuoto);
                     enemy_killed++;
                     break;
-                case 'I':
+                case muro_ind:
                     muro_sx = true;
                     break;
                 default:
@@ -90,47 +90,47 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
         //casella a destra
         if (!muro_dx) {
             switch (mappa.pos(coord_x_destra, coordinata_y)) {
-                case 'm':
-                    mappa.cambia(coord_x_destra, coordinata_y,'v');
+                case muro:
+                    mappa.cambia(coord_x_destra, coordinata_y,vuoto);
                     break;
-                case 'R':
-                    mappa.cambia(coord_x_destra, coordinata_y,'r');
+                case item_wall_R:
+                    mappa.cambia(coord_x_destra, coordinata_y,item_r);
                     break;
-                case 'L':
-                    mappa.cambia(coord_x_destra, coordinata_y,'l');
+                case item_wall_L:
+                    mappa.cambia(coord_x_destra, coordinata_y,item_l);
                     break;
-                case 'N':
-                    mappa.cambia(coord_x_destra, coordinata_y,'n');
+                case item_wall_N:
+                    mappa.cambia(coord_x_destra, coordinata_y,item_n);
                     break;
-                case 'P':
-                    mappa.cambia(coord_x_destra, coordinata_y,'p');
+                case item_wall_P:
+                    mappa.cambia(coord_x_destra, coordinata_y,item_p);
                     break;
-                case 'T':
-                    mappa.cambia(coord_x_destra, coordinata_y,'t');
+                case item_wall_T:
+                    mappa.cambia(coord_x_destra, coordinata_y,item_t);
                     break;
-                case '#':
+                case base_en:
                     score += score_per_enemy;
                     lista_nemici = rimuovi_nemico(lista_nemici, coord_x_destra, coordinata_y);
-                    mappa.cambia(coord_x_destra, coordinata_y,'v');
+                    mappa.cambia(coord_x_destra, coordinata_y,vuoto);
                     enemy_killed++;
                     break;
-                case '%':
+                case adv_enemy_vuoto:
                     score += score_per_enemy + 10;
                     lista_nemici = rimuovi_nemico(lista_nemici, coord_x_destra, coordinata_y);
-                    mappa.cambia(coord_x_destra, coordinata_y,'v');
+                    mappa.cambia(coord_x_destra, coordinata_y,vuoto);
                     enemy_killed++;
                     break;
-                case 'x':
+                case adv_enemy_muro:
                     lista_nemici = rimuovi_nemico(lista_nemici, coord_x_destra, coordinata_y);
-                    mappa.cambia(coord_x_destra, coordinata_y,'v');
+                    mappa.cambia(coord_x_destra, coordinata_y,vuoto);
                     enemy_killed++;
                     break;
-                case 'z':
+                case adv_enemy_muro_ind:
                     lista_nemici = rimuovi_nemico(lista_nemici, coord_x_destra, coordinata_y);
-                    mappa.cambia(coord_x_destra, coordinata_y,'v');
+                    mappa.cambia(coord_x_destra, coordinata_y,vuoto);
                     enemy_killed++;
                     break;
-                case 'I':
+                case muro_ind:
                     muro_dx = true;
                     break;
                 default:
@@ -145,47 +145,47 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
         //casella sopra
         if (!muro_up) {
             switch (mappa.pos(coordinata_x, coord_y_sopra)) {
-                case 'm':
-                    mappa.cambia(coordinata_x, coord_y_sopra,'v');
+                case muro:
+                    mappa.cambia(coordinata_x, coord_y_sopra,vuoto);
                     break;
-                case 'R':
-                    mappa.cambia(coordinata_x, coord_y_sopra,'r');
+                case item_wall_R:
+                    mappa.cambia(coordinata_x, coord_y_sopra,item_r);
                     break;
-                case 'L':
-                    mappa.cambia(coordinata_x, coord_y_sopra,'l');
+                case item_wall_L:
+                    mappa.cambia(coordinata_x, coord_y_sopra,item_l);
                     break;
-                case 'N':
-                    mappa.cambia(coordinata_x, coord_y_sopra,'n');
+                case item_wall_N:
+                    mappa.cambia(coordinata_x, coord_y_sopra,item_n);
                     break;
-                case 'P':
-                    mappa.cambia(coordinata_x, coord_y_sopra,'p');
+                case item_wall_P:
+                    mappa.cambia(coordinata_x, coord_y_sopra,item_p);
                     break;
-                case 'T':
-                    mappa.cambia(coordinata_x, coord_y_sopra,'t');
+                case item_wall_T:
+                    mappa.cambia(coordinata_x, coord_y_sopra,item_t);
                     break;
-                case '#':
+                case base_en:
                     score += score_per_enemy;
                     lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coord_y_sopra);
-                    mappa.cambia(coordinata_x, coord_y_sopra,'v');
+                    mappa.cambia(coordinata_x, coord_y_sopra,vuoto);
                     enemy_killed++;
                     break;
-                case '%':
+                case adv_enemy_vuoto:
                     score += score_per_enemy + 10;
                     lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coord_y_sopra);
-                    mappa.cambia(coordinata_x, coord_y_sopra,'v');
+                    mappa.cambia(coordinata_x, coord_y_sopra,vuoto);
                     enemy_killed++;
                     break;
-                case 'x':
+                case adv_enemy_muro:
                     lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coord_y_sopra);
-                    mappa.cambia(coordinata_x, coord_y_sopra,'v');
+                    mappa.cambia(coordinata_x, coord_y_sopra,vuoto);
                     enemy_killed++;
                     break;
-                case 'z':
+                case adv_enemy_muro_ind:
                     lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coord_y_sopra);
-                    mappa.cambia(coordinata_x, coord_y_sopra,'v');
+                    mappa.cambia(coordinata_x, coord_y_sopra,vuoto);
                     enemy_killed++;
                     break;
-                case 'I':
+                case muro_ind:
                     muro_up = true;
                     break;
                 default:
@@ -200,47 +200,47 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
         //casella sotto
         if (!muro_dw) {
             switch (mappa.pos(coordinata_x, coord_y_sotto)) {
-                case 'm':
-                    mappa.cambia(coordinata_x, coord_y_sotto,'v');
+                case muro:
+                    mappa.cambia(coordinata_x, coord_y_sotto,vuoto);
                     break;
-                case 'R':
-                    mappa.cambia(coordinata_x, coord_y_sotto,'r');
+                case item_wall_R:
+                    mappa.cambia(coordinata_x, coord_y_sotto,item_r);
                     break;
-                case 'L':
-                    mappa.cambia(coordinata_x, coord_y_sotto,'l');
+                case item_wall_L:
+                    mappa.cambia(coordinata_x, coord_y_sotto,item_l);
                     break;
-                case 'N':
-                    mappa.cambia(coordinata_x, coord_y_sotto,'n');
+                case item_wall_N:
+                    mappa.cambia(coordinata_x, coord_y_sotto,item_n);
                     break;
-                case 'P':
-                    mappa.cambia(coordinata_x, coord_y_sotto,'p');
+                case item_wall_P:
+                    mappa.cambia(coordinata_x, coord_y_sotto,item_p);
                     break;
-                case 'T':
-                    mappa.cambia(coordinata_x, coord_y_sotto,'t');
+                case item_wall_T:
+                    mappa.cambia(coordinata_x, coord_y_sotto,item_t);
                     break;
-                case '#':
+                case base_en:
                     score += score_per_enemy;
                     lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coord_y_sotto);
-                    mappa.cambia(coordinata_x, coord_y_sotto,'v');
+                    mappa.cambia(coordinata_x, coord_y_sotto,vuoto);
                     enemy_killed++;
                     break;
-                case '%':
+                case adv_enemy_vuoto:
                     score += score_per_enemy + 10;
                     lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coord_y_sotto);
-                    mappa.cambia(coordinata_x, coord_y_sotto,'v');
+                    mappa.cambia(coordinata_x, coord_y_sotto,vuoto);
                     enemy_killed++;
                     break;
-                case 'x':
+                case adv_enemy_muro:
                     lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coord_y_sotto);
-                    mappa.cambia(coordinata_x, coord_y_sotto,'v');
+                    mappa.cambia(coordinata_x, coord_y_sotto,vuoto);
                     enemy_killed++;
                     break;
-                case 'z':
+                case adv_enemy_muro_ind:
                     lista_nemici = rimuovi_nemico(lista_nemici, coordinata_x, coord_y_sotto);
-                    mappa.cambia(coordinata_x, coord_y_sotto,'v');
+                    mappa.cambia(coordinata_x, coord_y_sotto,vuoto);
                     enemy_killed++;
                     break;
-                case 'I':
+                case muro_ind:
                     muro_dw = true;
                     break;
                 default:
@@ -260,7 +260,7 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
     }
     //cancello la bomba
     if (Giocatore.get_coordinata_x() != coordinata_x || Giocatore.get_coordinata_y() != coordinata_y)
-        mappa.cambia(coordinata_x,coordinata_y,'v');
+        mappa.cambia(coordinata_x,coordinata_y,vuoto);
     else
         mappa.cambia(coordinata_x,coordinata_y,player_skin);
 

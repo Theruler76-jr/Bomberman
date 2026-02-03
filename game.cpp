@@ -230,7 +230,7 @@ char controlla_pos(item_list *il, int x, int y) {
         }
         temp=temp->next;
     }
-    return('v');
+    return(vuoto);
 }
 
 //LIBERA MEMORIA
@@ -475,14 +475,14 @@ bool is_empty (Map mappa, int coordinata_x, int coordinata_y, char direction) {
     if (direction == 'a')
         coordinata_x--;
 
-    if (mappa.pos(coordinata_x, coordinata_y) != 'I'      //condizioni per far muovere il plyer
-        && mappa.pos(coordinata_x, coordinata_y) != 'm'
+    if (mappa.pos(coordinata_x, coordinata_y) != muro_ind      //condizioni per far muovere il plyer
+        && mappa.pos(coordinata_x, coordinata_y) != muro
         && mappa.pos(coordinata_x, coordinata_y) != bomb_skin
-        && mappa.pos(coordinata_x, coordinata_y) != 'R'
-        && mappa.pos(coordinata_x, coordinata_y) != 'L'
-        && mappa.pos(coordinata_x, coordinata_y) != 'N'
-        && mappa.pos(coordinata_x, coordinata_y) != 'P'
-        && mappa.pos(coordinata_x, coordinata_y) != 'T')
+        && mappa.pos(coordinata_x, coordinata_y) != item_wall_R
+        && mappa.pos(coordinata_x, coordinata_y) != item_wall_L
+        && mappa.pos(coordinata_x, coordinata_y) != item_wall_N
+        && mappa.pos(coordinata_x, coordinata_y) != item_wall_P
+        && mappa.pos(coordinata_x, coordinata_y) != item_wall_T)
         return true;
 
     return false;
@@ -510,7 +510,7 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
 
         //cancello il giocatore dalla posizione attuale in cui é
         if (current_level -> map.pos(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) != bomb_skin)
-            current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v');
+            current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), vuoto);
 
         // controllo se deve essere eliminata la mappa
         if (direction == 'd' && Giocatore.get_coordinata_x() == 40) {
@@ -540,7 +540,7 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
 
             //cancello il giocatore dalla posizione attuale in cui é
             if (current_level -> map.pos(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y()) != bomb_skin)
-                current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), 'v');
+                current_level -> map.cambia(Giocatore.get_coordinata_x(), Giocatore.get_coordinata_y(), vuoto);
 
             //muovo il giocatore
             if (direction == 'w')
@@ -623,28 +623,28 @@ void write_animation (bomb_animation *&head_list, Map &mappa, enemy_list *&lista
         for (int shift = 0; shift <= head_list -> moltiplicatore; shift++) {
 
             if (!muro_up) {
-                if (mappa.pos(head_list -> coord_x, coord_y_sopra) == 'I')
+                if (mappa.pos(head_list -> coord_x, coord_y_sopra) == muro_ind)
                     muro_up = true;
                 else if (mappa.pos(head_list -> coord_x, coord_y_sopra) != bomb_skin && mappa.pos(head_list -> coord_x, coord_y_sopra) != bomb_exp)
                     mappa.cambia (head_list -> coord_x, coord_y_sopra, bomb_exp);
             }
 
             if (!muro_dw) {
-                if (mappa.pos(head_list -> coord_x, coord_y_sotto) == 'I')
+                if (mappa.pos(head_list -> coord_x, coord_y_sotto) == muro_ind)
                     muro_dw = true;
                 else if (mappa.pos(head_list -> coord_x, coord_y_sotto) != bomb_skin && mappa.pos(head_list -> coord_x, coord_y_sotto) != bomb_exp)
                     mappa.cambia (head_list -> coord_x, coord_y_sotto, bomb_exp);
             }
 
             if (!muro_dx) {
-                if (mappa.pos(coord_x_destra, head_list -> coord_y) == 'I')
+                if (mappa.pos(coord_x_destra, head_list -> coord_y) == muro_ind)
                     muro_dx = true;
                 else if (mappa.pos(coord_x_destra, head_list -> coord_y) != bomb_skin && mappa.pos(coord_x_destra, head_list -> coord_y) != bomb_exp)
                     mappa.cambia (coord_x_destra, head_list -> coord_y, bomb_exp);
             }
 
             if (!muro_sx) {
-                if (mappa.pos(coord_x_sinistra, head_list -> coord_y) == 'I')
+                if (mappa.pos(coord_x_sinistra, head_list -> coord_y) == muro_ind)
                     muro_sx = true;
                 else if (mappa.pos(coord_x_sinistra, head_list -> coord_y) != bomb_skin && mappa.pos(coord_x_sinistra, head_list -> coord_y) != bomb_exp)
                     mappa.cambia (coord_x_sinistra, head_list -> coord_y, bomb_exp);
@@ -668,7 +668,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
     for (int shift = 0; shift <= moltiplicatore; shift++) {
 
         if (!muro_up) {
-            if (mappa.pos(coord_x, coord_y_sopra) == 'I')
+            if (mappa.pos(coord_x, coord_y_sopra) == muro_ind)
                 muro_up = true;
             else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sopra)
                 mappa.cambia(coord_x, coord_y_sopra, player_skin);
@@ -681,7 +681,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
         }
 
         if (!muro_dw) {
-            if (mappa.pos(coord_x, coord_y_sotto) == 'I')
+            if (mappa.pos(coord_x, coord_y_sotto) == muro_ind)
                 muro_dw = true;
             else if (Giocatore.get_coordinata_x() == coord_x && Giocatore.get_coordinata_y() == coord_y_sotto)
                 mappa.cambia(coord_x, coord_y_sotto, player_skin);
@@ -694,7 +694,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
         }
 
         if (!muro_dx) {
-            if (mappa.pos(coord_x_destra, coord_y) == 'I')
+            if (mappa.pos(coord_x_destra, coord_y) == muro_ind)
                 muro_dx = true;
             else if (Giocatore.get_coordinata_x() == coord_x_destra && Giocatore.get_coordinata_y() == coord_y)
                 mappa.cambia(coord_x_destra, coord_y, player_skin);
@@ -707,7 +707,7 @@ void erase_animation (int coord_x, int coord_y, int moltiplicatore, Map &mappa, 
         }
 
         if (!muro_sx) {
-            if (mappa.pos(coord_x_sinistra, coord_y) == 'I')
+            if (mappa.pos(coord_x_sinistra, coord_y) == muro_ind)
                 muro_sx = true;
             else if (Giocatore.get_coordinata_x() == coord_x_sinistra && Giocatore.get_coordinata_y() == coord_y)
                 mappa.cambia(coord_x_sinistra, coord_y, player_skin);

@@ -5,9 +5,27 @@
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
 
-//Classe mappa, è una matrice 20*40, i muri indistruttibili sono segnati come I,
-//                                   gli altri come m
-//                                   e gli spazi vuoti come v
+//variabili mappa
+
+const char muro_ind = 'I';
+const char muro = 'm';
+const char vuoto = 'v';
+const char item_wall_R = 'R';
+const char item_wall_L = 'L';
+const char item_wall_N = 'N';
+const char item_wall_T = 'T';
+const char item_wall_P = 'P';
+const char item_r = 'r';
+const char item_l = 'l';
+const char item_n = 'n';
+const char item_t = 't';
+const char item_p = 'p';
+const char base_en = '#';
+const char adv_enemy_vuoto = '%';
+const char adv_enemy_muro = 'x';
+const char adv_enemy_muro_ind = 'z';
+
+//Classe mappa, è una matrice 21*41
 class Map {
 protected:
     int row=21, col=41;

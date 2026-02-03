@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "Map.h"
 
 #include <ctime>
 
@@ -145,7 +146,7 @@ char menu_loop(WINDOW *win) {
 
             char c = ':';
             if (embers[i][1] > height / 3) c = '+';
-            if (embers[i][1] > height / 3 * 2) c = '#';
+            if (embers[i][1] > height / 3 * 2) c = base_en;
 
             mvwprintw(win, embers[i][1], embers[i][0], "%c", c);
 
