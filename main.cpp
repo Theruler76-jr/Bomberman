@@ -28,8 +28,7 @@ int main() {
     keypad(stdscr, TRUE); // permette l'uso del keypad
 
 
-    int width, height;
-    getmaxyx(stdscr, height, width);
+    int height=LINES, width=COLS;
 
     while(height<31 || width<121){
         int y=height/2;
@@ -39,7 +38,8 @@ int main() {
         mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
         refresh();
         napms(100);
-        getmaxyx(stdscr, height, width);
+        height=LINES;
+        width=COLS;
     }
 
     width = 120;
