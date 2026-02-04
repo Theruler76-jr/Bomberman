@@ -44,8 +44,6 @@ int main() {
 
     refresh();
 
-    //std::cout << "size: " << width << ", " << height << std::endl;
-
     char state = 'M';
     bool quit = false;
 
@@ -78,7 +76,6 @@ int main() {
     }
 
     endwin();
-    system("cls");
 
     return 0;
 
