@@ -14,6 +14,11 @@
 int main() {
 
     initscr();
+    napms(100);
+#ifdef _WIN32
+    resize_term(0, 0);
+#endif
+
     refresh();
 
     curs_set(0); // nasconde il cursore di desttesto
@@ -26,7 +31,6 @@ int main() {
     int width, height;
     getmaxyx(stdscr, height, width);
 
-
     while(height<31 || width<121){
         int y=height/2;
         int x=width/2-12;
@@ -34,9 +38,9 @@ int main() {
         clear();
         mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
         refresh();
+        napms(100);
         getmaxyx(stdscr, height, width);
     }
-
 
     width = 120;
     height = 30;
