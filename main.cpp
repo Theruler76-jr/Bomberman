@@ -14,6 +14,7 @@
 int main() {
 
     initscr();
+    refresh();
 
     curs_set(0); // nasconde il cursore di desttesto
     noecho(); // non fa stampare alla console i tasti che preme l'utente
