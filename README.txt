@@ -1,6 +1,21 @@
+
+Prerequisiti:
+
+Assicurarsi di avere MinGW correttamente installato, con le seguenti librerie:
+    ncurses
+    pdcurses
+    libncurses
+    libpdcurses
+
+
+
 Controlli di gioco:
-Per muoversi nel menú e nella partita si possono usare sia i tasti wasd che le frecce su/sinistra/giú/destra, per piazzare le bombe premere spazio.
+
+Per muoversi nel menú e nella partita si possono usare sia i tasti wasd che le frecce su/sinistra/giú/destra,
+per piazzare le bombe premere spazio.
+
 Per muoversi tra i livelli si devono utilizzare le opportune porte visibili nei vari livelli.
+
 Ci sono 5 diversi tipi di item:
     P: aggiunge punti alla partita
     L: aggiunge una vita
@@ -12,7 +27,7 @@ Ci sono 5 diversi tipi di item:
 
 
 
-
-
 Partecipanti al lavoro:
-Francesco Lanzarini francesco.lanzarini2@studio.unibo.it  mat.0001211263
+
+Francesco Lanzarini  -  francesco.lanzarini2@studio.unibo.it  mat.0001211263
+Leonardo  Crespi     -       leonardo.crespi@studio.unibo.it  mat.0001212269

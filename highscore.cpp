@@ -125,8 +125,8 @@ char highscore_loop(WINDOW *win) {
     int width, height;
     getmaxyx(win, height, width);
     if (width == 1 || height == 1) {
-        width = 120;
-        height = 30;
+        width = COLS;
+        height = LINES;
     }
 
     mvwprintw(win, height / 2 - 4, width / 2 - 20, "How many highscores do you want to load?");

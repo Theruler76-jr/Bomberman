@@ -29,21 +29,7 @@ int main() {
     //controllo terminale troppo piccolo
     int height=LINES, width=COLS;
 
-    while(height<31 || width<121){
-        int ch = getch();
-        int y=height/2;
-        int x=width/2-12;
-        if (x<0) x=0;
-        clear();
-        mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
-        refresh();
 
-        height=LINES;
-        width=COLS;
-    }
-
-    width = 120;
-    height = 30;
 
     WINDOW *win = newwin(height, width, 0, 0);
 

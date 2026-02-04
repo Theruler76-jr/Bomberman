@@ -41,8 +41,8 @@ void game_over_screen(WINDOW *win, int lives, int score, bool times_up) {
     int screen_width, screen_height;
     getmaxyx(win, screen_height, screen_width);
     if (screen_width == 1 || screen_height == 1) {
-        screen_width = 120;
-        screen_height = 30;
+        screen_width = COLS;
+        screen_height = LINES;
     }
 
     int dialog_width = 80;

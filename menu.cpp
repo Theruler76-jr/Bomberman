@@ -63,8 +63,8 @@ char menu_loop(WINDOW *win) {
     int width, height;
     getmaxyx(win, height, width);
     if (width == 1 || height == 1) {
-        width = 120;
-        height = 30;
+        width = COLS;
+        height = LINES;
     }
 
     int embers[10][2];
