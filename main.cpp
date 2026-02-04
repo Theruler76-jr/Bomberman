@@ -37,7 +37,7 @@ int main() {
         clear();
         mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
         refresh();
-
+        napms(500);
         height=LINES;
         width=COLS;
     }
