@@ -15,8 +15,8 @@
 */
 
 
-const int inizio_mappa_x = 32;
-const int inizio_mappa_y = 4;
+const int inizio_mappa_x =  LINES ; //32;
+const int inizio_mappa_y = COLS; //4;
 const int player_speed = 3; // ogni quanti fps il player si puó muovere
 const int frame_per_animation = 20;
 
