@@ -111,6 +111,7 @@ void free_memory(highscore* head) {
 char highscore_loop(WINDOW *win) {
 
     werase(win);
+    wrefresh(win);
 
     int width, height;
     getmaxyx(win, height, width);
@@ -120,8 +121,9 @@ char highscore_loop(WINDOW *win) {
     }
 
     mvwprintw(win, height / 2, width / 2 - 20, "How many highscores do you want to load?");
+    wrefresh(win);
 
-    WINDOW* input_box = newwin(3, 18, height / 2 + 3, width / 2);
+    WINDOW* input_box = newwin(3, 7, height / 2 + 3, width / 2 - 3);
     box(input_box, 0, 0);
     wrefresh(input_box);
 
@@ -168,10 +170,10 @@ char highscore_loop(WINDOW *win) {
     highscore* head = nullptr;
 
     if (amount[0] != '\0') {
-        head = get_highscores(100);
+        head = get_highscores(atoi(amount));
     }
     else {
-        head = get_highscores(atoi(amount));
+        head = get_highscores(100);
     }
 
     int total_highscores = get_total_highscores(head);
