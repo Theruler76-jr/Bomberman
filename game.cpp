@@ -362,7 +362,7 @@ void write_lives (Player Giocatore, WINDOW *win) {
     }
 
     //stampa dei cuori
-    mvwprintw(win,inizio_mappa_y + 5, inizio_mappa_x + 55, "             "); //unico modo per gestire bene i cuori
+    mvwprintw(win,inizio_mappa_y + 5, inizio_mappa_x + 55, "          "); //unico modo per gestire bene i cuori
     for (int j = 0; j < Giocatore.get_numero_vite(); j++) {
         mvwaddch(win, inizio_mappa_y + 5, inizio_mappa_x + 55 + (j * 3), ACS_DIAMOND);
     }
@@ -823,6 +823,19 @@ Level* clean_heap (Level *current_level) {
 
 }
 
+char convert_input (char input) {
+    if (input == char (KEY_UP))
+        return 'w';
+    if (input == char (KEY_DOWN))
+        return 's';
+    if (input == char (KEY_LEFT))
+        return 'a';
+    if (input == char (KEY_RIGHT))
+        return 'd';
+    return input;
+
+}
+
 char game_loop(WINDOW *win) {
 
     nodelay(stdscr, TRUE);
@@ -853,6 +866,8 @@ char game_loop(WINDOW *win) {
         }
 
         input = getch();
+
+        input = convert_input (input);
 
         if ((input == 'w' || input == 'a' || input == 's' || input == 'd') && ticks_player == 0) {
             current_level = move_player(input,current_level,Giocatore,score);
