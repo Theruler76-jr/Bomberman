@@ -39,7 +39,7 @@ int main() {
         clear();
         mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
         refresh();
-
+        napms(500);
         height=LINES;
         width=COLS;
     }
@@ -60,7 +60,7 @@ int main() {
                 break;
 
             case 'G':
-                state = game_loop(win);
+                state = game_loop(win, width, height);
                 break;
 
             case 'H':
