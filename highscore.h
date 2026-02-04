@@ -15,7 +15,7 @@ struct highscore{
 
 void save_highscore(char name[], int score);
 highscore* add_highscore(highscore* head, char name[], int score);
-highscore* get_highscores();
+highscore* get_highscores(int max);
 int get_total_highscores(highscore* head);
 void free_memory(highscore* head);
 

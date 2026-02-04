@@ -32,6 +32,7 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
 
     for (int shift = 0; shift <= moltiplicatore_esplosione; shift ++) {
         //casella a sinistra
+
         if (!muro_sx) {
             switch (mappa.pos(coord_x_sinistra, coordinata_y)) {
                 case muro:

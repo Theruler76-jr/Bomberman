@@ -64,7 +64,7 @@ highscore* add_highscore(highscore* head, char name[], int score) {
 }
 
 
-highscore* get_highscores() {
+highscore* get_highscores(int max) {
 
     std::ifstream file("highscores.txt");
 
@@ -74,8 +74,9 @@ highscore* get_highscores() {
 
     highscore* head = nullptr;
 
+    int count = 0;
     char buffer[100];
-    while (file.getline(buffer, 100)) {
+    while (file.getline(buffer, 100) && count < max) {
 
         if (buffer[0] == '\0' || buffer[0] == '\n') continue;
 
@@ -83,6 +84,8 @@ highscore* get_highscores() {
         char* score = strtok(nullptr, "");
 
         head = add_highscore(head, name, atoi(score));
+
+        count ++;
 
     }
 
@@ -109,6 +112,73 @@ char highscore_loop(WINDOW *win) {
 
     werase(win);
 
+    int width, height;
+    getmaxyx(win, height, width);
+    if (width == 1 || height == 1) {
+        width = 120;
+        height = 30;
+    }
+
+    mvwprintw(win, height / 2, width / 2 - 20, "How many highscores do you want to load?");
+
+    WINDOW* input_box = newwin(3, 18, height / 2 + 3, width / 2);
+    box(input_box, 0, 0);
+    wrefresh(input_box);
+
+    char amount[4];
+    int i = 0;
+    int ch;
+
+    memset(amount, 0, sizeof(amount));
+    curs_set(1);
+    wmove(input_box, 1, i + 1);
+
+    while (true) {
+        ch = wgetch(input_box);
+
+        if (ch == 10 || ch == KEY_ENTER) {
+
+            amount[i] = '\0';
+            break;
+
+        }
+
+        if (ch == KEY_BACKSPACE || ch == 127 || ch == '\b') {
+            if (i > 0) {
+                i--;
+                mvwaddch(input_box, 1, i + 1, ' ');
+                wmove(input_box, 1, i + 1);
+            }
+        }
+
+        if (i < 4 && (ch >= 48 && ch <= 57)) {
+            amount[i] = (char)ch;
+            i++;
+            mvwaddch(input_box, 1, i, ch);
+            wmove(input_box, 1, i + 1);
+        }
+
+        wrefresh(input_box);
+
+    }
+
+    delwin(input_box);
+    curs_set(0);
+
+    highscore* head = nullptr;
+
+    if (amount[0] != '\0') {
+        head = get_highscores(100);
+    }
+    else {
+        head = get_highscores(atoi(amount));
+    }
+
+    int total_highscores = get_total_highscores(head);
+    highscore* ptr = head;
+
+    werase(win);
+
     const char *title[5] = {
           "     _  _ _      _      ___                    ",
           "    | || (_)__ _| |_   / __| __ ___ _ _ ___ ___",
@@ -117,18 +187,9 @@ char highscore_loop(WINDOW *win) {
           "           |___/                               "
     };
 
-    highscore* head = get_highscores();
-    int total_highscores = get_total_highscores(head);
-    highscore* ptr = head;
+
 
     keypad(win, TRUE);
-
-    int width, height;
-    getmaxyx(win, height, width);
-    if (width == 1 || height == 1) {
-        width = 120;
-        height = 30;
-    }
 
     int scoreboard_width = width / 2;
     int scoreboard_height = height / 3 * 2 - 1;
