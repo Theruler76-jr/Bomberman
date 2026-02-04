@@ -42,9 +42,6 @@ int main() {
         width=COLS;
     }
 
-    width = 120;
-    height = 30;
-
     WINDOW *win = newwin(height, width, 0, 0);
 
     refresh();
