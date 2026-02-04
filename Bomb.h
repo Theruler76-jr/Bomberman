@@ -19,8 +19,8 @@ protected:
 public:
     Bomb();
     Bomb (int c_x, int c_y, unsigned int time_spawn, int m_e = 1);
-    int get_coordinata_x ();
-    int get_coordinata_y ();
+    int get_coordinata_x (); //restituisce la coordinata x della bomba
+    int get_coordinata_y (); //restituisce la coordinata y della bomba
     int get_activation_time (); //restituisce quando e' stata piazzata la bomba (time globale di quando é iniziata l'esecuzione)
-    int esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list *&lista_nemici); // fa esplodere la bomba e riduce le vite del giocatore in caso venisse colpito
+    int esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list *&lista_nemici); //fa esplodere la bomba e riduce le vite del giocatore in caso venisse colpito
 };

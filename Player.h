@@ -16,15 +16,15 @@ public:
     int get_coordinata_x ();
     int get_coordinata_y ();
     bool cambia_numero_vite (int x); // Ritorna 1 se non é morto, 0 se ha finito le vite. Per decrementare bisogna passare un int negativo
-    void move_x (int x);
-    void move_y (int x);
-    int get_numero_vite ();
+    void move_x (int x); //muove il giocatore sull'asse x
+    void move_y (int x); //muove il giocatore sull'asse delle y
+    int get_numero_vite (); //restituisce il numero vite del giocatore
     void cambia_numero_bombe (int x);
     void cambia_moltiplicatore_bombe (int x);
     int get_moltiplicatore_bombe ();
     int get_numero_bombe ();
     int get_bombe_schierate ();
     void cambia_numero_bombe_schierate (int x);
-    void immunity ();
-    void vulnerable ();
+    void immunity (); //rende il giocatore immune
+    void vulnerable (); //rende il giocatore vulnerabile
 };
