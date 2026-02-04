@@ -1,5 +1,4 @@
 #include "enemy.h"
-
 #include "Bomb.h"
 #include "game.h"
 #include "Map.h"
@@ -13,8 +12,10 @@
 
 #include <iostream>
 #include <ctime>
+
 #define COLOR_GRAY 8
 #define tempo_danno 15
+
 
 //superclasse NEMICO
 enemy :: enemy(Map *_mappa) {

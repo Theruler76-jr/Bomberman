@@ -6,4 +6,5 @@
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
 
+
 char menu_loop(WINDOW *win);

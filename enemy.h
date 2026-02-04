@@ -1,6 +1,8 @@
 #pragma once
+
 #include "Map.h"
 #include "Player.h"
+
 
 class enemy {
 protected:

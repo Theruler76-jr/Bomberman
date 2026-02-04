@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+
 Item::Item(Map *_mappa, Player *_pl) {
     mappa=_mappa;
     pl=_pl;

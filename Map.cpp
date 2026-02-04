@@ -1,9 +1,5 @@
 #include "Map.h"
 #include "game.h"
-
-#include <iostream>
-#include <cmath>
-
 #include "Bomb.h"
 
 #ifdef _WIN32
@@ -11,9 +7,12 @@
 #else
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
+
+#include <iostream>
+#include <cmath>
+
 #define COLOR_GRAY 8
 
-#include <ctime>
 
 /*LEGENDA MAPPA:
  I -> muro indistruttibile

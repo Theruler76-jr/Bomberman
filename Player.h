@@ -1,5 +1,6 @@
 #pragma once
 
+
 class Player {
 protected:
     int coordinata_x;

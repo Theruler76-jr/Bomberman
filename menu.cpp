@@ -1,8 +1,6 @@
 #include "menu.h"
 #include "Map.h"
 
-#include <ctime>
-
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
 #else
@@ -11,6 +9,8 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
+
 
 char menu_loop(WINDOW *win) {
 

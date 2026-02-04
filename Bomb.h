@@ -1,5 +1,6 @@
 #pragma once
 
+
 struct Level;
 const char bomb_skin = '$';
 const char bomb_exp = '&';

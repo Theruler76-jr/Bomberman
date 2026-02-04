@@ -1,4 +1,5 @@
 #include "game_over.h"
+#include "highscore.h"
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -10,7 +11,6 @@
 #include <cstring>
 #include <cctype>
 
-#include "highscore.h"
 
 void game_over_screen(WINDOW *win, int lives, int score, bool times_up) {
 

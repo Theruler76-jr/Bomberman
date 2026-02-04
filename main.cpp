@@ -1,13 +1,14 @@
-#include <iostream>
+#include "menu.h"
+#include "game.h"
+#include "highscore.h"
+
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
 #else
     #include <ncurses.h>         // Percorso standard per Linux
 #endif
 
-#include "menu.h"
-#include "game.h"
-#include "highscore.h"
+#include <iostream>
 
 
 int main() {

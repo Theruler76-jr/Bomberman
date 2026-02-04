@@ -3,7 +3,6 @@
 #include "utility.h"
 #include "game_over.h"
 
-
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
 #else
@@ -14,7 +13,6 @@
  * per il commento del funzionamento di tutte le varie funzioni guardare nel header file, in questo file sono presenti
  * solo commenti che servono durante lo sviluppo/per ricordarmi aggiustamenti da fare in seguito.
 */
-
 
 
 const int inizio_mappa_x = 32;
