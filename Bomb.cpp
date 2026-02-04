@@ -37,21 +37,27 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
             switch (mappa.pos(coord_x_sinistra, coordinata_y)) {
                 case muro:
                     mappa.cambia(coord_x_sinistra, coordinata_y,vuoto);
+                    score += 5;
                     break;
                 case item_wall_R:
                     mappa.cambia(coord_x_sinistra, coordinata_y,item_r);
+                    score += 5;
                     break;
                 case item_wall_L:
                     mappa.cambia(coord_x_sinistra, coordinata_y,item_l);
+                    score += 5;
                     break;
                 case item_wall_N:
                     mappa.cambia(coord_x_sinistra, coordinata_y,item_n);
+                    score += 5;
                     break;
                 case item_wall_P:
                     mappa.cambia(coord_x_sinistra, coordinata_y,item_p);
+                    score += 5;
                     break;
                 case item_wall_T:
                     mappa.cambia(coord_x_sinistra, coordinata_y,item_t);
+                    score += 5;
                     break;
                 case base_en:
                     score += score_per_enemy;
@@ -93,21 +99,27 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
             switch (mappa.pos(coord_x_destra, coordinata_y)) {
                 case muro:
                     mappa.cambia(coord_x_destra, coordinata_y,vuoto);
+                    score += 5;
                     break;
                 case item_wall_R:
                     mappa.cambia(coord_x_destra, coordinata_y,item_r);
+                    score += 5;
                     break;
                 case item_wall_L:
                     mappa.cambia(coord_x_destra, coordinata_y,item_l);
+                    score += 5;
                     break;
                 case item_wall_N:
                     mappa.cambia(coord_x_destra, coordinata_y,item_n);
+                    score += 5;
                     break;
                 case item_wall_P:
                     mappa.cambia(coord_x_destra, coordinata_y,item_p);
+                    score += 5;
                     break;
                 case item_wall_T:
                     mappa.cambia(coord_x_destra, coordinata_y,item_t);
+                    score += 5;
                     break;
                 case base_en:
                     score += score_per_enemy;
@@ -148,21 +160,27 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
             switch (mappa.pos(coordinata_x, coord_y_sopra)) {
                 case muro:
                     mappa.cambia(coordinata_x, coord_y_sopra,vuoto);
+                    score += 5;
                     break;
                 case item_wall_R:
                     mappa.cambia(coordinata_x, coord_y_sopra,item_r);
+                    score += 5;
                     break;
                 case item_wall_L:
                     mappa.cambia(coordinata_x, coord_y_sopra,item_l);
+                    score += 5;
                     break;
                 case item_wall_N:
                     mappa.cambia(coordinata_x, coord_y_sopra,item_n);
+                    score += 5;
                     break;
                 case item_wall_P:
                     mappa.cambia(coordinata_x, coord_y_sopra,item_p);
+                    score += 5;
                     break;
                 case item_wall_T:
                     mappa.cambia(coordinata_x, coord_y_sopra,item_t);
+                    score += 5;
                     break;
                 case base_en:
                     score += score_per_enemy;
@@ -203,21 +221,27 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
             switch (mappa.pos(coordinata_x, coord_y_sotto)) {
                 case muro:
                     mappa.cambia(coordinata_x, coord_y_sotto,vuoto);
+                    score += 5;
                     break;
                 case item_wall_R:
                     mappa.cambia(coordinata_x, coord_y_sotto,item_r);
+                    score += 5;
                     break;
                 case item_wall_L:
                     mappa.cambia(coordinata_x, coord_y_sotto,item_l);
+                    score += 5;
                     break;
                 case item_wall_N:
                     mappa.cambia(coordinata_x, coord_y_sotto,item_n);
+                    score += 5;
                     break;
                 case item_wall_P:
                     mappa.cambia(coordinata_x, coord_y_sotto,item_p);
+                    score += 5;
                     break;
                 case item_wall_T:
                     mappa.cambia(coordinata_x, coord_y_sotto,item_t);
+                    score += 5;
                     break;
                 case base_en:
                     score += score_per_enemy;
