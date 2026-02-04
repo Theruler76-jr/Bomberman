@@ -58,7 +58,7 @@ int main() {
                 break;
 
             case 'G':
-                state = game_loop(win);
+                state = game_loop(win, width, height);
                 break;
 
             case 'H':
