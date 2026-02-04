@@ -14,7 +14,6 @@
 int main() {
 
     initscr();
-    napms(100);
 #ifdef _WIN32
     resize_term(0, 0);
 #endif
@@ -27,7 +26,7 @@ int main() {
     cbreak(); // permette l'uso di Ctrl + C per interrompere il programma
     keypad(stdscr, TRUE); // permette l'uso del keypad
 
-
+    //controllo terminale troppo piccolo
     int height=LINES, width=COLS;
 
     while(height<31 || width<121){
@@ -38,7 +37,7 @@ int main() {
         clear();
         mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
         refresh();
-        napms(100);
+
         height=LINES;
         width=COLS;
     }
