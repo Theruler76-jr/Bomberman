@@ -74,9 +74,8 @@ highscore* get_highscores(int max) {
 
     highscore* head = nullptr;
 
-    int count = 0;
     char buffer[100];
-    while (file.getline(buffer, 100) && count < max) {
+    while (file.getline(buffer, 100)) {
 
         if (buffer[0] == '\0' || buffer[0] == '\n') continue;
 
@@ -85,9 +84,19 @@ highscore* get_highscores(int max) {
 
         head = add_highscore(head, name, atoi(score));
 
-        count ++;
-
     }
+
+    if (head == nullptr) return nullptr;
+
+    highscore* ptr = head;
+    int count = 1;
+
+    while (ptr->next != nullptr && count < max) {
+        ptr = ptr->next;
+        count++;
+    }
+
+    ptr->next = nullptr;
 
     file.close();
     return head;
@@ -120,10 +129,10 @@ char highscore_loop(WINDOW *win) {
         height = 30;
     }
 
-    mvwprintw(win, height / 2, width / 2 - 20, "How many highscores do you want to load?");
+    mvwprintw(win, height / 2 - 4, width / 2 - 20, "How many highscores do you want to load?");
     wrefresh(win);
 
-    WINDOW* input_box = newwin(3, 7, height / 2 + 3, width / 2 - 3);
+    WINDOW* input_box = newwin(3, 7, height / 2, width / 2 - 3);
     box(input_box, 0, 0);
     wrefresh(input_box);
 
