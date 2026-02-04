@@ -171,9 +171,8 @@ char menu_loop(WINDOW *win) {
         }
 
         wrefresh(win);
-        //refresh();
 
-        while (clock() - snapshot < 90) {}
+        while (clock() - snapshot < CLOCKS_PER_SEC * 0.09) {}
 
         frame++;
         frame = frame % total_frames;
