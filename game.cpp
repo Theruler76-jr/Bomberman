@@ -15,8 +15,8 @@
 */
 
 
-//const int inizio_mappa_x =  COLS + 30 ; //32;
-//const int inizio_mappa_y = LINES + 20 ; //4;
+const int inizio_mappa_x =  LINES ; //32;
+const int inizio_mappa_y = COLS; //4;
 const int player_speed = 3; // ogni quanti fps il player si puó muovere
 const int frame_per_animation = 20;
 
@@ -324,7 +324,7 @@ Level* remove_level (Level* current_level) {
 
 
 
-void write_score (int score, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y) {
+void write_score (int score, WINDOW *win) {
     const char *score_title[4] = {
      "  __   ___ __  ___ ___  ",
      R"(/'__/ / _//__\| _ \ __| )",
@@ -346,7 +346,7 @@ void write_score (int score, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y
     mvwprintw(win, inizio_mappa_y + 12, inizio_mappa_x + x, "%d",score);
 }
 
-void write_lives (Player Giocatore, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y) {
+void write_lives (Player Giocatore, WINDOW *win) {
      const char *lives_title [4] = {
           " _   _  _   _  ___  __   ",
          R"(| | | || \ / || __/'__/)",
@@ -367,7 +367,7 @@ void write_lives (Player Giocatore, WINDOW *win, int inizio_mappa_x, int inizio_
 
 }
 
-void write_level (int number, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y) {
+void write_level (int number, WINDOW *win) {
     //mvwprintw(win,2,50,"Level: %d", number);
     const char *level_title [16] = {
         "   __   ",
@@ -436,7 +436,7 @@ Level* previous_level (Level *current_level) {
 }
 
 
-void write_time_left (Level *current_level, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y) {
+void write_time_left (Level *current_level, WINDOW *win) {
 
     const char *time_title[4] = {
         " _____ _ __ __ ___  ",
@@ -554,12 +554,12 @@ Level* move_player (char direction, Level* current_level, Player &Giocatore, int
     return current_level;
 }
 
-void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y) {
-    write_score(score,win,inizio_mappa_x,inizio_mappa_y);
-    write_lives(Giocatore,win, inizio_mappa_x, inizio_mappa_y);
-    write_level(current_level -> level_number,win, inizio_mappa_x, inizio_mappa_y);
+void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win) {
+    write_score(score,win);
+    write_lives(Giocatore,win);
+    write_level(current_level -> level_number,win);
     current_level -> map.stamp(win,inizio_mappa_x,inizio_mappa_y);
-    write_time_left(current_level,win, inizio_mappa_x, inizio_mappa_y);
+    write_time_left(current_level,win);
     wrefresh(win);
 }
 
@@ -834,9 +834,8 @@ char convert_input (char input) {
 
 }
 
-char game_loop(WINDOW *win, int inizio_mappa_x, int inizio_mappa_y) {
-    inizio_mappa_x = (inizio_mappa_x / 2) - 25;
-    inizio_mappa_y =  (inizio_mappa_y/2) - 10;
+char game_loop(WINDOW *win) {
+
     nodelay(stdscr, TRUE);
 
     werase(win); //cancello il menu'
@@ -899,7 +898,7 @@ char game_loop(WINDOW *win, int inizio_mappa_x, int inizio_mappa_y) {
         move_enemies(current_level->el,plptr);
         current_level->el=elimina_enemy_exp(current_level->el,score,mapptr,current_level);
 
-        print_routine(current_level, Giocatore, score, win, inizio_mappa_x, inizio_mappa_y);
+        print_routine(current_level, Giocatore, score, win);
         //ATTENZIONE QUSTA PARTE DEVE RIMANERE SEMPRE PER ULTIMA, NEL CASO SI VOLESSE MODIFICARE SI DEVE SEMPRE E SOLO MODIFICARE LA COSTANTE PER CUI SI MOLTIPLICANO I
         //CLOCKS_PER_SEC SECONDO LA FORMULA k = 1/fps_desiderati
         while (frame == int ((clock() - clock_start)/(CLOCKS_PER_SEC * 0.04))){} //in questo modo il gioco va a 25 fps
