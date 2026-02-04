@@ -21,8 +21,21 @@ int main() {
     cbreak(); // permette l'uso di Ctrl + C per interrompere il programma
     keypad(stdscr, TRUE); // permette l'uso del keypad
 
+
     int width, height;
     getmaxyx(stdscr, height, width);
+
+
+    while(height<31 || width<121){
+        int y=height/2;
+        int x=width/2-12;
+        if (x<0) x=0;
+        clear();
+        mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
+        refresh();
+        getmaxyx(stdscr, height, width);
+    }
+
 
     width = 120;
     height = 30;
