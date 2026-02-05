@@ -38,6 +38,8 @@ int main() {
         if (x<0) x=0;
         clear();
         mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
+        mvprintw(y+2,width/2-31,"Ridimensionare il terminale per una dimensione di almeno 30x120");
+        mvprintw(y+4,width/2-8,"Al momento %dx%d", width, height);
         refresh();
         napms(500);
         height=LINES;
