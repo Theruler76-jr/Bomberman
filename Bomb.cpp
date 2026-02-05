@@ -33,7 +33,7 @@ int Bomb :: esplodi (Map &mappa, Player &Giocatore, int &score, enemy_list* &lis
     int y_directions [5] = {0, -1, 0, 0, 1};
     bool stop [5] = {false, false, false, false};
 
-    for (int i = 0; i < moltiplicatore_esplosione; i++) {
+    for (int i = 0; i <= moltiplicatore_esplosione; i++) {
         for (int j = 0; j < 5; j++) {
             if (!stop[j]) {
                 switch (mappa.pos(coordinata_x + x_directions[j] * i, coordinata_y + y_directions[j] * i)) {
