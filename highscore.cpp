@@ -289,7 +289,7 @@ char highscore_loop(WINDOW *win) {
 
             if (i >= 10) x_pos--;
 
-            mvwprintw(scoreboard, y_pos, x_pos, "    ", i);
+            mvwprintw(scoreboard, y_pos, x_pos - 1, "     ");
 
             if (i == 11 || i == 12 || i == 13) mvwprintw(scoreboard, y_pos, x_pos, "%dTH", i);
             else {
