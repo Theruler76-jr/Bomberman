@@ -239,6 +239,12 @@ char highscore_loop(WINDOW *win) {
 
         if (input == 10 || input == ' ' || input == 'e' || input == 'E') break;
 
+        if (input == 'r' || input == 'R') {
+            char tmp[10] = {'P', 'l', 'a', 'y', 'e', 'r', ':', 0, 0, '\0'};
+            tmp[7] = rand() % 256;
+            tmp[8] = rand() % 256;
+            head = add_highscore(head, tmp, rand()%1000);
+        }
 
         box(win, '|', '#');
 
