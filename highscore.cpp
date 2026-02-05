@@ -240,7 +240,7 @@ char highscore_loop(WINDOW *win) {
         if (input == 10 || input == ' ' || input == 'e' || input == 'E') break;
 
 
-        box(win, '|', base_en);
+        box(win, '|', '#');
 
         for (int i = 0; i < 5; i++) {   // prints ASCII title
 
@@ -271,10 +271,10 @@ char highscore_loop(WINDOW *win) {
 
         ptr = head;
 
-        mvwaddch(win, height / 2, 26, ACS_UARROW);
-        mvwaddch(win, height / 2 + 4, 26, ACS_DARROW);
+        mvwaddch(win, height / 2, width / 4 - 2, ACS_UARROW);
+        mvwaddch(win, height / 2 + 4, width / 4 - 2, ACS_DARROW);
 
-        werase(scoreboard);
+        //werase(scoreboard);
         box(scoreboard, 0, 0);
 
         for (int i = 1; ptr != nullptr && i <= total_highscores; i++) {    // prints leaderboard
@@ -288,6 +288,8 @@ char highscore_loop(WINDOW *win) {
             }
 
             if (i >= 10) x_pos--;
+
+            mvwprintw(scoreboard, y_pos, x_pos, "    ", i);
 
             if (i == 11 || i == 12 || i == 13) mvwprintw(scoreboard, y_pos, x_pos, "%dTH", i);
             else {
@@ -308,7 +310,10 @@ char highscore_loop(WINDOW *win) {
 
             if (i >= 10) x_pos++;
 
+            mvwprintw(scoreboard, y_pos, x_pos + 6, "                ");
             mvwprintw(scoreboard, y_pos, x_pos + 6, "%s", ptr->name);
+
+            mvwprintw(scoreboard, y_pos, scoreboard_width / 2 + 12, "      ");
             mvwprintw(scoreboard, y_pos, scoreboard_width / 2 + 12, "%d", ptr->score);
 
             ptr = ptr->next;
