@@ -30,7 +30,7 @@ int main() {
     int height=LINES, width=COLS;
 
 
-    //while(height<31 || width<121)
+    while(height<31 || width<121)
         {
         int ch = getch();
         int y=height/2;
