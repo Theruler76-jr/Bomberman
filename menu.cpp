@@ -1,5 +1,4 @@
 #include "menu.h"
-#include "Map.h"
 
 #ifdef _WIN32
     #include <ncurses/ncurses.h> // Percorso per Windows/MinGW
@@ -122,9 +121,7 @@ char menu_loop(WINDOW *win) {
 
         if (input == 10 || input == ' ' || input == 'e' || input == 'E') break;
 
-
         box(win, '!', '=');
-
 
         for (int i = 0; i < 7; i++) {   // prints title ASCII
 
@@ -164,7 +161,6 @@ char menu_loop(WINDOW *win) {
                 wattron(win, COLOR_PAIR(1));
                 wattron(win, A_BOLD);
             }
-
 
             mvwprintw(win, 16 + i*2, width/2 - strlen(menu[i]) / 2, "%s", menu[i]);
 
