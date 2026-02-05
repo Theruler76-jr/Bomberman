@@ -30,7 +30,7 @@ int main() {
     int height=LINES, width=COLS;
 
 
-    //while(height<31 || width<121)
+    while(height<30 || width<120)
         {
         int ch = getch();
         int y=height/2;
@@ -38,6 +38,7 @@ int main() {
         if (x<0) x=0;
         clear();
         mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
+        mvprintw(y + 2,width/2 - 31,"Ridimensionare il terminale ad una dimensione di almeno 30x120");
         refresh();
         napms(500);
         height=LINES;
