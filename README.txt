@@ -1,5 +1,5 @@
 
-Prerequisiti:
+Prerequisiti alla compilazione:
 
 Assicurarsi di avere MinGW correttamente installato, con le seguenti librerie:
     ncurses

@@ -29,7 +29,9 @@ int main() {
     //controllo terminale troppo piccolo
     int height=LINES, width=COLS;
 
-    while(height<31 || width<121){
+
+    //while(height<31 || width<121)
+        {
         int ch = getch();
         int y=height/2;
         int x=width/2-12;
@@ -37,7 +39,7 @@ int main() {
         clear();
         mvprintw(y,x,"TERMINALE TROPPO PICCOLO!");
         refresh();
-
+        napms(500);
         height=LINES;
         width=COLS;
     }
@@ -58,7 +60,7 @@ int main() {
                 break;
 
             case 'G':
-                state = game_loop(win);
+                state = game_loop(win, width, height);
                 break;
 
             case 'H':

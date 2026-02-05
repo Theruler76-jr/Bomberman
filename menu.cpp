@@ -16,6 +16,9 @@ char menu_loop(WINDOW *win) {
 
     werase(win);
 
+    int snapshot;
+    const int FPS = 15;
+
     int frame = 0;
     int total_frames = 4;
 
@@ -83,7 +86,7 @@ char menu_loop(WINDOW *win) {
 
     while (true) {
 
-        int snapshot = clock();
+        snapshot = clock();
 
         input = getch();
 
@@ -133,7 +136,7 @@ char menu_loop(WINDOW *win) {
 
             mvwprintw(win, embers[i][1], embers[i][0], " ");
 
-            embers[i][1] -= rand() % (3 * (3 - selection));
+            embers[i][1] -= rand() % (2 * (3 - selection));
             embers[i][0] += rand() % 4 - 2;
 
             if (embers[i][1] <= 0) {
@@ -146,7 +149,7 @@ char menu_loop(WINDOW *win) {
 
             char c = ':';
             if (embers[i][1] > height / 3) c = '+';
-            if (embers[i][1] > height / 3 * 2) c = base_en;
+            if (embers[i][1] > height / 3 * 2) c = '#';
 
             mvwprintw(win, embers[i][1], embers[i][0], "%c", c);
 
@@ -172,7 +175,7 @@ char menu_loop(WINDOW *win) {
 
         wrefresh(win);
 
-        while (clock() - snapshot < CLOCKS_PER_SEC * 0.09) {}
+        while (clock() - snapshot < CLOCKS_PER_SEC / FPS) {}
 
         frame++;
         frame = frame % total_frames;

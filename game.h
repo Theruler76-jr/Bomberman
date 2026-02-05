@@ -32,7 +32,7 @@ struct item_list {
     Item *utility;
     item_list *next;
 };
-char game_loop(WINDOW *win);
+char game_loop(WINDOW *win, int massima_x, int massima_y);
 struct  bomb_list;
 struct Level {
     Map map = Map();
@@ -49,11 +49,11 @@ struct Level {
 };
 struct bomb_animation;
 
-void write_score (int score, WINDOW* win); //scrive il punteggio attuale del giocatore
-void write_lives (Player giocatore, WINDOW *win); //scrive il numero di vite rimanenti al giocatore
-void write_level (int number,WINDOW *win); //scrive il numero di livello in cui si trova il giocatore
-void write_time_left (Level *current_level,WINDOW *win); //scrive il numero di secondi rimasti per ogni livello
-void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win); //stampa tutte le informazioni a schermo a ogni ciclo
+void write_score (int score, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y); //scrive il punteggio attuale del giocatore
+void write_lives (Player Giocatore, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y); //scrive il numero di vite rimanenti al giocatore
+void write_level (int number, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y); //scrive il numero di livello in cui si trova il giocatore
+void write_time_left (Level *current_level, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y); //scrive il numero di secondi rimasti per ogni livello
+void print_routine (Level* current_level, Player Giocatore, int score, WINDOW *win, int inizio_mappa_x, int inizio_mappa_y); //stampa tutte le informazioni a schermo a ogni ciclo
 void update_status (bomb_list *&head, unsigned int time_occurred, Player &Giocatore, Map &map, Level *&current_level, int &score, bomb_animation*& queue_bomb_animation); //aggiorna lo stato della mappa
 
 Level* find_last (Level* current); //Funzione ausiliaria di push_level
